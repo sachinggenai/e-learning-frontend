@@ -1,7 +1,6 @@
 services:
-  - type: web
+  - type: static_site
     name: elearning-frontend
-    env: static
     buildCommand: npm ci --legacy-peer-deps && npm run build
     staticPublishPath: ./build
     envVars:
