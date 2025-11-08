@@ -2,13 +2,22 @@ services:
   - type: web
     name: elearning-frontend
     env: static
-    buildCommand: npm install && npm run build
+    buildCommand: npm ci && npm run build
     staticPublishPath: ./build
     envVars:
       - key: NODE_VERSION
-        value: 18
+        value: 22.16.0
       - key: REACT_APP_API_BASE
         value: https://e-learning-backend-5rau.onrender.com/api/v1
+      - key: GENERATE_SOURCEMAP
+        value: false
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
     routes:
       - type: rewrite
         source: /*
