@@ -1,0 +1,334 @@
+/**
+ * Page Manager Styles
+ */
+
+.page-manager {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #f8f9fa;
+  border-right: 1px solid #dee2e6;
+  min-width: 280px;
+  max-width: 350px;
+}
+
+.page-manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #dee2e6;
+  background-color: white;
+}
+
+.page-manager-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.add-page-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.add-page-button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.add-page-button:disabled {
+  background-color: #adb5bd;
+  cursor: not-allowed;
+}
+
+.button-icon {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.page-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6c757d;
+}
+
+.empty-state p {
+  margin: 0 0 8px 0;
+}
+
+.empty-hint {
+  font-size: 12px;
+  font-style: italic;
+}
+
+.pages {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.page-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.page-item:hover {
+  border-color: #007bff;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.1);
+}
+
+.page-item.active {
+  border-color: #007bff;
+  background-color: #f0f7ff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.page-item:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
+}
+
+.page-order {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: #e9ecef;
+  color: #495057;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.page-item.active .page-order {
+  background-color: #007bff;
+  color: white;
+}
+
+.page-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.page-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.page-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #212529;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.page-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.page-type {
+  color: #6c757d;
+  text-transform: capitalize;
+}
+
+.status-indicator {
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-indicator.draft {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-indicator.valid {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-indicator.invalid {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.page-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.page-item:hover .page-actions,
+.page-item.active .page-actions {
+  opacity: 1;
+}
+
+.delete-page-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  color: #dc3545;
+  transition: all 0.15s ease;
+  font-size: 14px;
+}
+
+.delete-page-button:hover {
+  background-color: #f5f5f5;
+  transform: scale(1.1);
+}
+
+.page-manager-footer {
+  padding: 12px 16px;
+  border-top: 1px solid #dee2e6;
+  background-color: white;
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.page-count {
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.course-status {
+  color: #495057;
+}
+
+.course-status strong {
+  color: #212529;
+}
+
+/* Drag and drop styles */
+.page-item[draggable="true"] {
+  cursor: grab;
+}
+
+.page-item[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .page-manager {
+    min-width: 250px;
+    max-width: 280px;
+  }
+
+  .page-manager-header {
+    padding: 12px;
+  }
+
+  .add-page-button {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .page-item {
+    padding: 8px;
+  }
+
+  .page-title {
+    font-size: 13px;
+  }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .page-manager {
+    background-color: #343a40;
+    border-right-color: #495057;
+  }
+
+  .page-manager-header {
+    background-color: #495057;
+    border-bottom-color: #6c757d;
+  }
+
+  .page-manager-header h3 {
+    color: #f8f9fa;
+  }
+
+  .page-item {
+    background-color: #495057;
+    border-color: #6c757d;
+  }
+
+  .page-item:hover {
+    border-color: #007bff;
+  }
+
+  .page-item.active {
+    background-color: rgba(0, 123, 255, 0.2);
+  }
+
+  .page-title {
+    color: #f8f9fa;
+  }
+
+  .page-type {
+    color: #adb5bd;
+  }
+
+  .page-order {
+    background-color: #6c757d;
+    color: #f8f9fa;
+  }
+
+  .page-manager-footer {
+    background-color: #495057;
+    border-top-color: #6c757d;
+    color: #adb5bd;
+  }
+
+  .course-status {
+    color: #f8f9fa;
+  }
+
+  .course-status strong {
+    color: #ffffff;
+  }
+
+  .delete-page-button:hover {
+    background-color: #6c757d;
+  }
+}

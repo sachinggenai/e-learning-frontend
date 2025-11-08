@@ -1,0 +1,59 @@
+/**
+ * Undo/Redo Toolbar Styles
+ */
+
+.undo-redo-toolbar {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.toolbar-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #495057;
+  transition: all 0.15s ease;
+}
+
+.toolbar-button:hover:not(.disabled) {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+}
+
+.toolbar-button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 1px;
+}
+
+.toolbar-button.disabled {
+  color: #adb5bd;
+  cursor: not-allowed;
+}
+
+.toolbar-button.disabled:hover {
+  background: none;
+  border-color: transparent;
+}
+
+/* Dark theme */
+@media (prefers-color-scheme: dark) {
+  .toolbar-button {
+    color: #adb5bd;
+  }
+
+  .toolbar-button:hover:not(.disabled) {
+    background-color: #495057;
+    border-color: #6c757d;
+  }
+
+  .toolbar-button.disabled {
+    color: #6c757d;
+  }
+}

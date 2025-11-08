@@ -1,0 +1,415 @@
+/**
+ * TemplateEditor Component Styles
+ * Comprehensive styling for template editing interface
+ */
+
+.template-editor {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background: white;
+}
+
+/* Template Editor Header */
+.template-editor-header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.template-title-input {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.template-title-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Template Editor Content */
+.template-editor-content {
+  margin-bottom: 24px;
+}
+
+/* Common Field Styling */
+.field-group {
+  margin-bottom: 20px;
+}
+
+.field-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #495057;
+  font-size: 14px;
+}
+
+.field-group input,
+.field-group textarea,
+.field-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1.5;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+}
+
+.field-group input:focus,
+.field-group textarea:focus,
+.field-group select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.field-group input.error,
+.field-group textarea.error,
+.field-group select.error {
+  border-color: #dc3545;
+}
+
+.field-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.error-message {
+  display: block;
+  margin-top: 4px;
+  color: #dc3545;
+  font-size: 12px;
+}
+
+/* Welcome Editor Specific */
+.welcome-editor {
+  max-width: 600px;
+}
+
+/* Content Editor Specific */
+.content-editor {
+  max-width: 800px;
+}
+
+/* MCQ Editor Specific */
+.mcq-editor {
+  max-width: 700px;
+}
+
+.options-section {
+  margin-top: 24px;
+}
+
+.options-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.options-header label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+  margin: 0;
+}
+
+.add-option-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-option-btn:hover:not(:disabled) {
+  background: #218838;
+}
+
+.add-option-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.option-item {
+  margin-bottom: 12px;
+}
+
+.option-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background: #f8f9fa;
+}
+
+.option-controls input[type="radio"] {
+  width: auto;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.option-text {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.option-text:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.remove-option-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.remove-option-btn:hover {
+  background: #c82333;
+}
+
+.mcq-help {
+  margin-top: 12px;
+  padding: 12px;
+  background: #e7f3ff;
+  border-left: 4px solid #007bff;
+  border-radius: 4px;
+}
+
+.mcq-help p {
+  margin: 0;
+  font-size: 13px;
+  color: #495057;
+}
+
+/* Summary Editor Specific */
+.summary-editor {
+  max-width: 600px;
+}
+
+.key-points-section {
+  margin-top: 24px;
+}
+
+.key-points-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.key-points-header label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+  margin: 0;
+}
+
+.add-point-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-point-btn:hover {
+  background: #0056b3;
+}
+
+.key-point-item {
+  margin-bottom: 12px;
+}
+
+.key-point-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background: #f8f9fa;
+}
+
+.point-number {
+  font-weight: 600;
+  color: #007bff;
+  min-width: 24px;
+  flex-shrink: 0;
+}
+
+.key-point-text {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.key-point-text:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.remove-point-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.remove-point-btn:hover {
+  background: #c82333;
+}
+
+.summary-help {
+  margin-top: 12px;
+  padding: 12px;
+  background: #e7f3ff;
+  border-left: 4px solid #007bff;
+  border-radius: 4px;
+}
+
+.summary-help p {
+  margin: 0;
+  font-size: 13px;
+  color: #495057;
+}
+
+/* Validation Errors */
+.validation-errors {
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px solid #f5c6cb;
+  border-radius: 6px;
+  background: #f8d7da;
+}
+
+.validation-errors h4 {
+  margin: 0 0 12px 0;
+  color: #721c24;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.validation-errors ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style: disc;
+}
+
+.error-item {
+  margin-bottom: 6px;
+}
+
+.error-field {
+  font-weight: 600;
+  color: #721c24;
+  margin-right: 8px;
+}
+
+.error-message {
+  color: #721c24;
+}
+
+/* Unsupported Template */
+.unsupported-template {
+  padding: 40px;
+  text-align: center;
+  color: #6c757d;
+}
+
+.unsupported-template p {
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .template-editor {
+    padding: 16px;
+  }
+
+  .welcome-editor,
+  .content-editor,
+  .mcq-editor,
+  .summary-editor {
+    max-width: 100%;
+  }
+
+  .options-header,
+  .key-points-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .option-controls,
+  .key-point-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .option-controls input[type="radio"],
+  .point-number {
+    align-self: flex-start;
+  }
+}
+
+/* Animation for smooth interactions */
+.option-item,
+.key-point-item {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.option-item:hover,
+.key-point-item:hover {
+  transform: translateX(2px);
+}
+
+/* Focus styles for accessibility */
+.template-editor button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
