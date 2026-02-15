@@ -443,7 +443,7 @@ class ApiService {
       return {
         success: true,
         downloadUrl,
-        filename,
+        fileName: filename,
       };
     } catch (error: any) {
       console.error("Course export failed:", error);

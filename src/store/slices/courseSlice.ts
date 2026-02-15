@@ -2,27 +2,29 @@
  * Course Slice
  *
  * Manages course-level state including pages, templates, and persistence status.
- * Handles communication with the backend API for course operations.
+ * Uses CourseService (httpClient) for all API communication.
+ *
+ * Migration notes:
+ *   - fetchCourses / fetchCourse / saveCourse now use courseService
+ *   - Legacy Page (templateType + content) is still maintained for V1 compat
+ *   - The adapter layer in pageAdapter.ts bridges backend ↔ frontend Page models
  */
 
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { apiService } from "../../services/api";
-import {
-  Course as ApiCourse,
-  Template as ApiTemplate,
-  ContentData,
-  MCQData,
-  SummaryData,
-  WelcomeData,
-} from "../../types/course";
+import { courseService } from "../../services/CourseService";
+import { pageService } from "../../services/PageService";
+import { Course as ApiCourse } from "../../types/course";
+import { httpClient } from "../../services/httpClient";
 import logger from "../../utils/logger";
 import { Page } from "./editorSlice";
+import { mapBackendPageToPage } from "../adapters/pageAdapter";
 
-// Types for course state
+// ─── Slice-local types (kept for V1 compat; consumers will migrate to types/course.ts) ──
 export interface Course {
   id?: number;
   courseId: string;
   title: string;
+  author?: string;
   description?: string;
   status: "draft" | "published";
   pages: Page[];
@@ -43,7 +45,6 @@ export interface CourseState {
   currentCourse: Course | null;
   courses: Course[];
   templates: Template[];
-  // Raw backend template DTOs (Phase 1: baseline capture before adapter layer)
   rawTemplates?: any[];
   isLoading: boolean;
   isSaving: boolean;
@@ -64,71 +65,58 @@ const initialState: CourseState = {
   lastSaved: null,
 };
 
-// Validation helper
-const validateCourseForSave = (course: Partial<Course>): string | null => {
-  if (!course.courseId?.trim()) return "Course ID is required";
-  if (!course.title?.trim()) return "Course title is required";
-  if (!course.pages?.length) return "Course must have at least one page";
+// ─── Helpers ───────────────────────────────────────────────────────
 
-  for (const page of course.pages) {
-    if (!page.title?.trim()) return `Page "${page.id}" needs a title`;
-    if (!page.templateType)
-      return `Page "${page.title || page.id}" needs a template type`;
-  }
+/** Convert API Course to slice-local Course (legacy Page model). */
+function apiCourseToSliceCourse(apiCourse: ApiCourse): Course {
+  const pages: Page[] = (apiCourse.pages ?? []).map((p, idx) => {
+    // If the page already looks like a legacy Page, keep it.
+    if ((p as any).templateType) {
+      return p as unknown as Page;
+    }
+    // Otherwise, map from backend DTO
+    return mapBackendPageToPage({
+      id: String(p.pageId ?? (p as any).id ?? idx),
+      course_id: apiCourse.courseId,
+      title: p.title ?? `Page ${idx + 1}`,
+      type: (p as any).type ?? 'content-text',
+      content: (p as any).content ?? {},
+      page_order: p.order ?? idx,
+      is_published: true,
+      created_at: (p as any).createdAt,
+      updated_at: (p as any).updatedAt,
+    });
+  });
 
-  return null; // Valid
-};
+  return {
+    id: (apiCourse as any).id,
+    courseId: apiCourse.courseId,
+    title: apiCourse.title,
+    author: apiCourse.author ?? "Course Author",
+    description: apiCourse.description ?? undefined,
+    status: apiCourse.status as "draft" | "published",
+    pages,
+    createdAt: apiCourse.createdAt,
+    updatedAt: apiCourse.updatedAt,
+  };
+}
 
-// Safe data access helpers
-const safeGet = (obj: any, key: string, defaultValue: any = "") => {
-  return obj && typeof obj === "object" && obj[key] !== undefined
-    ? obj[key]
-    : defaultValue;
-};
+// ─── Async Thunks ──────────────────────────────────────────────────
 
-const safeGetArray = (obj: any, key: string, defaultValue: any[] = []) => {
-  const value = safeGet(obj, key, defaultValue);
-  return Array.isArray(value) ? value : defaultValue;
-};
-
-// Template type mapping
-const TEMPLATE_TYPE_MAPPING = {
-  "content-text": "content_text",
-  "content-video": "content_video",
-  mcq: "mcq",
-  welcome: "welcome",
-  summary: "summary",
-} as const;
-
-const mapTemplateType = (frontendType: string): string => {
-  return (
-    TEMPLATE_TYPE_MAPPING[frontendType as keyof typeof TEMPLATE_TYPE_MAPPING] ||
-    frontendType
-  );
-};
-
-// Async thunks for API operations
 export const fetchCourses = createAsyncThunk(
   "course/fetchCourses",
   async () => {
-    const apiBase = process.env.REACT_APP_API_BASE || process.env.REACT_APP_API_URL || "http://localhost:8000/api/v1";
-    const response = await fetch(`${apiBase}/courses`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch courses");
-    }
-    return response.json();
+    const result = await courseService.listCourses();
+    // result is CourseListResponse { courses, total, page, limit }
+    return (result as any).courses ?? result;
   }
 );
 
 export const fetchCourse = createAsyncThunk(
   "course/fetchCourse",
   async (courseId: string) => {
-    const apiBase = process.env.REACT_APP_API_BASE || process.env.REACT_APP_API_URL || "http://localhost:8000/api/v1";
-    const response = await fetch(`${apiBase}/courses/${courseId}`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch course");
-    }
-    return response.json();
+    const apiCourse = await courseService.getCourse(courseId);
+    return apiCourse;
   }
 );
 
@@ -138,151 +126,49 @@ export const saveCourse = createAsyncThunk(
     logger.info({
       event: "course.save.started",
       message: "Course save operation initiated",
-      context: {
-        courseId: course.courseId,
-        title: course.title,
-        pagesCount: course.pages?.length || 0,
-      },
+      context: { courseId: course.courseId, pagesCount: course.pages?.length || 0 },
     });
 
-    // Validate course data
-    const validationError = validateCourseForSave(course);
-    if (validationError) {
-      logger.warn({
-        event: "course.save.validation.failed",
-        message: validationError,
-        context: { courseId: course.courseId },
-      });
-      throw new Error(validationError);
-    }
+    if (!course.courseId?.trim()) throw new Error("Course ID is required");
+    if (!course.title?.trim()) throw new Error("Course title is required");
 
-    // Convert courseSlice Course to API Course structure
-    const apiCourse: ApiCourse = {
-      courseId: course.courseId || "",
-      title: course.title || "",
-      description: course.description || "",
-      author: "User", // Default author
-      version: "1.0",
-      createdAt: course.createdAt || new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      templates: (course.pages || []).map((page, index): ApiTemplate => {
-        let data: WelcomeData | ContentData | MCQData | SummaryData;
-
-        switch (page.templateType) {
-          case "welcome":
-            data = {
-              title: page.title,
-              subtitle: safeGet(page.content, "subtitle", ""),
-              description: safeGet(page.content, "description", ""),
-            } as WelcomeData;
-            break;
-          case "mcq":
-            data = {
-              question: safeGet(page.content, "question", ""),
-              options: safeGetArray(page.content, "options", []),
-            } as MCQData;
-            break;
-          case "summary":
-            data = {
-              title: page.title,
-              keyPoints: safeGetArray(page.content, "keyPoints", []),
-            } as SummaryData;
-            break;
-          case "content-text":
-          case "content-video":
-          default:
-            data = {
-              title: page.title,
-              body: safeGet(page.content, "content", ""),
-              videoUrl: safeGet(page.content, "videoUrl"),
-              imageUrl: safeGet(page.content, "imageUrl"),
-            } as ContentData;
-            break;
-        }
-
-        return {
-          id: page.id,
-          type: mapTemplateType(page.templateType) as any,
-          templateType: mapTemplateType(page.templateType) as any,
-          title: page.title,
-          order: page.order || index,
-          data,
-        };
-      }),
-      assets: [],
-      navigation: {
-        allowSkip: true,
-        showProgress: true,
-        lockProgression: false,
-      },
-      language: "en",
-      settings: {
-        theme: "default",
-        autoplay: false,
-      },
+    // Build an ApiCourse payload from the slice-local Course
+    const payload: Partial<ApiCourse> = {
+      courseId: course.courseId!,
+      title: course.title!,
+      author: course.author ?? "Course Author",
+      description: course.description ?? "",
+      status: course.status ?? "draft",
     };
 
-    logger.info({
-      event: "course.save.api.converted",
-      message: "Course converted to API structure",
-      context: {
-        apiCourseId: apiCourse.courseId,
-        apiCourseTitle: apiCourse.title,
-        templatesCount: apiCourse.templates.length,
-      },
-    });
-
-    const result = await apiService.saveCourse(apiCourse);
-
-    if (!result.success) {
-      logger.error({
-        event: "course.save.api.failed",
-        message: "API save operation failed",
-        context: { error: result.error },
-      });
-      throw new Error(result.error);
-    }
+    const saved = await courseService.saveCourse(payload as ApiCourse);
 
     logger.info({
-      event: "course.save.api.success",
-      message: "Course saved successfully via API",
-      context: {
-        returnedCourseId: result.course.courseId || result.course.id,
-        returnedCourseTitle: result.course.title,
-        isNew: result.isNew,
-      },
+      event: "course.save.success",
+      message: "Course saved via CourseService",
+      context: { courseId: saved.courseId, title: saved.title },
     });
 
-    // Convert back to courseSlice format for Redux state
-    const savedCourse: Course = {
-      id: result.course.id || course.id,
-      courseId: result.course.courseId || course.courseId || "",
-      title: result.course.title || course.title || "",
-      description: result.course.description || course.description,
-      status: result.course.status || course.status || "draft",
-      pages: course.pages || [], // Keep original pages since API doesn't return them
-      createdAt: result.course.createdAt || course.createdAt,
-      updatedAt: result.course.updatedAt || new Date().toISOString(),
-    };
-
-    return savedCourse;
+    return {
+      id: (saved as any).id ?? course.id,
+      courseId: saved.courseId ?? course.courseId!,
+      title: saved.title ?? course.title!,
+      author: (saved as any).author ?? course.author ?? "Course Author",
+      description: saved.description ?? course.description,
+      status: (saved.status ?? course.status ?? "draft") as "draft" | "published",
+      pages: course.pages ?? [],
+      createdAt: saved.createdAt ?? course.createdAt,
+      updatedAt: saved.updatedAt ?? new Date().toISOString(),
+    } as Course;
   }
 );
 
 export const fetchTemplates = createAsyncThunk(
   "course/fetchTemplates",
   async (_: any) => {
-    // Accept courseId but don't use it since templates are global
-    const apiBase = process.env.REACT_APP_API_BASE || process.env.REACT_APP_API_URL || "http://localhost:8000/api/v1";
-    const response = await fetch(`${apiBase}/courses/templates/available`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch templates");
-    }
-    const data = await response.json();
+    const { data } = await httpClient.get('/courses/templates/available');
     const backendTemplates = data.templates || [];
 
-    // Phase 1: Return both raw backend DTOs and legacy normalized structure (to avoid breaking UI);
-    // Adapter layer will replace this in a later phase.
     const legacyNormalize = (tpls: any[]): Template[] => {
       const categoryToType: Record<string, string> = {
         introduction: "content-text",
@@ -291,27 +177,13 @@ export const fetchTemplates = createAsyncThunk(
       };
       return tpls.map((tpl: any, index: number) => {
         const content: Record<string, any> = {};
-        if (Array.isArray(tpl.data?.content)) {
-          // If backend already shaped things differently, skip array assumption
-        }
         if (Array.isArray(tpl.fields)) {
-          tpl.fields.forEach((f: any) => {
-            content[f.name] = ""; // default empty values
-          });
+          tpl.fields.forEach((f: any) => { content[f.name] = ""; });
         }
         const mappedType = categoryToType[tpl.category] || "content-text";
-        if (mappedType === "mcq") {
-          content.question = content.question || "";
-          content.options = content.options || ["", "", "", ""];
-          content.correctAnswer = content.correctAnswer || "";
-        } else if (mappedType === "content-text") {
-          if (!content.content) content.content = "";
-          if (!content.title) content.title = tpl.name;
-        }
         return {
           id: tpl.id,
           templateId: tpl.id,
-          // maintain old field for UI usage until adapter introduced
           type: mappedType,
           title: tpl.name,
           order: index,
@@ -329,9 +201,6 @@ export const fetchTemplates = createAsyncThunk(
   }
 );
 
-// Deprecated local createPage thunk removed (backend-driven creation supersedes it)
-
-// Phase 3: backend-driven page creation
 export const createPageFromTemplate = createAsyncThunk(
   "course/createPageFromTemplate",
   async (params: {
@@ -341,32 +210,37 @@ export const createPageFromTemplate = createAsyncThunk(
     customizations?: Record<string, any>;
     pageOrder?: number;
   }) => {
-    const {
-      courseId,
-      templateId,
-      pageTitle,
-      customizations = {},
-      pageOrder,
-    } = params;
-    const apiBase = process.env.REACT_APP_API_BASE || process.env.REACT_APP_API_URL || "http://localhost:8000/api/v1";
-    const response = await fetch(
-      `${apiBase}/courses/${courseId}/pages/from-template`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          template_id: templateId,
-          page_title: pageTitle,
-          customizations,
-          page_order: pageOrder,
-        }),
-      }
+    const { courseId, templateId, pageTitle, customizations = {} } = params;
+
+    // Build a spec-compliant PageCreateRequest (POST /courses/{courseId}/pages)
+    // The template's componentType and customization data are sent as the initial component.
+    const pageCreateRequest: {
+      title: string;
+      components: Array<{ componentType: string; data: Record<string, any> }>;
+    } = {
+      title: pageTitle,
+      components: [
+        {
+          componentType: templateId,
+          data: customizations,
+        },
+      ],
+    };
+
+    const { data } = await httpClient.post(
+      `/courses/${courseId}/pages`,
+      pageCreateRequest
     );
-    if (!response.ok) {
-      throw new Error("Failed to create page from template");
-    }
-    const data = await response.json();
-    return data.page; // raw backend page DTO
+    // Backend returns a PageResponse directly
+    return data;
+  }
+);
+
+export const deletePageFromCourse = createAsyncThunk(
+  "course/deletePageFromCourse",
+  async ({ courseId, pageId }: { courseId: string; pageId: string }) => {
+    await pageService.deletePage(courseId, pageId);
+    return { pageId };
   }
 );
 
@@ -374,52 +248,29 @@ const courseSlice = createSlice({
   name: "course",
   initialState,
   reducers: {
-    // Course Management
     setCurrentCourse: (state, action: PayloadAction<Course>) => {
       state.currentCourse = action.payload;
+      // Mark dirty so Save button enables
+      if (state.saveStatus === "saved") {
+        state.saveStatus = "idle";
+      }
     },
 
     clearCurrentCourse: (state) => {
       state.currentCourse = null;
+      state.saveStatus = "idle";
     },
 
-    // Page Management (addPage removed)
-
     updatePage: (state, action: PayloadAction<Page>) => {
-      console.log("═══════════════════════════════════════════════════");
-      console.log("📝 courseSlice.updatePage REDUCER");
-      console.log("═══════════════════════════════════════════════════");
-      console.log("📌 Page ID:", action.payload.id);
-      console.log("📌 Page Title:", action.payload.title);
-      console.log(
-        "📌 Page Content:",
-        JSON.stringify(action.payload.content, null, 2)
-      );
-
       if (state.currentCourse) {
         const index = state.currentCourse.pages.findIndex(
           (p) => p.id === action.payload.id
         );
-        console.log("📌 Found at index:", index);
-
         if (index !== -1) {
-          console.log(
-            "📌 Old content:",
-            JSON.stringify(state.currentCourse.pages[index].content, null, 2)
-          );
           state.currentCourse.pages[index] = action.payload;
-          console.log("✅ Page updated in courseSlice");
-          console.log(
-            "📌 New content:",
-            JSON.stringify(state.currentCourse.pages[index].content, null, 2)
-          );
-        } else {
-          console.log("❌ Page not found in pages array!");
+          state.saveStatus = "idle";
         }
-      } else {
-        console.log("❌ No currentCourse!");
       }
-      console.log("═══════════════════════════════════════════════════\n");
     },
 
     removePage: (state, action: PayloadAction<string>) => {
@@ -427,10 +278,10 @@ const courseSlice = createSlice({
         state.currentCourse.pages = state.currentCourse.pages.filter(
           (p) => p.id !== action.payload
         );
-        // Reorder remaining pages
         state.currentCourse.pages.forEach((page, index) => {
           page.order = index;
         });
+        state.saveStatus = "idle";
       }
     },
 
@@ -439,19 +290,16 @@ const courseSlice = createSlice({
         const pageMap = new Map(
           state.currentCourse.pages.map((page) => [page.id, page])
         );
-
         state.currentCourse.pages = action.payload
           .map((id) => pageMap.get(id))
           .filter(Boolean) as Page[];
-
-        // Update order indices
         state.currentCourse.pages.forEach((page, index) => {
           page.order = index;
         });
+        state.saveStatus = "idle";
       }
     },
 
-    // Status Management
     setSaveStatus: (
       state,
       action: PayloadAction<CourseState["saveStatus"]>
@@ -476,11 +324,6 @@ const courseSlice = createSlice({
       .addCase(fetchCourses.fulfilled, (state, action) => {
         state.isLoading = false;
         state.courses = action.payload;
-        logger.info({
-          event: "courses.loaded",
-          message: "Courses list loaded",
-          context: { count: action.payload.length },
-        });
       })
       .addCase(fetchCourses.rejected, (state, action) => {
         state.isLoading = false;
@@ -495,41 +338,7 @@ const courseSlice = createSlice({
       })
       .addCase(fetchCourse.fulfilled, (state, action) => {
         state.isLoading = false;
-        const courseData = action.payload;
-
-        // Transform pages to ensure compatibility with PageEditor
-        const transformedPages = (courseData.data?.pages || []).map(
-          (page: any) => ({
-            ...page,
-            // Ensure templateType field exists for PageEditor compatibility
-            templateType: page.templateType || page.type || "content-text",
-            // Ensure other required fields
-            order: page.order || page.page_order || 0,
-            isDraft: page.isDraft || !page.is_published,
-            lastModified:
-              page.lastModified || page.updated_at || new Date().toISOString(),
-          })
-        );
-
-        state.currentCourse = {
-          id: courseData.id,
-          courseId: courseData.courseId,
-          title: courseData.title,
-          description: courseData.description,
-          status: courseData.status,
-          pages: transformedPages,
-          createdAt: courseData.createdAt,
-          updatedAt: courseData.updatedAt,
-        };
-        logger.info({
-          event: "course.loaded",
-          message: "Course loaded from backend",
-          context: {
-            id: courseData.id,
-            courseId: courseData.courseId,
-            pages: (courseData.data?.pages || []).length,
-          },
-        });
+        state.currentCourse = apiCourseToSliceCourse(action.payload);
       })
       .addCase(fetchCourse.rejected, (state, action) => {
         state.isLoading = false;
@@ -539,67 +348,20 @@ const courseSlice = createSlice({
     // Save Course
     builder
       .addCase(saveCourse.pending, (state) => {
-        logger.info({
-          event: "course.save.pending",
-          message: "Course save operation started",
-          context: {
-            currentCourseId: state.currentCourse?.id,
-            currentCourseCourseId: state.currentCourse?.courseId,
-            previousSaveStatus: state.saveStatus,
-          },
-        });
         state.isSaving = true;
         state.saveStatus = "saving";
         state.error = null;
       })
       .addCase(saveCourse.fulfilled, (state, action) => {
-        logger.info({
-          event: "course.save.fulfilled",
-          message: "Course save completed successfully",
-          context: {
-            savedCourseId: action.payload.id,
-            savedCourseCourseId: action.payload.courseId,
-            savedCourseTitle: action.payload.title,
-            currentCourseBefore: {
-              id: state.currentCourse?.id,
-              courseId: state.currentCourse?.courseId,
-            },
-          },
-        });
-
         state.isSaving = false;
         state.saveStatus = "saved";
         state.lastSaved = new Date().toISOString();
-
-        const savedCourse = action.payload;
         if (state.currentCourse) {
-          logger.debug({
-            event: "course.save.state.updated",
-            message: "Current course state updated with saved data",
-            context: {
-              before: {
-                id: state.currentCourse.id,
-                updatedAt: state.currentCourse.updatedAt,
-              },
-              after: { id: savedCourse.id, updatedAt: savedCourse.updatedAt },
-            },
-          });
-          state.currentCourse.id = savedCourse.id;
-          state.currentCourse.updatedAt = savedCourse.updatedAt;
+          state.currentCourse.id = action.payload.id;
+          state.currentCourse.updatedAt = action.payload.updatedAt;
         }
       })
       .addCase(saveCourse.rejected, (state, action) => {
-        logger.error({
-          event: "course.save.rejected",
-          message: "Course save operation failed",
-          context: {
-            error: action.error?.message,
-            currentCourseId: state.currentCourse?.id,
-            currentCourseCourseId: state.currentCourse?.courseId,
-            previousSaveStatus: state.saveStatus,
-          },
-        });
-
         state.isSaving = false;
         state.saveStatus = "error";
         state.error = action.error.message || "Failed to save course";
@@ -607,66 +369,57 @@ const courseSlice = createSlice({
 
     // Fetch Templates
     builder.addCase(fetchTemplates.fulfilled, (state, action) => {
-      // Support both legacy UI and upcoming adapter pipeline
       if (action.payload && Array.isArray(action.payload)) {
-        // Backwards safety: if older frontend version expects array
         state.templates = action.payload as any;
       } else if (action.payload && action.payload.raw) {
         state.rawTemplates = action.payload.raw;
-        state.templates = action.payload.legacy; // keep UI operational
+        state.templates = action.payload.legacy;
       }
     });
 
-    // (Removed legacy createPage handler)
-    // Backend page creation
+    // Create Page from Template (via standard POST /courses/{courseId}/pages)
     builder.addCase(createPageFromTemplate.fulfilled, (state, action) => {
-      console.log("═══════════════════════════════════════════════════");
-      console.log("🆕 createPageFromTemplate.fulfilled REDUCER");
-      console.log("═══════════════════════════════════════════════════");
-      console.log("📌 Raw payload:", JSON.stringify(action.payload, null, 2));
-
       if (state.currentCourse) {
         const raw = action.payload as any;
-        const mapped = {
-          id: raw.id,
-          // backend provides type directly
-          templateType: raw.type || raw.templateType || "content-text",
+        // Response is a PageResponse: { pageId, title, order, components[], ... }
+        const componentType =
+          raw.components?.[0]?.componentType || "content-text";
+        const mapped = mapBackendPageToPage({
+          id: raw.pageId || raw.id,
+          course_id: raw.courseId || raw.course_id || "",
           title: raw.title,
-          content: raw.content || {},
-          order:
-            typeof raw.page_order === "number"
-              ? raw.page_order
-              : state.currentCourse.pages.length,
-          isDraft: raw.is_published === false,
-          lastModified:
-            raw.updated_at || raw.created_at || new Date().toISOString(),
-        } as Page;
+          type: componentType,
+          content: raw.components?.[0]?.data || {},
+          page_order: typeof raw.order === "number"
+            ? raw.order
+            : state.currentCourse.pages.length,
+          is_published: true,
+          created_at: raw.createdAt || raw.created_at,
+          updated_at: raw.updatedAt || raw.updated_at,
+        });
 
-        console.log("📌 Mapped page:", JSON.stringify(mapped, null, 2));
-
-        // Prevent duplicate pages
         const existingIndex = state.currentCourse.pages.findIndex(
           (p) => p.id === mapped.id
         );
-        console.log("📌 Existing index:", existingIndex);
-
         if (existingIndex !== -1) {
-          console.log("⚠️ Duplicate page - updating existing");
           state.currentCourse.pages[existingIndex] = mapped;
         } else {
-          console.log("✅ New page - adding to array");
           state.currentCourse.pages.push(mapped);
         }
-
-        console.log("📌 Total pages now:", state.currentCourse.pages.length);
-        console.log(
-          "📌 All page IDs:",
-          state.currentCourse.pages.map((p) => p.id)
-        );
-      } else {
-        console.log("❌ No currentCourse!");
       }
-      console.log("═══════════════════════════════════════════════════\n");
+    });
+
+    // Delete Page from Course (via DELETE /courses/{courseId}/pages/{pageId})
+    builder.addCase(deletePageFromCourse.fulfilled, (state, action) => {
+      if (state.currentCourse) {
+        state.currentCourse.pages = state.currentCourse.pages.filter(
+          (p) => p.id !== action.payload.pageId
+        );
+        state.currentCourse.pages.forEach((page, index) => {
+          page.order = index;
+        });
+        state.saveStatus = "idle";
+      }
     });
   },
 });

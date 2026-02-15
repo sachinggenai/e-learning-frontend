@@ -1,0 +1,89 @@
+/* ================================================================
+   ComponentSlot — Wix-Style Selectable Component Wrapper
+   ================================================================ */
+
+.comp-slot {
+  position: relative;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  outline: none;
+  cursor: pointer;
+  background: var(--canvas-card);
+}
+
+.comp-slot:hover {
+  border-color: var(--color-primary-200);
+  box-shadow: 0 0 0 1px var(--color-primary-100);
+}
+
+.comp-slot:focus-visible {
+  border-color: var(--color-primary-500);
+  box-shadow: var(--shadow-focus);
+}
+
+.comp-slot--selected {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
+}
+
+.comp-slot--editing.comp-slot--selected {
+  cursor: default;
+}
+
+.comp-slot__content {
+  padding: var(--space-3);
+}
+
+/* ─── Drop target indicator (DnD) ──────────────────────────────── */
+.comp-slot--drag-over::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-primary-500);
+  border-radius: var(--radius-full);
+}
+
+/* ─── Drag handle ──────────────────────────────────────────────── */
+.comp-slot__drag-handle {
+  position: absolute;
+  left: -24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-sm);
+  color: var(--color-gray-400);
+  cursor: grab;
+  user-select: none;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
+  opacity: 0;
+}
+
+.comp-slot:hover .comp-slot__drag-handle {
+  opacity: 1;
+}
+
+.comp-slot__drag-handle:hover {
+  color: var(--color-primary-500);
+  background: var(--color-primary-50);
+}
+
+.comp-slot__drag-handle:active {
+  cursor: grabbing;
+}
+
+/* ─── Dragging state ───────────────────────────────────────────── */
+.component-list__draggable--dragging .comp-slot {
+  border-color: var(--color-primary-500);
+  box-shadow: var(--shadow-lg);
+  background: var(--canvas-card);
+  opacity: 0.9;
+}

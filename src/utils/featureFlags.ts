@@ -12,6 +12,8 @@ interface FeatureFlags {
   "qa-testing-mode": boolean;
   "asset-upload": boolean;
   "custom-template": boolean;
+  "v2-editor": boolean;
+  "v2-preview": boolean;
 }
 
 // Environment variables for Create React App
@@ -41,6 +43,8 @@ class FeatureFlagService {
       "qa-testing-mode": false,
       "asset-upload": false,
       "custom-template": process.env.NODE_ENV === "development",
+      "v2-editor": true,
+      "v2-preview": true,
     };
 
     try {

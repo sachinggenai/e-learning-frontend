@@ -1,20 +1,32 @@
 /**
  * Main App Component
  * Implements the root component with Redux state management and menu bar for the eLearning authoring tool
+ *
+ * V2 architecture: Component Registry + DynamicComponentRenderer + ThemeProvider
  */
 
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import { apiService } from "./services/api";
+import { httpClient } from "./services/httpClient";
 import { useAppSelector } from "./store";
 
 // Component imports
 import Editor from "./components/Editor";
+import EditorV2 from "./components/EditorV2";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Header from "./components/Header";
 import MenuBar from "./components/MenuBar";
 import Preview from "./components/Preview";
-import { CourseProvider } from "./context/CourseContext";
+import PreviewV2 from "./components/PreviewV2";
+import { ThemeProvider } from "./context/ThemeContext";
+import { ToastProvider } from "./components/Toast";
+
+// Initialize component registry (self-registering side-effect import)
+import "./components/registry/registrations";
+// Import template styles
+import "./components/templates/TemplateStyles.css";
+
+import { featureFlags } from "./utils/featureFlags";
 
 interface AppState {
   isBackendConnected: boolean;
@@ -41,9 +53,8 @@ const AppContent: React.FC = () => {
   useEffect(() => {
     const checkBackend = async () => {
       try {
-        await apiService.healthCheck();
+        await httpClient.get("/health");
         setAppState((prev) => ({ ...prev, isBackendConnected: true }));
-        console.log("Backend connected successfully");
       } catch (error) {
         console.warn("Backend not available:", error);
         setAppState((prev) => ({ ...prev, isBackendConnected: false }));
@@ -90,16 +101,11 @@ const AppContent: React.FC = () => {
       />
 
       <main id="main" className="app-main" tabIndex={-1}>
-        {appState.currentView === "editor" ? <Editor /> : <Preview />}
+        {appState.currentView === "editor"
+          ? (featureFlags.isEnabled("v2-editor") ? <EditorV2 /> : <Editor />)
+          : (featureFlags.isEnabled("v2-preview") ? <PreviewV2 /> : <Preview />)
+        }
       </main>
-
-      {/* Backend connection indicator */}
-      <div
-        className={`connection-status ${appState.isBackendConnected ? "connected" : "disconnected"}`}
-      >
-        <span className="status-indicator"></span>
-        {appState.isBackendConnected ? "Backend Connected" : "Backend Offline"}
-      </div>
     </div>
   );
 };
@@ -107,9 +113,11 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
-      <CourseProvider>
-        <AppContent />
-      </CourseProvider>
+      <ThemeProvider>
+        <ToastProvider>
+          <AppContent />
+        </ToastProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 };

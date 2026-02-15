@@ -19,7 +19,7 @@ export function transformCourseForBackend(course: Course): any {
 
   // Ensure settings
   cloned.settings = cloned.settings || {
-    theme: "default",
+    themeId: "default",
     autoplay: false,
     duration: undefined,
   };
@@ -130,7 +130,7 @@ export function transformCourseForBackend(course: Course): any {
       linearProgression,
     },
     settings: cloned.settings || {
-      theme: "default",
+      themeId: "default",
       autoplay: false,
     },
   };

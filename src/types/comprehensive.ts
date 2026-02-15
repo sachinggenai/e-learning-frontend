@@ -1,76 +1,105 @@
 /**
  * Comprehensive Type Definitions
  * Centralized types for the eLearning authoring tool
+ * Aligned with OpenAPI v2 schema — composable component-based architecture
+ * Updated: February 2026
  */
 
-// Base course structure that matches both frontend and backend expectations
+import type {
+  Component,
+  ComponentCreateRequest,
+  Page,
+  PageLayout,
+  PageThemeConfig,
+  PageCompletionConfig,
+  AudioConfig,
+  CompletionCriteria,
+  ComponentStyling,
+  ThemeOverrides,
+  NavigationSettings,
+  CourseSettings,
+  ScoringConfig,
+  CourseStatus,
+  ValidationError as CourseValidationError,
+  CourseListItem,
+  ThemeColors,
+  ThemeTypography,
+  ThemeComponentStyles,
+  ComponentTypeSummary,
+  CategorySummary,
+  ResolvedThemeResponse,
+  ScoreCalculateResponse,
+  CourseCompletionResponse,
+  InteractionEvent,
+  InteractionType,
+  MediaUploadResponse,
+  ExportStatusResponse,
+} from './course';
+
+// Re-export all course types for convenience
+export type {
+  Component,
+  ComponentCreateRequest,
+  Page,
+  PageLayout,
+  PageThemeConfig,
+  PageCompletionConfig,
+  AudioConfig,
+  CompletionCriteria,
+  ComponentStyling,
+  ThemeOverrides,
+  NavigationSettings,
+  CourseSettings,
+  ScoringConfig,
+  CourseStatus,
+  ThemeColors,
+  ThemeTypography,
+  ThemeComponentStyles,
+  ComponentTypeSummary,
+  CategorySummary,
+  ResolvedThemeResponse,
+  ScoreCalculateResponse,
+  CourseCompletionResponse,
+  InteractionEvent,
+  InteractionType,
+  MediaUploadResponse,
+  ExportStatusResponse,
+};
+
+// ─── Course ──────────────────────────────────────────────────────
 export interface Course {
-  id?: number;
   courseId: string;
   title: string;
-  description?: string;
-  author?: string;
-  version?: string;
-  status: "draft" | "published";
+  author: string;
+  language: string;
+  description?: string | null;
+  version: string;
+  status: CourseStatus;
   pages: Page[];
-  settings?: CourseSettings; // Add settings property
+  navigation?: NavigationSettings;
+  settings?: CourseSettings;
+  scoring?: ScoringConfig | null;
   createdAt?: string;
   updatedAt?: string;
+  // Legacy backward compat
+  templates?: any[];
+  assets?: any[];
 }
 
-// Course settings
-export interface CourseSettings {
-  theme?: "default" | "dark" | "light";
-  autoplay?: boolean;
-  duration?: number;
-  navigation?: NavigationSettings;
-}
-
-// Navigation settings
-export interface NavigationSettings {
-  mode?: "linear" | "free" | "branching";
-  allowBack?: boolean;
-  requireCompletion?: boolean;
-  allowSkip?: boolean;
-  showProgress?: boolean;
-  lockProgression?: boolean;
-}
-
-// Page structure
-export interface Page {
-  id: string;
-  templateType: string; // Required to match Redux store expectations
-  type?: string; // Legacy property (backward compatibility)
-  title: string;
-  content: Record<string, any>;
-  order: number;
-  isValid?: boolean;
-  isDraft?: boolean;
-  lastModified: string;
-}
-
-// Template structure
-export interface Template {
-  id: number;
-  templateId: string;
-  type: string;
-  title: string;
-  order: number;
-  data: Record<string, any>;
-}
-
-// Validation types
+// ─── Validation ──────────────────────────────────────────────────
 export interface ValidationError {
   id: string;
   field: string;
-  category: "schema" | "business" | "template" | "navigation";
+  category: 'schema' | 'business' | 'template' | 'navigation' | 'component';
   message: string;
-  level: "error" | "warning" | "info";
+  level: 'error' | 'warning' | 'info';
   context?: {
     suggestion?: string;
     autoFixable?: boolean;
     currentLength?: number;
     maxLength?: number;
+    componentId?: string;
+    pageId?: string;
     [key: string]: any;
   };
 }
@@ -92,16 +121,17 @@ export interface Validator {
   supportsField(fieldPath: string): boolean;
 }
 
-// API request/response types
+// ─── API Request/Response Types ──────────────────────────────────
 export interface CourseExportRequest {
   courseData: Course;
-  format: "scorm" | "json" | "html";
+  format: 'scorm_1_2' | 'scorm_2004' | 'json' | 'html';
   includeAssets?: boolean;
 }
 
 export interface CourseExportResponse {
   success: boolean;
   downloadUrl?: string;
+  exportId?: string;
   message?: string;
   error?: string;
 }
@@ -112,37 +142,103 @@ export interface CourseValidationResponse {
   warnings: ValidationError[];
 }
 
-// Redux state types
+// ─── Redux State Types ──────────────────────────────────────────
 export interface CourseState {
   currentCourse: Course | null;
-  courses: Course[];
-  templates: Template[];
+  courses: CourseListItem[];
   isLoading: boolean;
   isSaving: boolean;
   error: string | null;
-  saveStatus: "idle" | "saving" | "saved" | "error";
+  saveStatus: 'idle' | 'saving' | 'saved' | 'error';
   lastSaved: string | null;
 }
 
 export interface EditorState {
-  currentPage: Page | null;
+  currentPageId: string | null;
+  currentComponentId: string | null;
   isEditing: boolean;
-  hasUnsavedChanges: boolean;
-  validationErrors: string[];
+  isDirty: boolean;
+  validationErrors: ValidationError[];
+  componentPickerOpen: boolean;
+  componentPickerCategory: string | null;
 }
 
-// Component prop types
+export interface CompletionState {
+  componentStates: Record<string, boolean>;        // componentId -> completed
+  interactionsCompleted: Record<string, string[]>;  // componentId -> interactionId[]
+  audiosCompleted: Record<string, string[]>;        // componentId -> audioId[]
+  pageCompleted: Record<string, boolean>;           // pageId -> completed
+  overallProgress: number;                          // 0-100
+}
+
+export interface ScoringState {
+  lastResult: ScoreCalculateResponse | null;
+  attemptCount: number;
+  isCalculating: boolean;
+}
+
+export interface ThemeState {
+  resolvedTheme: ResolvedThemeResponse | null;
+  availableThemes: any[];
+  isLoading: boolean;
+}
+
+// ─── Component Prop Types ────────────────────────────────────────
 export interface HeaderProps {
-  currentView: "editor" | "preview";
-  onViewChange: (view: "editor" | "preview") => void;
+  currentView: 'editor' | 'preview';
+  onViewChange: (view: 'editor' | 'preview') => void;
   isBackendConnected: boolean;
 }
 
 export interface EditorProps {
-  // Editor component doesn't need props as it uses Redux
+  // Editor component uses Redux — no required props
 }
 
-// Template data types
+export interface DynamicComponentRendererProps {
+  component: Component;
+  isEditing: boolean;
+  onDataChange: (componentId: string, data: Record<string, any>) => void;
+  onAudioConfigChange?: (componentId: string, audioConfig: AudioConfig) => void;
+  onCompletionChange?: (componentId: string, completed: boolean) => void;
+}
+
+export interface ComponentPickerProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSelect: (componentType: string) => void;
+  initialCategory?: string;
+}
+
+export interface AudioPlayerProps {
+  audioConfig: AudioConfig;
+  onAudioComplete?: (audioId: string) => void;
+  onInteraction?: (event: InteractionEvent) => void;
+  compact?: boolean;
+}
+
+export interface PageWrapperProps {
+  page: Page;
+  children: React.ReactNode;
+  onPageComplete?: (pageId: string) => void;
+}
+
+export interface CompletionIndicatorProps {
+  completed: boolean;
+  size?: 'small' | 'medium' | 'large';
+}
+
+export interface QuizFeedbackProps {
+  result: ScoreCalculateResponse;
+  showCorrectAnswers: boolean;
+  feedbackMode: 'immediate' | 'on-submit' | 'end-of-quiz';
+}
+
+export interface ScoreSummaryProps {
+  result: ScoreCalculateResponse;
+  passingScore: number;
+}
+
+// ─── Template Data Types (legacy compat) ─────────────────────────
 export interface WelcomeData {
   title: string;
   subtitle: string;
@@ -171,44 +267,84 @@ export interface SummaryData {
   keyPoints: string[];
 }
 
-// Template types union
+// ─── Template Types Union (legacy) ───────────────────────────────
 export type TemplateType =
-  | "welcome"
-  | "content-text"
-  | "content-video"
-  | "mcq"
-  | "summary";
+  | 'welcome'
+  | 'content-text'
+  | 'content-video'
+  | 'content-image'
+  | 'mcq'
+  | 'summary'
+  | 'interactive';
+
 export type TemplateData = WelcomeData | ContentData | MCQData | SummaryData;
 
-// API service types
+// ─── API Service Interface ──────────────────────────────────────
 export interface ApiService {
   healthCheck(): Promise<any>;
-  saveCourse(course: Course): Promise<any>;
-  exportCourse(request: CourseExportRequest): Promise<CourseExportResponse>;
-  validateCourse(course: Course): Promise<CourseValidationResponse>;
-  fetchTemplates(): Promise<Template[]>;
-  fetchCourses(): Promise<Course[]>;
-  fetchCourse(id: string): Promise<Course>;
+  // Courses
+  listCourses(page?: number, limit?: number): Promise<any>;
+  getCourse(id: string): Promise<Course>;
+  createCourse(course: any): Promise<Course>;
+  updateCourse(id: string, updates: any): Promise<Course>;
+  deleteCourse(id: string): Promise<void>;
+  validateCourse(course: any): Promise<CourseValidationResponse>;
+  // Pages
+  listPages(courseId: string): Promise<Page[]>;
+  createPage(courseId: string, page: any): Promise<Page>;
+  updatePage(courseId: string, pageId: string, updates: any): Promise<Page>;
+  deletePage(courseId: string, pageId: string): Promise<void>;
+  reorderPages(courseId: string, orderedIds: string[]): Promise<void>;
+  // Components
+  addComponent(courseId: string, pageId: string, component: ComponentCreateRequest): Promise<Component>;
+  updateComponent(courseId: string, pageId: string, componentId: string, updates: any): Promise<Component>;
+  deleteComponent(courseId: string, pageId: string, componentId: string): Promise<void>;
+  reorderComponents(courseId: string, pageId: string, orderedIds: string[]): Promise<void>;
+  // Registry
+  listComponentTypes(category?: string): Promise<ComponentTypeSummary[]>;
+  getComponentType(typeId: string): Promise<any>;
+  listCategories(): Promise<CategorySummary[]>;
+  searchComponentTypes(query: string): Promise<ComponentTypeSummary[]>;
+  // Themes
+  listThemes(): Promise<any[]>;
+  getCourseTheme(courseId: string): Promise<ResolvedThemeResponse>;
+  setCourseTheme(courseId: string, themeId: string, overrides?: ThemeOverrides): Promise<ResolvedThemeResponse>;
+  // Scoring
+  getScoringConfig(courseId: string): Promise<ScoringConfig>;
+  updateScoringConfig(courseId: string, config: ScoringConfig): Promise<ScoringConfig>;
+  calculateScore(courseId: string, answers: any): Promise<ScoreCalculateResponse>;
+  // Completion
+  getCourseCompletion(courseId: string): Promise<CourseCompletionResponse>;
+  recordPageCompletion(courseId: string, pageId: string, states: any): Promise<any>;
+  recordInteraction(courseId: string, event: InteractionEvent): Promise<any>;
+  // Audio
+  uploadAudio(file: File): Promise<any>;
+  getCourseNarration(courseId: string): Promise<any>;
+  // Export
+  exportCourse(courseData: string): Promise<any>;
+  getExportStatus(exportId: string): Promise<ExportStatusResponse>;
+  // Media
+  uploadMedia(file: File): Promise<MediaUploadResponse>;
 }
 
-// Error boundary types
+// ─── Error Boundary Types ────────────────────────────────────────
 export interface ErrorInfo {
   componentStack: string;
   errorBoundary?: string;
   errorBoundaryStack?: string;
 }
 
-// Undo/Redo types
+// ─── Undo/Redo Types ─────────────────────────────────────────────
 export interface UndoRedoState<T> {
   past: T[];
   present: T;
   future: T[];
 }
 
-// App state types
+// ─── App State Types ─────────────────────────────────────────────
 export interface AppState {
   isBackendConnected: boolean;
-  currentView: "editor" | "preview";
+  currentView: 'editor' | 'preview';
   loading: boolean;
 }
 

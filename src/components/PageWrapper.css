@@ -1,0 +1,76 @@
+/* ================================================================
+   PageWrapper — Wix-Style Canvas Content Wrapper
+   ================================================================ */
+
+.page-wrapper {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-5) var(--space-6);
+}
+
+.page-wrapper__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ── Header ────────────────────────────────────────────────────── */
+.page-wrapper__header {
+  text-align: left;
+}
+
+.page-wrapper__title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: var(--leading-tight);
+}
+
+.page-wrapper__description {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+/* ── Audio ─────────────────────────────────────────────────────── */
+.page-wrapper__audio {
+  margin: var(--space-1) 0;
+}
+
+/* ── Progress bar ──────────────────────────────────────────────── */
+.page-wrapper__progress {
+  height: 3px;
+  background: var(--color-gray-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.page-wrapper__progress-fill {
+  height: 100%;
+  background: var(--color-success);
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+
+/* ── Complete badge ────────────────────────────────────────────── */
+.page-wrapper__complete-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1_5);
+  align-self: center;
+  padding: var(--space-1_5) var(--space-4);
+  border-radius: var(--radius-full);
+  background: rgba(52, 211, 153, 0.1);
+  color: #15803d;
+  font-weight: var(--font-semibold);
+  font-size: var(--text-sm);
+  animation: badge-pop 0.3s ease-out;
+}
+
+@keyframes badge-pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}

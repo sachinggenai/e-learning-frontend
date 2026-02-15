@@ -1,6 +1,6 @@
 /**
  * Page Adapter
- * Maps backend page DTO (from /courses/{id}/pages/from-template) to frontend Page model.
+ * Maps backend PageResponse DTO (from POST /courses/{id}/pages) to frontend Page model.
  */
 import { Page } from "../slices/editorSlice";
 

@@ -1,0 +1,82 @@
+/* ─── Completion Indicator ─────────────────────────────────────── */
+
+.completion-indicator-wrapper {
+  position: relative;
+}
+
+.completion-indicator {
+  position: absolute;
+  z-index: var(--z-base, 1);
+  pointer-events: none;
+}
+
+.completion-indicator--top-right {
+  top: 8px;
+  right: 8px;
+}
+
+.completion-indicator--top-left {
+  top: 8px;
+  left: 8px;
+}
+
+.completion-indicator--bottom-right {
+  bottom: 8px;
+  right: 8px;
+}
+
+.completion-indicator--bottom-left {
+  bottom: 8px;
+  left: 8px;
+}
+
+.completion-indicator__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-success, #4caf50);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  animation: completion-pop 0.3s ease-out;
+}
+
+@keyframes completion-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Inline variant */
+.completion-indicator-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  border: 2px solid var(--color-border, #ccc);
+  color: var(--color-text-secondary, #999);
+  background: transparent;
+}
+
+.completion-indicator-inline--done {
+  border-color: var(--color-success, #4caf50);
+  background: var(--color-success, #4caf50);
+  color: white;
+}

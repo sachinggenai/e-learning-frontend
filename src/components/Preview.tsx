@@ -4,20 +4,30 @@
  */
 
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { normalizeTemplateType } from "../constants/templateTypes";
-import { useCourse } from "../context/CourseContext";
-import { PlayerState, Template } from "../types/course";
+import { RootState } from "../store/index";
+import { Template } from "../types/course";
 import "./Preview.css";
+import { useToast } from "./Toast";
+
+/** Legacy PlayerState for this component */
+interface LegacyPlayerState {
+  currentSlide: number;
+  completed: boolean[];
+  timeSpent: number;
+}
 
 interface PreviewProps {
   // No props needed as state comes from context
 }
 
 const Preview: React.FC<PreviewProps> = () => {
-  const { course } = useCourse();
-  const [playerState, setPlayerState] = useState<PlayerState>({
+  const course = useSelector((state: RootState) => (state as any).course?.currentCourse) ?? { templates: [] };
+  const { showToast } = useToast();
+  const [playerState, setPlayerState] = useState<LegacyPlayerState>({
     currentSlide: 0,
-    completed: new Array(course.templates.length).fill(false),
+    completed: new Array(course.templates?.length ?? 0).fill(false),
     timeSpent: 0,
   });
 
@@ -42,10 +52,11 @@ const Preview: React.FC<PreviewProps> = () => {
     });
   }, [playerState.currentSlide]);
 
-  const currentTemplate = course.templates[playerState.currentSlide];
+  const templates = course.templates ?? [];
+  const currentTemplate = templates[playerState.currentSlide];
   const progress =
-    ((playerState.currentSlide + 1) / course.templates.length) * 100;
-  const isLastSlide = playerState.currentSlide === course.templates.length - 1;
+    ((playerState.currentSlide + 1) / (templates.length || 1)) * 100;
+  const isLastSlide = playerState.currentSlide === templates.length - 1;
   const isFirstSlide = playerState.currentSlide === 0;
 
   const handleNext = () => {
@@ -67,7 +78,7 @@ const Preview: React.FC<PreviewProps> = () => {
   };
 
   const handleSlideNavigation = (slideIndex: number) => {
-    if (course.navigation.lockProgression) {
+    if (course.navigation?.linearProgression) {
       // Only allow navigation to completed slides or next slide
       const canNavigateTo =
         playerState.completed[slideIndex] ||
@@ -90,9 +101,9 @@ const Preview: React.FC<PreviewProps> = () => {
   };
 
   const handleFinish = () => {
-    alert("Course completed! Well done.");
+    showToast("Course completed! Well done.", "success");
     console.log("Course completion stats:", {
-      totalSlides: course.templates.length,
+      totalSlides: templates.length,
       timeSpent: playerState.timeSpent,
       completedSlides: playerState.completed.filter(Boolean).length,
     });
@@ -124,7 +135,7 @@ const Preview: React.FC<PreviewProps> = () => {
           <p className="course-author">by {course.author}</p>
         </div>
 
-        {course.navigation.showProgress && (
+        {course.navigation?.showProgress && (
           <div className="progress-section">
             <div className="progress-bar">
               <div
@@ -133,7 +144,7 @@ const Preview: React.FC<PreviewProps> = () => {
               ></div>
             </div>
             <div className="progress-text">
-              {playerState.currentSlide + 1} of {course.templates.length}
+              {playerState.currentSlide + 1} of {templates.length}
             </div>
           </div>
         )}
@@ -149,13 +160,13 @@ const Preview: React.FC<PreviewProps> = () => {
       <aside className="slide-navigation">
         <h3>Course Navigation</h3>
         <ul className="slide-list">
-          {course.templates.map((template, index) => (
+          {templates.map((template: any, index: number) => (
             <li key={template.id} className="slide-item">
               <button
                 className={`slide-nav-btn ${
                   index === playerState.currentSlide ? "active" : ""
                 } ${playerState.completed[index] ? "completed" : ""} ${
-                  course.navigation.lockProgression &&
+                  course.navigation?.linearProgression &&
                   !playerState.completed[index] &&
                   index !== playerState.currentSlide &&
                   index !== playerState.currentSlide + 1
@@ -164,7 +175,7 @@ const Preview: React.FC<PreviewProps> = () => {
                 }`}
                 onClick={() => handleSlideNavigation(index)}
                 disabled={
-                  course.navigation.lockProgression &&
+                  course.navigation?.linearProgression &&
                   !playerState.completed[index] &&
                   index !== playerState.currentSlide &&
                   index !== playerState.currentSlide + 1
@@ -196,8 +207,8 @@ const Preview: React.FC<PreviewProps> = () => {
             onClick={handlePrevious}
             disabled={
               isFirstSlide ||
-              (course.navigation.lockProgression &&
-                !course.navigation.allowSkip)
+              (course.navigation?.linearProgression &&
+                !course.navigation?.allowSkip)
             }
           >
             ← Previous
@@ -205,7 +216,7 @@ const Preview: React.FC<PreviewProps> = () => {
 
           <div className="slide-info">
             <span className="slide-counter">
-              Slide {playerState.currentSlide + 1} of {course.templates.length}
+              Slide {playerState.currentSlide + 1} of {templates.length}
             </span>
             <span className="slide-type">{currentTemplate.type}</span>
           </div>

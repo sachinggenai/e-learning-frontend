@@ -33,13 +33,16 @@ const createDefaultCourse = (): Course => {
     title: "New Course",
     description: "Enter course description here",
     author: "Author Name",
+    language: "en",
     version: "1.0.0",
+    status: "draft" as const,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    pages: [],
     templates: [
       {
         id: `template_${timestamp}_${randomSuffix}_welcome`,
-        type: "welcome",
+        type: "welcome" as const,
         title: "Welcome",
         order: 0,
         data: {
@@ -56,7 +59,7 @@ const createDefaultCourse = (): Course => {
       lockProgression: false, // Will be transformed to linearProgression
     },
     settings: {
-      theme: "default" as const,
+      themeId: "default",
       autoplay: false,
       duration: undefined,
     },
@@ -99,6 +102,11 @@ const initialState: CourseContextState = {
     currentTemplate: 0,
     isPreviewMode: false,
     isDirty: false,
+    isEditing: false,
+    currentPageId: null,
+    currentComponentId: null,
+    componentPickerOpen: false,
+    componentPickerCategory: null,
     validationErrors: [],
   },
   isLoading: false,
@@ -117,9 +125,9 @@ const validateTemplateData = (template: Template): boolean => {
 
 const validateTemplateIndex = (
   index: number,
-  templates: Template[],
+  templates: Template[] | undefined,
 ): boolean => {
-  return index >= 0 && index < templates.length;
+  return !!templates && index >= 0 && index < templates.length;
 };
 
 // Reducer function with validation
@@ -166,7 +174,7 @@ const courseReducer = (
         console.warn("Invalid template data provided to ADD_TEMPLATE");
         return state;
       }
-      const newTemplates = [...state.course.templates, action.payload];
+      const newTemplates = [...(state.course.templates ?? []), action.payload];
       return {
         ...state,
         course: {
@@ -191,7 +199,7 @@ const courseReducer = (
         console.warn("Invalid template data for UPDATE_TEMPLATE");
         return state;
       }
-      const updatedTemplates = [...state.course.templates];
+      const updatedTemplates = [...(state.course.templates ?? [])];
       updatedTemplates[action.payload.index] = action.payload.template;
       return {
         ...state,
@@ -211,11 +219,11 @@ const courseReducer = (
         console.warn("Invalid template index for DELETE_TEMPLATE");
         return state;
       }
-      if (state.course.templates.length <= 1) {
+      if ((state.course.templates?.length ?? 0) <= 1) {
         console.warn("Cannot delete last template");
         return state;
       }
-      const filteredTemplates = state.course.templates.filter(
+      const filteredTemplates = (state.course.templates ?? []).filter(
         (_, index) => index !== action.payload,
       );
       // Reorder remaining templates
@@ -234,7 +242,7 @@ const courseReducer = (
         editorState: {
           ...state.editorState,
           currentTemplate: Math.min(
-            state.editorState.currentTemplate,
+            state.editorState.currentTemplate ?? 0,
             reorderedTemplates.length - 1,
           ),
           isDirty: true,
@@ -250,7 +258,7 @@ const courseReducer = (
         console.warn("Invalid indices for REORDER_TEMPLATES");
         return state;
       }
-      const templatesForReorder = [...state.course.templates];
+      const templatesForReorder = [...(state.course.templates ?? [])];
       const [removed] = templatesForReorder.splice(fromIndex, 1);
       templatesForReorder.splice(toIndex, 0, removed);
 
@@ -395,11 +403,11 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({ children }) => {
 
   const deleteTemplate = useCallback(
     (index: number) => {
-      if (state.course.templates.length > 1) {
+      if ((state.course.templates?.length ?? 0) > 1) {
         dispatch({ type: "DELETE_TEMPLATE", payload: index });
       }
     },
-    [state.course.templates.length],
+    [state.course.templates?.length],
   );
 
   const reorderTemplates = useCallback((fromIndex: number, toIndex: number) => {
@@ -622,7 +630,7 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({ children }) => {
 
         const response = await apiService.exportCourse({
           courseData: JSON.stringify(backendCourseData),
-          format: format.toLowerCase(),
+          format: format.toLowerCase() as 'scorm_1_2' | 'scorm_2004',
           includeAssets,
         });
 
@@ -631,7 +639,7 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({ children }) => {
           try {
             const link = document.createElement("a");
             link.href = response.downloadUrl;
-            link.download = response.filename || `course-export-${format}.zip`;
+            link.download = response.fileName || `course-export-${format}.zip`;
             link.style.display = "none";
             document.body.appendChild(link);
             link.click();
@@ -650,7 +658,7 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({ children }) => {
               context: {
                 format: format.toLowerCase(),
                 includeAssets,
-                filename: response.filename,
+                filename: response.fileName,
                 courseId: state.course.courseId,
               },
             });

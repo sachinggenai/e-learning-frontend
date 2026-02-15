@@ -1,0 +1,4 @@
+# Playwright E2E Tests - .gitignore additions
+/test-results/
+/playwright-report/
+/playwright/.cache/

@@ -1,0 +1,149 @@
+/* ─── Quiz Feedback ─────────────────────────────────────────────── */
+
+.quiz-feedback {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--color-surface, #f8f9fa);
+  border: 1px solid var(--color-border, #e0e0e0);
+  margin-top: 12px;
+}
+
+/* Summary */
+.quiz-feedback__summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border, #e0e0e0);
+}
+
+.quiz-feedback__score {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.quiz-feedback__score-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text, #333);
+}
+
+.quiz-feedback__score-percent {
+  font-size: 14px;
+  color: var(--color-text-secondary, #666);
+}
+
+.quiz-feedback__breakdown {
+  display: flex;
+  gap: 12px;
+}
+
+.quiz-feedback__stat {
+  font-size: 13px;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.quiz-feedback__stat--correct {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.quiz-feedback__stat--partial {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.quiz-feedback__stat--incorrect {
+  background: #fce4ec;
+  color: #c62828;
+}
+
+/* Per-question feedback */
+.quiz-feedback__questions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quiz-feedback__question {
+  padding: 12px;
+  border-radius: 6px;
+  border-left: 4px solid transparent;
+}
+
+.quiz-feedback__question--correct {
+  background: #e8f5e9;
+  border-left-color: #4caf50;
+}
+
+.quiz-feedback__question--partial {
+  background: #fff3e0;
+  border-left-color: #ff9800;
+}
+
+.quiz-feedback__question--incorrect {
+  background: #fce4ec;
+  border-left-color: #e53935;
+}
+
+.quiz-feedback__question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.quiz-feedback__partial-score {
+  font-size: 12px;
+  color: var(--color-text-secondary, #666);
+  font-weight: 500;
+}
+
+/* Answer indicator */
+.answer-indicator {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 12px;
+}
+
+.answer-indicator--correct {
+  color: #2e7d32;
+}
+
+.answer-indicator--partial {
+  color: #ef6c00;
+}
+
+.answer-indicator--incorrect {
+  color: #c62828;
+}
+
+/* Correct answer display */
+.quiz-feedback__correct-answer {
+  font-size: 13px;
+  color: #2e7d32;
+  margin-top: 4px;
+}
+
+.quiz-feedback__user-answer {
+  font-size: 13px;
+  color: var(--color-text-secondary, #666);
+  margin-top: 2px;
+}
+
+/* Explanation */
+.quiz-feedback__explanation {
+  font-size: 13px;
+  color: var(--color-text, #555);
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 4px;
+  line-height: 1.5;
+}

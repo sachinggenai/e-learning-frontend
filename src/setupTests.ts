@@ -5,6 +5,29 @@
 
 import "@testing-library/jest-dom";
 
+// Mock axios BEFORE any modules that import it
+jest.mock('axios', () => {
+  const mockAxiosInstance = {
+    get: jest.fn(() => Promise.resolve({ data: [] })),
+    post: jest.fn(() => Promise.resolve({ data: {} })),
+    put: jest.fn(() => Promise.resolve({ data: {} })),
+    patch: jest.fn(() => Promise.resolve({ data: {} })),
+    delete: jest.fn(() => Promise.resolve({ data: {} })),
+    interceptors: {
+      request: { use: jest.fn(), eject: jest.fn() },
+      response: { use: jest.fn(), eject: jest.fn() },
+    },
+  };
+
+  return {
+    __esModule: true,
+    default: {
+      create: jest.fn(() => mockAxiosInstance),
+      ...mockAxiosInstance,
+    },
+  };
+});
+
 // Disable console warnings during tests
 const originalConsoleLog = console.log;
 const originalConsoleWarn = console.warn;

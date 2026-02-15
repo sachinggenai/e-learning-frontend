@@ -1,0 +1,134 @@
+/* AudioConfigPanel styles */
+.audio-config-panel {
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 8px;
+  background: var(--bg-surface, #f8fafc);
+  overflow: hidden;
+}
+
+.acp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg-muted, #f1f5f9);
+  border-bottom: 1px solid var(--border, #e2e8f0);
+}
+.acp-header h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.acp-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.acp-toggle input { width: 16px; height: 16px; }
+
+.acp-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Audio item card */
+.acp-item {
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 6px;
+  padding: 12px;
+  background: #fff;
+}
+.acp-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.acp-item-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+.acp-remove {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 0 4px;
+}
+.acp-remove:hover { color: #dc2626; }
+
+.acp-player {
+  width: 100%;
+  height: 36px;
+  margin-bottom: 8px;
+}
+
+.acp-field {
+  margin-bottom: 10px;
+}
+.acp-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+  margin-bottom: 3px;
+}
+.acp-field select {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 4px;
+  font-size: 13px;
+  background: #fff;
+}
+
+.acp-toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.acp-toggles label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #334155;
+  cursor: pointer;
+}
+.acp-toggles input { width: 14px; height: 14px; }
+
+/* Upload */
+.acp-upload { margin-top: 4px; }
+.acp-upload-btn {
+  width: 100%;
+  padding: 10px;
+  border: 2px dashed var(--border, #cbd5e1);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--primary, #3b82f6);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.acp-upload-btn:hover {
+  border-color: var(--primary, #3b82f6);
+  background: rgba(59, 130, 246, 0.04);
+}
+.acp-upload-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.acp-error {
+  color: #ef4444;
+  font-size: 12px;
+  margin: 4px 0 0;
+}

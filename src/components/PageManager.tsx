@@ -11,6 +11,7 @@ import { t } from "../i18n/strings";
 import { useAppDispatch, useAppSelector } from "../store";
 import {
   createPageFromTemplate,
+  deletePageFromCourse,
   removePage,
   reorderPages,
   updatePage,
@@ -70,77 +71,32 @@ const PageManager: React.FC = () => {
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
   const [draggedPageId, setDraggedPageId] = useState<string | null>(null);
 
-  // Helper function to capture complete state snapshot
-  const logStateSnapshot = (label: string) => {
-    console.log(`\n📸 STATE SNAPSHOT: ${label}`);
-    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    console.log("🗂️ courseSlice.currentCourse.pages:");
-    currentCourse?.pages?.forEach((p: Page, idx: number) => {
-      console.log(`   [${idx}] ID: ${p.id}, Title: "${p.title}"`);
-      console.log(
-        `       Content: ${JSON.stringify(p.content).substring(0, 150)}...`
-      );
-      console.log(
-        `       Content keys: ${Object.keys(p.content || {}).join(", ")}`
-      );
-    });
-    console.log("\n📋 editorSlice.currentPage:");
-    if (currentEditorPage) {
-      console.log(
-        `   ID: ${currentEditorPage.id}, Title: "${currentEditorPage.title}"`
-      );
-      console.log(
-        `   Content: ${JSON.stringify(currentEditorPage.content).substring(0, 150)}...`
-      );
-      console.log(
-        `   Content keys: ${Object.keys(currentEditorPage.content || {}).join(", ")}`
-      );
-    } else {
-      console.log("   (null)");
-    }
-    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
-  };
-
-  // Track render count for debugging
-  const renderCountRef = React.useRef(0);
-  React.useEffect(() => {
-    renderCountRef.current += 1;
-    console.log(`\n🔄 PageManager RENDER #${renderCountRef.current}`);
-    console.log(
-      "   currentCourse pages count:",
-      currentCourse?.pages?.length || 0
-    );
-    console.log("   currentEditorPage ID:", currentEditorPage?.id || "null");
-  });
-
   // Deduplicate pages by ID to prevent React key warnings
   const pages = React.useMemo(() => {
-    console.log("🔄 PageManager: pages useMemo recalculating...");
     const rawPages = currentCourse?.pages || [];
-    console.log("   Raw pages count:", rawPages.length);
-    console.log(
-      "   Raw pages snapshot:",
-      rawPages.map((p: Page) => ({
-        id: p.id,
-        title: p.title,
-        contentKeys: Object.keys(p.content || {}),
-        contentSample: JSON.stringify(p.content).substring(0, 100),
-      }))
-    );
-
     const pageMap = new Map<string, Page>();
 
-    rawPages.forEach((page: Page) => {
+    rawPages.forEach((coursePage: any) => {
+      // Transform course page to PageManager Page format
+      const page: Page = {
+        id: coursePage.pageId || coursePage.id,
+        templateType: 'component-page', // Default template type for component-based pages
+        title: coursePage.title,
+        content: { components: coursePage.components || [] },
+        order: coursePage.order,
+        isValid: true,
+        isDraft: false,
+        lastModified: coursePage.updatedAt || new Date().toISOString(),
+      };
+      
       if (!pageMap.has(page.id)) {
         pageMap.set(page.id, page);
       }
     });
 
-    const result = Array.from(pageMap.values()).sort(
+    return Array.from(pageMap.values()).sort(
       (a, b) => a.order - b.order
     );
-    console.log("   Deduplicated pages count:", result.length);
-    return result;
   }, [currentCourse?.pages]);
 
   const handleAddPage = () => {
@@ -159,12 +115,6 @@ const PageManager: React.FC = () => {
 
   // Accept loose shape to accommodate both legacy Template and new TemplateVM
   const handleTemplateSelect = (template: any, pageTitle: string) => {
-    console.log("═══════════════════════════════════════════════════");
-    console.log("🆕 PageManager.handleTemplateSelect INITIATED");
-    console.log("═══════════════════════════════════════════════════");
-    console.log("📌 Template:", template.type || template.templateType);
-    console.log("📌 Page Title:", pageTitle);
-
     if (!currentCourse) return;
     const templateId = (template.templateId ||
       template.id ||
@@ -172,11 +122,11 @@ const PageManager: React.FC = () => {
     const customizationFields =
       template.defaults || template.data?.content || {};
 
-    console.log("📤 Dispatching createPageFromTemplate...");
-    // Dispatch the page creation action
+    // Use courseId (string) not id (number) for API calls
+    const apiCourseId = currentCourse.courseId || String(currentCourse.id);
     dispatch(
       createPageFromTemplate({
-        courseId: currentCourse.id!,
+        courseId: apiCourseId,
         templateId,
         pageTitle,
         customizations: customizationFields,
@@ -184,24 +134,22 @@ const PageManager: React.FC = () => {
       }) as any
     )
       .then((res: any) => {
-        console.log("📥 createPageFromTemplate response received");
         const raw = res?.payload;
-        console.log("📌 Raw response:", JSON.stringify(raw, null, 2));
         if (raw) {
-          // Normalize template type from backend response
-          const normalizedType = normalizeTemplateType(
-            raw.type || template.type
-          );
+          // Response is a PageResponse
+          const componentType =
+            raw.components?.[0]?.componentType || template.type;
+          const normalizedType = normalizeTemplateType(componentType);
 
           const newPage: Page = {
-            id: raw.id,
+            id: raw.pageId || raw.id,
             templateType: normalizedType,
             title: raw.title,
-            content: raw.content || {},
-            order: raw.page_order || pages.length,
-            isDraft: raw.is_published === false,
+            content: raw.components?.[0]?.data || {},
+            order: typeof raw.order === "number" ? raw.order : pages.length,
+            isDraft: false,
             lastModified:
-              raw.updated_at || raw.created_at || new Date().toISOString(),
+              raw.updatedAt || raw.createdAt || new Date().toISOString(),
           };
 
           logger.info({
@@ -228,119 +176,38 @@ const PageManager: React.FC = () => {
 
   const handlePageSelect = React.useCallback(
     async (page: Page) => {
-      console.log("═══════════════════════════════════════════════════");
-      console.log("🖱️ PAGE SELECT INITIATED");
-      console.log("═══════════════════════════════════════════════════");
-      console.log("📌 Clicked Page ID:", page.id);
-      console.log("📌 Clicked Page Title:", page.title);
-      console.log(
-        "📌 Clicked Page Content:",
-        JSON.stringify(page.content, null, 2)
-      );
-
-      logStateSnapshot("BEFORE page switch");
-
       // Before switching pages, sync the current editor page back to course state
       if (currentEditorPage && currentCourse) {
-        console.log("💾 Saving current editor page before switch...");
-        console.log("   Current Editor Page ID:", currentEditorPage.id);
-        console.log(
-          "   Current Editor Page Content:",
-          JSON.stringify(currentEditorPage.content, null, 2)
-        );
-
-        // Update the course state with the current editor page data
         await dispatch(updatePage(currentEditorPage));
-
-        console.log("✅ Current page saved to courseSlice");
-        logStateSnapshot("AFTER saving current page");
-      } else {
-        console.log("⚠️ No current editor page to save");
       }
 
-      // CRITICAL: Look up the latest version of the page from currentCourse.pages
-      console.log("\n🔍 Looking up latest version from courseSlice...");
-      console.log(
-        "   Total pages in currentCourse:",
-        currentCourse?.pages?.length || 0
-      );
-      console.log(
-        "   All page IDs in currentCourse:",
-        currentCourse?.pages?.map((p: Page) => p.id) || []
-      );
+      // Look up the latest version of the page from currentCourse.pages
+      const coursePage = currentCourse?.pages.find((p: any) => p.pageId === page.id);
+      
+      // Transform course page to editor Page format
+      const editorPage: Page = coursePage ? {
+        id: coursePage.pageId,
+        templateType: 'component-page',
+        title: coursePage.title,
+        content: { components: coursePage.components || [] },
+        order: coursePage.order,
+        isValid: true,
+        isDraft: false,
+        lastModified: coursePage.updatedAt || new Date().toISOString(),
+      } : page;
 
-      const latestPage =
-        currentCourse?.pages.find((p: Page) => p.id === page.id) || page;
-
-      console.log("\n📊 CRITICAL COMPARISON:");
-      console.log("   ┌─ Clicked Page (from render/event):");
-      console.log("   │  ID:", page.id);
-      console.log("   │  Title:", page.title);
-      console.log("   │  Content:", JSON.stringify(page.content, null, 2));
-      console.log("   │  Object reference:", page);
-      console.log("   │");
-      console.log("   └─ Latest Page (from courseSlice.currentCourse.pages):");
-      console.log("      ID:", latestPage.id);
-      console.log("      Title:", latestPage.title);
-      console.log(
-        "      Content:",
-        JSON.stringify(latestPage.content, null, 2)
-      );
-      console.log("      Object reference:", latestPage);
-      console.log("");
-      console.log("   🔬 Analysis:");
-      console.log("      Same object reference?", page === latestPage);
-      console.log(
-        "      Content strings equal?",
-        JSON.stringify(page.content) === JSON.stringify(latestPage.content)
-      );
-      console.log(
-        "      Content has data (clicked)?",
-        Object.keys(page.content || {}).length > 0
-      );
-      console.log(
-        "      Content has data (latest)?",
-        Object.keys(latestPage.content || {}).length > 0
-      );
-
-      if (
-        page !== latestPage &&
-        JSON.stringify(page.content) !== JSON.stringify(latestPage.content)
-      ) {
-        console.log("   ⚠️⚠️⚠️ STALE DATA DETECTED ⚠️⚠️⚠️");
-        console.log(
-          "   The clicked page object has different content than courseSlice!"
-        );
-      }
-
-      console.log("\n💾 About to dispatch setCurrentPage...");
-      console.log("   Dispatching page ID:", latestPage.id);
-      console.log(
-        "   Dispatching page content:",
-        JSON.stringify(latestPage.content, null, 2)
-      );
-
-      dispatch(setCurrentPage(latestPage));
-
-      console.log("✅ setCurrentPage dispatched");
-
-      // Give Redux a moment to update, then snapshot
-      setTimeout(() => {
-        logStateSnapshot("AFTER setCurrentPage (async check)");
-      }, 100);
-
-      console.log("═══════════════════════════════════════════════════\n");
+      dispatch(setCurrentPage(editorPage));
 
       logger.info({
         event: "page.selected",
         message: "Page selected",
         context: {
-          pageId: latestPage.id,
-          templateType: latestPage.templateType,
+          pageId: editorPage.id,
+          templateType: editorPage.templateType,
         },
       });
     },
-    [currentEditorPage, currentCourse, dispatch, logStateSnapshot]
+    [currentEditorPage, currentCourse, dispatch]
   );
 
   const handleDeletePage = (pageId: string, event: React.MouseEvent) => {
@@ -356,7 +223,14 @@ const PageManager: React.FC = () => {
         ).replace("{title}", page.title)
       )
     ) {
+      // Optimistic local removal
       dispatch(removePage(pageId));
+
+      // API persistence: delete from backend
+      const apiCourseId = currentCourse?.courseId || String(currentCourse?.id ?? '');
+      if (apiCourseId) {
+        dispatch(deletePageFromCourse({ courseId: apiCourseId, pageId }));
+      }
 
       // If deleting the current page, clear the editor
       if (currentPage?.id === pageId) {

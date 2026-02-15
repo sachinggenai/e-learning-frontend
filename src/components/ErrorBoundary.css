@@ -1,58 +1,68 @@
-/* Error Boundary Styles */
+/* ============================================================
+   Error Boundary — Wix Canvas Theme
+   ============================================================ */
+
 .error-boundary {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #f8f9fa;
-  padding: 20px;
+  background-color: var(--canvas-bg, #eef0f4);
+  padding: var(--space-5);
 }
 
 .error-content {
-  background: white;
-  padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: var(--canvas-card, #ffffff);
+  padding: var(--space-10);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--canvas-shadow, 0 1px 4px rgba(0, 0, 0, 0.06));
   max-width: 600px;
   text-align: center;
 }
 
 .error-content h1 {
-  color: #dc3545;
-  margin-bottom: 20px;
+  color: var(--color-error);
+  margin-bottom: var(--space-5);
+  font-size: var(--text-2xl);
 }
 
 .error-content p {
-  color: #6c757d;
-  margin-bottom: 20px;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-5);
+  line-height: 1.6;
 }
 
 .error-content details {
   text-align: left;
-  margin: 20px 0;
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 4px;
+  margin: var(--space-5) 0;
+  background: var(--surface-section);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--surface-border);
 }
 
 .error-content pre {
   white-space: pre-wrap;
   word-break: break-word;
-  font-size: 12px;
-  color: #495057;
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
 }
 
 .error-content button {
-  background: #007bff;
-  color: white;
+  background: var(--color-primary-600);
+  color: var(--text-inverse);
   border: none;
-  padding: 12px 24px;
-  border-radius: 4px;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 16px;
-  margin-top: 20px;
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  font-family: var(--font-sans);
+  margin-top: var(--space-5);
+  transition: background-color var(--transition-fast) ease;
 }
 
 .error-content button:hover {
-  background: #0056b3;
+  background: var(--color-primary-700);
 }

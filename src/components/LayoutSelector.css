@@ -1,0 +1,73 @@
+/* ============================================================
+   Layout Selector — Wix Dark Sidebar Theme
+   ============================================================ */
+
+.layout-selector {
+  padding: 12px 0;
+}
+
+.layout-selector__title {
+  margin: 0 0 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--sidebar-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.layout-selector__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.layout-selector__option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border: 2px solid var(--sidebar-border);
+  border-radius: var(--radius-md, 8px);
+  background: var(--sidebar-section-bg);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.layout-selector__option:hover {
+  border-color: var(--sidebar-accent);
+  background: var(--sidebar-bg-hover);
+}
+
+.layout-selector__option--active {
+  border-color: var(--sidebar-accent);
+  background: rgba(99, 102, 241, 0.12);
+}
+
+.layout-selector__visual {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: monospace;
+  font-size: 8px;
+  line-height: 1;
+  color: var(--sidebar-text-muted);
+  letter-spacing: -0.5px;
+}
+
+.layout-selector__option--active .layout-selector__visual {
+  color: var(--sidebar-accent);
+}
+
+.layout-selector__name {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--sidebar-text);
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .layout-selector__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

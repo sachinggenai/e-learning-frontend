@@ -1,21 +1,20 @@
-/**
- * Menu Bar Styles
- * 
- * Styles for the industry-standard menu bar with dropdowns and keyboard accessibility.
- */
+/* ================================================================
+   Menu Bar — Dark Wix-Style Integrated Top Menu
+   ================================================================ */
 
 .menu-bar {
   display: flex;
   align-items: center;
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
+  background: var(--topbar-bg);
+  border-bottom: 1px solid var(--topbar-border);
   padding: 0;
-  font-size: 14px;
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: var(--text-sm);
+  font-family: var(--font-sans);
   user-select: none;
   position: relative;
-  z-index: 1000;
+  z-index: calc(var(--z-sticky) + 1);
+  min-height: 32px;
+  flex-shrink: 0;
 }
 
 .menu-item {
@@ -25,35 +24,48 @@
 .menu-button {
   background: none;
   border: none;
-  padding: 8px 12px;
+  padding: 7px 12px;
   cursor: pointer;
-  color: #212529;
-  font-size: 14px;
-  font-family: inherit;
-  transition: background-color 0.15s ease;
+  color: var(--topbar-text);
+  font-size: var(--text-sm);
+  font-family: var(--font-sans);
+  font-weight: var(--font-medium);
+  transition: background var(--transition-fast), color var(--transition-fast);
+  border-radius: 0;
+  line-height: 1.4;
+  opacity: 0.75;
 }
 
 .menu-button:hover,
 .menu-button.active {
-  background-color: #e9ecef;
+  background: var(--topbar-hover);
+  color: var(--topbar-text-bright);
+  opacity: 1;
 }
 
-.menu-button:focus {
-  outline: 2px solid #007bff;
+.menu-button:focus-visible {
+  outline: 2px solid var(--color-primary-400);
   outline-offset: -2px;
 }
 
+/* ── Dropdown ──────────────────────────────────────────────────── */
 .dropdown-menu {
   position: absolute;
   top: 100%;
   left: 0;
-  background-color: white;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  min-width: 200px;
-  padding: 4px 0;
-  z-index: 1001;
+  background: var(--sidebar-bg);
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl), 0 0 0 1px rgba(0, 0, 0, 0.1);
+  min-width: 220px;
+  padding: var(--space-1) 0;
+  z-index: var(--z-overlay, 500);
+  animation: menuSlideIn 0.1s ease-out;
+}
+
+@keyframes menuSlideIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .dropdown-item {
@@ -61,28 +73,32 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 6px 16px;
+  padding: 6px 14px;
   background: none;
   border: none;
   text-align: left;
   cursor: pointer;
-  color: #212529;
-  font-size: 14px;
-  font-family: inherit;
-  transition: background-color 0.15s ease;
+  color: var(--sidebar-text);
+  font-size: var(--text-sm);
+  font-family: var(--font-sans);
+  transition: background var(--transition-fast), color var(--transition-fast);
+  border-radius: 0;
 }
 
 .dropdown-item:hover:not(.disabled) {
-  background-color: #f8f9fa;
+  background: var(--sidebar-bg-hover);
+  color: var(--sidebar-text-bright);
 }
 
-.dropdown-item:focus {
+.dropdown-item:focus-visible {
   outline: none;
-  background-color: #e9ecef;
+  background: var(--sidebar-bg-active);
+  color: var(--sidebar-text-bright);
 }
 
 .dropdown-item.disabled {
-  color: #6c757d;
+  color: var(--sidebar-text-muted);
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -91,65 +107,73 @@
 }
 
 .menu-shortcut {
-  color: #6c757d;
-  font-size: 12px;
-  margin-left: 16px;
+  color: var(--sidebar-text-muted);
+  font-size: var(--text-xs);
+  margin-left: var(--space-4);
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+  opacity: 0.7;
 }
 
 .menu-separator {
   height: 1px;
-  background-color: #dee2e6;
-  margin: 4px 0;
+  background: var(--sidebar-border);
+  margin: var(--space-1) 0;
 }
 
+/* ── Status bar (right side) ───────────────────────────────────── */
 .menu-status {
   margin-left: auto;
-  padding: 8px 16px;
+  padding: 6px var(--space-4);
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: #6c757d;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--sidebar-text-muted);
 }
 
 .saving-indicator {
-  color: #007bff;
-  font-weight: 500;
+  color: var(--color-primary-400);
+  font-weight: var(--font-medium);
 }
 
 .unsaved-indicator {
-  color: #dc3545;
-  font-size: 16px;
+  color: var(--color-warning);
+  font-size: var(--text-md);
   font-weight: bold;
+  line-height: 1;
 }
 
 .autosave-indicator {
   cursor: help;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .retry-save-button {
-  background: #ffe8e8;
-  border: 1px solid #ff9f9f;
-  color: #b30000;
-  font-size: 12px;
-  padding: 2px 6px;
-  border-radius: 4px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  font-size: var(--text-xs);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  line-height: 1.2;
+  font-family: var(--font-sans);
+  font-weight: var(--font-medium);
+  transition: background var(--transition-fast);
 }
 .retry-save-button:hover {
-  background: #ffd1d1;
+  background: rgba(239, 68, 68, 0.25);
 }
 
-/* Responsive adjustments */
+/* ── Responsive ────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .menu-bar {
-    font-size: 13px;
+    font-size: var(--text-xs);
   }
 
   .menu-button {
-    padding: 6px 10px;
+    padding: 6px 8px;
+    font-size: var(--text-xs);
   }
 
   .dropdown-menu {
@@ -157,71 +181,26 @@
   }
 
   .menu-status {
-    padding: 6px 12px;
+    padding: 6px var(--space-3);
   }
 }
 
-/* High contrast mode support */
+/* ── Accessibility ─────────────────────────────────────────────── */
 @media (prefers-contrast: high) {
   .menu-bar {
     border-bottom-width: 2px;
   }
-
   .dropdown-menu {
     border-width: 2px;
   }
 }
 
-/* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
+  .dropdown-menu {
+    animation: none;
+  }
   .menu-button,
   .dropdown-item {
     transition: none;
-  }
-}
-
-/* Dark theme support */
-@media (prefers-color-scheme: dark) {
-  .menu-bar {
-    background-color: #343a40;
-    border-bottom-color: #495057;
-  }
-
-  .menu-button {
-    color: #f8f9fa;
-  }
-
-  .menu-button:hover,
-  .menu-button.active {
-    background-color: #495057;
-  }
-
-  .dropdown-menu {
-    background-color: #343a40;
-    border-color: #495057;
-  }
-
-  .dropdown-item {
-    color: #f8f9fa;
-  }
-
-  .dropdown-item:hover:not(.disabled) {
-    background-color: #495057;
-  }
-
-  .dropdown-item:focus {
-    background-color: #6c757d;
-  }
-
-  .dropdown-item.disabled {
-    color: #adb5bd;
-  }
-
-  .menu-separator {
-    background-color: #495057;
-  }
-
-  .menu-status {
-    color: #adb5bd;
   }
 }

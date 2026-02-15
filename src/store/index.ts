@@ -9,15 +9,28 @@ import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import courseReducer from "./slices/courseSlice";
 import editorReducer from "./slices/editorSlice";
+import componentsReducer from "./slices/componentsSlice";
+import themeReducer from "./slices/themeSlice";
+import completionReducer from "./slices/completionSlice";
+import scoringReducer from "./slices/scoringSlice";
+
 // Create root reducer type first
 const rootReducer = {
   editor: editorReducer,
   course: courseReducer,
+  components: componentsReducer,
+  theme: themeReducer,
+  completion: completionReducer,
+  scoring: scoringReducer,
 };
 
 export type RootState = {
   editor: ReturnType<typeof editorReducer>;
   course: ReturnType<typeof courseReducer>;
+  components: ReturnType<typeof componentsReducer>;
+  theme: ReturnType<typeof themeReducer>;
+  completion: ReturnType<typeof completionReducer>;
+  scoring: ReturnType<typeof scoringReducer>;
 };
 
 export const store = configureStore({

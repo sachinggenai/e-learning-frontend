@@ -1,5 +1,6 @@
 import React from "react";
 import { ValidationError } from "../types/comprehensive";
+import "./ValidationPanel.css";
 
 interface ValidationPanelProps {
   errors: ValidationError[];
@@ -121,7 +122,6 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
         )}
       </div>
 
-      {/* Styles should be moved to external CSS file */}
     </div>
   );
 };

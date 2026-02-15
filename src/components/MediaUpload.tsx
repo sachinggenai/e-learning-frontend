@@ -24,6 +24,7 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { t } from "../i18n/strings";
 import logger from "../utils/logger";
+import { useToast } from "./Toast";
 
 // Types
 interface UploadedFile {
@@ -120,6 +121,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
   maxFileSize = 50, // 50MB
   maxFiles = 10,
 }) => {
+  const { showToast } = useToast();
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -152,8 +154,9 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
 
       // Check total file count
       if (files.length + fileArray.length > maxFiles) {
-        alert(
+        showToast(
           `Maximum ${maxFiles} files allowed. Current: ${files.length}, Adding: ${fileArray.length}`,
+          "warning"
         );
         return;
       }

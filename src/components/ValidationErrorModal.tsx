@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { t } from "../i18n/strings";
+import "./ValidationErrorModal.css";
 
 // Types
 interface ValidationError {
@@ -57,26 +58,13 @@ interface ValidationErrorModalProps {
 const getErrorIcon = (level: ValidationError["level"]) => {
   switch (level) {
     case "error":
-      return <AlertCircle className="w-5 h-5 text-red-500" />;
+      return <AlertCircle />;
     case "warning":
-      return <AlertTriangle className="w-5 h-5 text-yellow-500" />;
+      return <AlertTriangle />;
     case "info":
-      return <Info className="w-5 h-5 text-blue-500" />;
+      return <Info />;
     default:
-      return <Info className="w-5 h-5 text-gray-500" />;
-  }
-};
-
-const getErrorColor = (level: ValidationError["level"]) => {
-  switch (level) {
-    case "error":
-      return "border-red-200 bg-red-50";
-    case "warning":
-      return "border-yellow-200 bg-yellow-50";
-    case "info":
-      return "border-blue-200 bg-blue-50";
-    default:
-      return "border-gray-200 bg-gray-50";
+      return <Info />;
   }
 };
 
@@ -101,7 +89,6 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
   // Focus management: capture last focus and focus first interactive element
   useEffect(() => {
     lastFocusedBeforeOpen.current = document.activeElement as HTMLElement;
-    // Microtask to ensure DOM rendered
     queueMicrotask(() => {
       if (!containerRef.current) return;
       const firstButton = containerRef.current.querySelector<HTMLElement>(
@@ -133,7 +120,7 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
         const idx = navButtons.indexOf(
           document.activeElement as HTMLButtonElement,
         );
-        if (idx === -1) return; // Only intercept when already on a navigate button
+        if (idx === -1) return;
         e.preventDefault();
         const delta = e.key === "ArrowDown" ? 1 : -1;
         const next = (idx + delta + navButtons.length) % navButtons.length;
@@ -146,7 +133,6 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
 
   // Categorize and filter errors
   const { categorizedErrors, stats, filteredErrors } = useMemo(() => {
-    // Primary severity weight ordering applied early so any consumers get sorted list
     const severityWeight: Record<ValidationError["level"], number> = {
       error: 0,
       warning: 1,
@@ -171,7 +157,6 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
         ? sorted
         : sorted.filter((e) => e.level === activeTab);
 
-    // Group by element type and level
     const categories: ValidationCategory[] = [];
     const groupings = new Map<string, ValidationError[]>();
 
@@ -193,7 +178,6 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
     });
 
     categories.sort((a, b) => {
-      // Sort by level priority (errors first), then by count
       const levelPriority = { Error: 0, Warning: 1, Info: 2 };
       const aLevel = a.name.split(" - ")[0] as keyof typeof levelPriority;
       const bLevel = b.name.split(" - ")[0] as keyof typeof levelPriority;
@@ -243,25 +227,21 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-      role="dialog"
-      aria-modal="true"
-    >
+    <div className="vem-overlay" role="dialog" aria-modal="true">
       <div
         ref={containerRef}
-        className="bg-white rounded-lg shadow-xl max-w-5xl w-full max-h-[90vh] overflow-hidden"
+        className="vem-container"
         data-testid="validation-error-modal"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b bg-gray-50">
-          <div className="flex items-center space-x-4">
-            <AlertTriangle className="w-6 h-6 text-orange-500" />
+        <div className="vem-header">
+          <div className="vem-header__left">
+            <span className="vem-header__icon"><AlertTriangle /></span>
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">
+              <h2 className="vem-header__title">
                 {t("validation.report.title", "Validation Report")}
               </h2>
-              <p className="text-sm text-gray-500">
+              <p className="vem-header__subtitle">
                 {stats.total} {t("validation.issues.found", "issues found")} •{" "}
                 {stats.errors} {t("validation.errors", "errors")},{" "}
                 {stats.warnings} {t("validation.warnings", "warnings")},{" "}
@@ -270,11 +250,11 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="vem-header__actions">
             {stats.autoFixable > 0 && (
               <button
                 onClick={handleAutoFixAll}
-                className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors"
+                className="vem-btn--autofix"
                 title={`Auto-fix ${stats.autoFixable} issues`}
               >
                 {t("validation.autofix", "Auto-fix")} ({stats.autoFixable})
@@ -283,363 +263,210 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
 
             <button
               onClick={handleExportReport}
-              className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+              className="vem-btn--icon"
               title={t("validation.export.report", "Export validation report")}
             >
-              <Download className="w-5 h-5" />
+              <Download />
             </button>
 
-            <button
-              onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <X className="w-6 h-6" />
+            <button onClick={onClose} className="vem-btn--icon vem-btn--icon-lg">
+              <X />
             </button>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="border-b">
-          <nav className="flex space-x-8 px-6" aria-label="Tabs">
-            {[
-              {
-                key: "all",
-                label: t("validation.tab.all", "All Issues"),
-                count: stats.total,
-              },
-              {
-                key: "errors",
-                label: t("validation.tab.errors", "Errors"),
-                count: stats.errors,
-              },
-              {
-                key: "warnings",
-                label: t("validation.tab.warnings", "Warnings"),
-                count: stats.warnings,
-              },
-              {
-                key: "info",
-                label: t("validation.tab.info", "Info"),
-                count: stats.info,
-              },
-            ].map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key as any)}
-                className={`
-                  py-4 px-1 border-b-2 font-medium text-sm transition-colors
-                  ${
-                    activeTab === tab.key
-                      ? "border-blue-500 text-blue-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  }
-                `}
-              >
-                {tab.label}
-                {tab.count > 0 && (
-                  <span
-                    className={`
-                    ml-2 py-0.5 px-2 rounded-full text-xs
-                    ${
-                      activeTab === tab.key
-                        ? "bg-blue-100 text-blue-600"
-                        : "bg-gray-100 text-gray-900"
-                    }
-                  `}
-                  >
-                    {tab.count}
-                  </span>
-                )}
-              </button>
-            ))}
-          </nav>
-        </div>
+        <nav className="vem-tabs" aria-label="Tabs">
+          {[
+            { key: "all", label: t("validation.tab.all", "All Issues"), count: stats.total },
+            { key: "errors", label: t("validation.tab.errors", "Errors"), count: stats.errors },
+            { key: "warnings", label: t("validation.tab.warnings", "Warnings"), count: stats.warnings },
+            { key: "info", label: t("validation.tab.info", "Info"), count: stats.info },
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key as any)}
+              className={`vem-tab ${activeTab === tab.key ? "vem-tab--active" : ""}`}
+            >
+              {tab.label}
+              {tab.count > 0 && (
+                <span className="vem-tab__badge">{tab.count}</span>
+              )}
+            </button>
+          ))}
+        </nav>
 
         {/* Content */}
-        <div className="flex-1 overflow-hidden">
+        <div className="vem-content">
           {filteredErrors.length === 0 ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="text-center">
-                <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  {t("validation.none.title", "No Issues Found")}
-                </h3>
-                <p className="text-gray-500">
-                  {activeTab === "all"
-                    ? t(
-                        "validation.none.allPass",
-                        "Your course passes all validation checks!",
-                      )
-                    : t(
-                        "validation.none.tabEmpty",
-                        `No ${activeTab} found in your course.`,
-                      )}
-                </p>
-              </div>
+            <div className="vem-empty">
+              <span className="vem-empty__icon"><CheckCircle /></span>
+              <h3 className="vem-empty__title">
+                {t("validation.none.title", "No Issues Found")}
+              </h3>
+              <p className="vem-empty__text">
+                {activeTab === "all"
+                  ? t("validation.none.allPass", "Your course passes all validation checks!")
+                  : t("validation.none.tabEmpty", `No ${activeTab} found in your course.`)}
+              </p>
             </div>
           ) : (
-            <div className="h-96 overflow-y-auto">
+            <>
               {/* Action Bar */}
-              {filteredErrors.length > 0 && (
-                <div className="flex items-center justify-between p-4 bg-gray-50 border-b">
-                  <div className="text-sm text-gray-600">
-                    {filteredErrors.length}{" "}
-                    {t("validation.issues.in", "issues in")}{" "}
-                    {categorizedErrors.length}{" "}
-                    {t("validation.categories", "categories")}
-                  </div>
-
-                  <div className="flex space-x-2">
-                    {stats.warnings > 0 && activeTab !== "errors" && (
-                      <button
-                        onClick={handleIgnoreAllWarnings}
-                        className="px-3 py-1 text-sm text-yellow-700 bg-yellow-100 rounded-md hover:bg-yellow-200 transition-colors"
-                      >
-                        {t(
-                          "validation.ignoreAllWarnings",
-                          "Ignore All Warnings",
-                        )}
-                      </button>
-                    )}
-
-                    <button
-                      onClick={() => {
-                        const allCategories = new Set(
-                          categorizedErrors.map((c) => c.name),
-                        );
-                        setExpandedCategories(
-                          expandedCategories.size === categorizedErrors.length
-                            ? new Set()
-                            : allCategories,
-                        );
-                      }}
-                      className="px-3 py-1 text-sm text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-                    >
-                      {expandedCategories.size === categorizedErrors.length
-                        ? t("actions.collapseAll", "Collapse All")
-                        : t("actions.expandAll", "Expand All")}
+              <div className="vem-action-bar">
+                <span>
+                  {filteredErrors.length} {t("validation.issues.in", "issues in")}{" "}
+                  {categorizedErrors.length} {t("validation.categories", "categories")}
+                </span>
+                <div className="vem-action-bar__actions">
+                  {stats.warnings > 0 && activeTab !== "errors" && (
+                    <button onClick={handleIgnoreAllWarnings} className="vem-btn--sm vem-btn--warning">
+                      {t("validation.ignoreAllWarnings", "Ignore All Warnings")}
                     </button>
-                  </div>
+                  )}
+                  <button
+                    onClick={() => {
+                      const allCategories = new Set(categorizedErrors.map((c) => c.name));
+                      setExpandedCategories(
+                        expandedCategories.size === categorizedErrors.length ? new Set() : allCategories,
+                      );
+                    }}
+                    className="vem-btn--sm vem-btn--neutral"
+                  >
+                    {expandedCategories.size === categorizedErrors.length
+                      ? t("actions.collapseAll", "Collapse All")
+                      : t("actions.expandAll", "Expand All")}
+                  </button>
                 </div>
-              )}
+              </div>
 
               {/* Error Categories */}
-              <div className="p-4 space-y-4">
-                {categorizedErrors.map((category) => {
-                  const isExpanded = expandedCategories.has(category.name);
+              <div className="vem-scroll">
+                <div className="vem-categories">
+                  {categorizedErrors.map((category) => {
+                    const isExpanded = expandedCategories.has(category.name);
+                    return (
+                      <div key={category.name} className="vem-category" role="group" aria-label={category.name}>
+                        <button onClick={() => toggleCategory(category.name)} className="vem-category__header">
+                          <div className="vem-category__header-left">
+                            <span className="vem-category__chevron">
+                              {isExpanded ? <ChevronDown /> : <ChevronRight />}
+                            </span>
+                            <span className="vem-category__name">{category.name}</span>
+                            <span className="vem-category__count">{category.count}</span>
+                          </div>
+                        </button>
 
-                  return (
-                    <div
-                      key={category.name}
-                      className="border rounded-lg overflow-hidden"
-                      role="group"
-                      aria-label={category.name}
-                    >
-                      {/* Category Header */}
-                      <button
-                        onClick={() => toggleCategory(category.name)}
-                        className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
-                      >
-                        <div className="flex items-center space-x-3">
-                          {isExpanded ? (
-                            <ChevronDown className="w-4 h-4 text-gray-500" />
-                          ) : (
-                            <ChevronRight className="w-4 h-4 text-gray-500" />
-                          )}
-                          <span className="font-medium text-gray-900">
-                            {category.name}
-                          </span>
-                          <span className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">
-                            {category.count}
-                          </span>
-                        </div>
-                      </button>
-
-                      {/* Category Errors */}
-                      {isExpanded && (
-                        <div className="divide-y divide-gray-200">
-                          {category.errors.map((error) => {
-                            const isErrorExpanded = expandedErrors.has(
-                              error.id,
-                            );
-
-                            return (
-                              <div
-                                key={error.id}
-                                className={`p-4 ${getErrorColor(error.level)}`}
-                                data-error-id={error.id}
-                                data-severity={error.level}
-                              >
-                                {/* Error Summary */}
-                                <div className="flex items-start space-x-3">
-                                  <div className="flex-shrink-0 pt-1">
-                                    {getErrorIcon(error.level)}
-                                  </div>
-
-                                  <div className="flex-1 min-w-0">
-                                    <div className="flex items-center justify-between">
-                                      <p className="text-sm font-medium text-gray-900">
-                                        {error.message}
-                                      </p>
-
-                                      <div className="flex items-center space-x-2">
-                                        {error.autoFixable && (
-                                          <button
-                                            onClick={() =>
-                                              onAutoFix?.(error.id)
-                                            }
-                                            className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors"
-                                          >
-                                            {t(
-                                              "validation.autofix",
-                                              "Auto-fix",
-                                            )}
-                                          </button>
-                                        )}
-
-                                        {error.level === "warning" && (
-                                          <button
-                                            onClick={() =>
-                                              onIgnoreWarning?.(error.id)
-                                            }
-                                            className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
-                                          >
-                                            {t("actions.ignore", "Ignore")}
-                                          </button>
-                                        )}
-
-                                        {(error.elementId || error.pageId) && (
-                                          <button
-                                            data-nav="navigate"
-                                            onClick={() =>
-                                              onNavigateToElement?.(
-                                                error.elementId!,
-                                                error.pageId,
-                                              )
-                                            }
-                                            className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
-                                          >
-                                            {t("actions.navigate", "Navigate")}
-                                          </button>
-                                        )}
-
-                                        <button
-                                          onClick={() =>
-                                            toggleErrorDetails(error.id)
-                                          }
-                                          className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
-                                        >
-                                          {isErrorExpanded ? (
-                                            <ChevronDown className="w-4 h-4" />
-                                          ) : (
-                                            <ChevronRight className="w-4 h-4" />
+                        {isExpanded && (
+                          <div className="vem-errors">
+                            {category.errors.map((error) => {
+                              const isErrorExpanded = expandedErrors.has(error.id);
+                              return (
+                                <div
+                                  key={error.id}
+                                  className={`vem-error vem-error--${error.level}`}
+                                  data-error-id={error.id}
+                                  data-severity={error.level}
+                                >
+                                  <div className="vem-error__row">
+                                    <span className={`vem-error__icon vem-error__icon--${error.level}`}>
+                                      {getErrorIcon(error.level)}
+                                    </span>
+                                    <div className="vem-error__body">
+                                      <div className="vem-error__top">
+                                        <p className="vem-error__message">{error.message}</p>
+                                        <div className="vem-error__actions">
+                                          {error.autoFixable && (
+                                            <button onClick={() => onAutoFix?.(error.id)} className="vem-btn--pill vem-btn--green">
+                                              {t("validation.autofix", "Auto-fix")}
+                                            </button>
                                           )}
-                                        </button>
+                                          {error.level === "warning" && (
+                                            <button onClick={() => onIgnoreWarning?.(error.id)} className="vem-btn--pill vem-btn--gray">
+                                              {t("actions.ignore", "Ignore")}
+                                            </button>
+                                          )}
+                                          {(error.elementId || error.pageId) && (
+                                            <button
+                                              data-nav="navigate"
+                                              onClick={() => onNavigateToElement?.(error.elementId!, error.pageId)}
+                                              className="vem-btn--pill vem-btn--blue"
+                                            >
+                                              {t("actions.navigate", "Navigate")}
+                                            </button>
+                                          )}
+                                          <button onClick={() => toggleErrorDetails(error.id)} className="vem-btn--icon">
+                                            {isErrorExpanded ? <ChevronDown /> : <ChevronRight />}
+                                          </button>
+                                        </div>
+                                      </div>
+                                      <div className="vem-error__meta">
+                                        {error.elementType && <span>Element: {error.elementType}</span>}
+                                        {error.elementId && <span>ID: {error.elementId}</span>}
+                                        {error.pageId && <span>Page: {error.pageId}</span>}
+                                        {error.line && <span>Line: {error.line}</span>}
                                       </div>
                                     </div>
+                                  </div>
 
-                                    {/* Error Metadata */}
-                                    <div className="mt-1 text-xs text-gray-500 space-x-4">
-                                      {error.elementType && (
-                                        <span>
-                                          Element: {error.elementType}
-                                        </span>
+                                  {isErrorExpanded && (
+                                    <div className="vem-error__details">
+                                      {error.context && (
+                                        <div>
+                                          <h4 className="vem-detail__label">{t("validation.context", "Context")}</h4>
+                                          <pre className="vem-detail__pre">{error.context}</pre>
+                                        </div>
                                       )}
-                                      {error.elementId && (
-                                        <span>ID: {error.elementId}</span>
-                                      )}
-                                      {error.pageId && (
-                                        <span>Page: {error.pageId}</span>
-                                      )}
-                                      {error.line && (
-                                        <span>Line: {error.line}</span>
+                                      {error.suggestion && (
+                                        <div>
+                                          <h4 className="vem-detail__label">{t("validation.suggestion", "Suggestion")}</h4>
+                                          <p className="vem-detail__suggestion">{error.suggestion}</p>
+                                        </div>
                                       )}
                                     </div>
-                                  </div>
+                                  )}
                                 </div>
-
-                                {/* Expanded Error Details */}
-                                {isErrorExpanded && (
-                                  <div className="mt-4 pl-8 space-y-3">
-                                    {error.context && (
-                                      <div>
-                                        <h4 className="text-sm font-medium text-gray-900 mb-1">
-                                          {t("validation.context", "Context")}
-                                        </h4>
-                                        <pre className="text-xs bg-gray-100 p-2 rounded overflow-x-auto">
-                                          {error.context}
-                                        </pre>
-                                      </div>
-                                    )}
-
-                                    {error.suggestion && (
-                                      <div>
-                                        <h4 className="text-sm font-medium text-gray-900 mb-1">
-                                          {t(
-                                            "validation.suggestion",
-                                            "Suggestion",
-                                          )}
-                                        </h4>
-                                        <p className="text-sm text-gray-700 bg-blue-50 p-2 rounded">
-                                          {error.suggestion}
-                                        </p>
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            </>
           )}
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-6 border-t bg-gray-50">
-          <div className="text-sm text-gray-500">
+        <div className="vem-footer">
+          <div className="vem-footer__status">
             {stats.errors > 0 && (
-              <span className="text-red-600 font-medium">
-                {stats.errors} {t("validation.errors", "error")}
-                {stats.errors !== 1 ? "s" : ""}{" "}
-                {t(
-                  "validation.mustFixBefore",
-                  "must be fixed before publishing",
-                )}
+              <span className="vem-footer__status--error">
+                {stats.errors} {t("validation.errors", "error")}{stats.errors !== 1 ? "s" : ""}{" "}
+                {t("validation.mustFixBefore", "must be fixed before publishing")}
               </span>
             )}
             {stats.errors === 0 && stats.warnings > 0 && (
-              <span className="text-yellow-600">
-                {stats.warnings} {t("validation.warnings", "warning")}
-                {stats.warnings !== 1 ? "s" : ""}{" "}
+              <span className="vem-footer__status--warning">
+                {stats.warnings} {t("validation.warnings", "warning")}{stats.warnings !== 1 ? "s" : ""}{" "}
                 {t("validation.shouldReview", "should be reviewed")}
               </span>
             )}
             {stats.errors === 0 && stats.warnings === 0 && (
-              <span className="text-green-600 font-medium">
+              <span className="vem-footer__status--success">
                 {t("validation.allPassed", "All validation checks passed!")}
               </span>
             )}
           </div>
 
-          <div className="flex space-x-3">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-            >
+          <div className="vem-footer__buttons">
+            <button onClick={onClose} className="vem-btn--close">
               {t("actions.close", "Close")}
             </button>
-
             {stats.errors === 0 && (
-              <button
-                onClick={onClose}
-                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-              >
+              <button onClick={onClose} className="vem-btn--continue">
                 {t("actions.continue", "Continue")}
               </button>
             )}

@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from "react";
-import { apiService } from "../services/api";
+import { httpClient } from "../services/httpClient";
 import { useAppDispatch, useAppSelector } from "../store";
 import {
   EnhancedTemplate,
@@ -36,7 +36,7 @@ const CustomTemplateEditor: React.FC<CustomTemplateEditorProps> = ({
       category: "custom",
       name: "",
       fields: [],
-      layout: { type: "single-column" },
+      layout: { preset: 'single-column', spacing: 'normal' },
       metadata: {
         description: "",
         tags: [],
@@ -141,12 +141,12 @@ const CustomTemplateEditor: React.FC<CustomTemplateEditorProps> = ({
       } as EnhancedTemplate;
 
       if (existingTemplate) {
-        await apiService.updateEnhancedTemplate(
-          existingTemplate.id,
+        await httpClient.put(
+          `/templates/${existingTemplate.id}`,
           templateData,
         );
       } else {
-        await apiService.createEnhancedTemplate(templateData);
+        await httpClient.post('/templates', templateData);
       }
 
       // Success - close the editor
@@ -226,24 +226,24 @@ const CustomTemplateEditor: React.FC<CustomTemplateEditorProps> = ({
             <div className="layout-selector">
               <button
                 type="button"
-                className={`layout-option ${template.layout?.type === "single-column" ? "active" : ""}`}
-                onClick={() => handleLayoutChange({ type: "single-column" })}
+                className={`layout-option ${template.layout?.preset === "single-column" ? "active" : ""}`}
+                onClick={() => handleLayoutChange({ preset: "single-column" })}
               >
                 <div className="layout-icon single-column" />
                 <span>Single Column</span>
               </button>
               <button
                 type="button"
-                className={`layout-option ${template.layout?.type === "two-column" ? "active" : ""}`}
-                onClick={() => handleLayoutChange({ type: "two-column" })}
+                className={`layout-option ${template.layout?.preset === "two-column" ? "active" : ""}`}
+                onClick={() => handleLayoutChange({ preset: "two-column" })}
               >
                 <div className="layout-icon two-column" />
                 <span>Two Column</span>
               </button>
               <button
                 type="button"
-                className={`layout-option ${template.layout?.type === "grid" ? "active" : ""}`}
-                onClick={() => handleLayoutChange({ type: "grid" })}
+                className={`layout-option ${template.layout?.preset === "three-column" ? "active" : ""}`}
+                onClick={() => handleLayoutChange({ preset: "three-column" })}
               >
                 <div className="layout-icon grid" />
                 <span>Grid</span>

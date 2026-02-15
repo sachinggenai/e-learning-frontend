@@ -3,11 +3,22 @@
  * Implements navigation, course info, and action buttons as specified in Phase 1
  */
 
+import {
+  CheckCircle,
+  Download,
+  Edit3,
+  Eye,
+  FileText,
+  Loader,
+  RotateCcw,
+  Save,
+  ShieldCheck,
+} from "lucide-react";
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useValidation } from "../hooks/useValidation";
 import { t } from "../i18n/strings";
-import { apiService } from "../services/api";
+import { exportService } from "../services/ExportService";
 import { RootState, useAppDispatch } from "../store/index";
 import {
   clearCurrentCourse,
@@ -18,6 +29,7 @@ import {
 import { Course, HeaderProps } from "../types/comprehensive";
 import logger from "../utils/logger";
 import "./Header.css";
+import { useToast } from "./Toast";
 import { ValidationPanel } from "./ValidationPanel";
 
 const Header: React.FC<HeaderProps> = ({
@@ -28,14 +40,13 @@ const Header: React.FC<HeaderProps> = ({
   const dispatch = useAppDispatch();
   const { validate, errors, warnings, hasErrors, hasWarnings, isValidating } =
     useValidation();
+  const { showToast } = useToast();
+  const [isExporting, setIsExporting] = React.useState(false);
 
   // Safe Redux selectors with null checking
   const courseState = useSelector((state: RootState) => (state as any).course);
   const course = courseState?.currentCourse || null;
   const isDirty = courseState?.saveStatus !== "saved";
-  const validationErrors = courseState?.error
-    ? [{ message: courseState.error }]
-    : [];
   const isLoading = courseState?.isLoading || false;
 
   // Clear any stale errors when component mounts
@@ -50,29 +61,32 @@ const Header: React.FC<HeaderProps> = ({
     if (!course) return;
     try {
       await dispatch(saveCourse(course)).unwrap();
-      console.log("Course saved successfully");
+      showToast(t("save.success", "Course saved successfully!"), "success");
     } catch (error) {
       console.error("Failed to save course:", error);
-      alert(t("save.error", "Failed to save course. Please try again."));
+      showToast(t("save.error", "Failed to save course. Please try again."), "error");
     }
   };
 
   const handleExport = async () => {
     if (!course) {
-      alert(t("export.no.course", "Please load a course before exporting."));
+      showToast(t("export.no.course", "Please load a course before exporting."), "warning");
       return;
     }
     try {
-      // Check validation errors first
-      if (validationErrors.length > 0) {
-        alert(
+      // Check validation errors first (from useValidation hook, not API errors)
+      if (errors.length > 0) {
+        showToast(
           t(
             "export.validation.block",
             "Please fix {count} validation error(s) before exporting"
-          ).replace("{count}", String(validationErrors.length))
+          ).replace("{count}", String(errors.length)),
+          "error"
         );
         return;
       }
+
+      setIsExporting(true);
 
       // Confirm SCORM export
       const confirmExport = confirm(
@@ -85,13 +99,7 @@ const Header: React.FC<HeaderProps> = ({
 
       console.log("Starting SCORM export for course:", course.courseId);
 
-      // Pass the raw frontend course to apiService - it will handle transformation
-      // (Just like saveCourse does - no manual transformation needed)
-      const result = await apiService.exportCourse({
-        courseData: course, // Pass raw course, api.ts will transform it
-        format: "scorm_1_2",
-        includeAssets: true,
-      });
+      const result = await exportService.exportScorm(course.courseId, 'scorm_1_2');
 
       if (result.success && result.downloadUrl) {
         // Trigger download of the ZIP file
@@ -99,7 +107,7 @@ const Header: React.FC<HeaderProps> = ({
         linkElement.setAttribute("href", result.downloadUrl);
         linkElement.setAttribute(
           "download",
-          result.filename || `${course.courseId}_scorm.zip`
+          result.fileName || `${course.courseId}_scorm.zip`
         );
         document.body.appendChild(linkElement);
         linkElement.click();
@@ -108,40 +116,54 @@ const Header: React.FC<HeaderProps> = ({
         // Clean up the blob URL
         window.URL.revokeObjectURL(result.downloadUrl);
 
-        console.log("SCORM package exported successfully:", result.filename);
-        alert(t("export.success", "SCORM package downloaded successfully!"));
+        console.log("SCORM package exported successfully:", result.fileName);
+        showToast(t("export.success", "SCORM package downloaded successfully!"), "success");
       } else {
         throw new Error(result.error || "Export failed");
       }
     } catch (error: any) {
       console.error("Export failed:", error);
-      alert(
+      showToast(
         t("export.error", "Failed to export course: {error}").replace(
           "{error}",
           error.message || "Unknown error"
-        )
+        ),
+        "error"
       );
       logger.error({
         event: "course.export.error",
         message: "Course export failed",
         context: { courseId: course?.courseId, error: error.message },
       });
+    } finally {
+      setIsExporting(false);
     }
   };
 
   const handleValidate = async () => {
     if (!course) {
-      alert(t("validate.no.course", "Please load a course before validating."));
+      showToast(t("validate.no.course", "Please load a course before validating."), "warning");
       return;
     }
 
     try {
       const result = await validate(course);
-      // The validation results are now available through the useValidation hook
-      // UI will update automatically via the hook state
+      if (result.valid) {
+        showToast(t("validate.success", "Validation passed — no issues found!"), "success");
+      } else {
+        const errorCount = result.errors.filter(e => e.level === "error").length;
+        const warnCount = result.errors.filter(e => e.level === "warning").length;
+        const parts: string[] = [];
+        if (errorCount > 0) parts.push(`${errorCount} error${errorCount > 1 ? "s" : ""}`);
+        if (warnCount > 0) parts.push(`${warnCount} warning${warnCount > 1 ? "s" : ""}`);
+        showToast(
+          t("validate.issues", "Validation found {issues}").replace("{issues}", parts.join(", ")),
+          errorCount > 0 ? "error" : "warning"
+        );
+      }
     } catch (error) {
       console.error("Validation failed:", error);
-      alert(t("validate.error", "Validation failed. Please try again."));
+      showToast(t("validate.error", "Validation failed. Please try again."), "error");
     }
   };
 
@@ -172,69 +194,68 @@ const Header: React.FC<HeaderProps> = ({
       title: "Sample eLearning Course",
       description: "This is an example course demonstrating all template types",
       author: "eLearning Team",
+      language: "en",
       version: "1.0.0",
       status: "draft",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       pages: [
         {
-          id: `welcome_${timestamp}`,
-          templateType: "welcome",
+          pageId: `welcome_${timestamp}`,
           title: "Welcome Page",
           order: 0,
-          lastModified: new Date().toISOString(),
-          content: {
-            title: "Work in Progress",
-            subtitle: "Work in Progress",
-            description:
-              "Work in Progress",
-          },
+          components: [
+            {
+              componentId: `welcome_comp_${timestamp}`,
+              componentType: "welcome",
+              order: 0,
+              data: {
+                title: "Welcome to Your Course",
+                subtitle: "An interactive learning experience",
+                description: "Get started by exploring the pages and adding your own content.",
+              },
+            },
+          ],
         },
         {
-          id: `content_${timestamp}`,
-          templateType: "content-text",
+          pageId: `content_${timestamp}`,
           title: "Introduction Page",
           order: 1,
-          lastModified: new Date().toISOString(),
-          content: {
-            title: "Course Introduction",
-            body: "In this section, we will cover the fundamental concepts that form the foundation of this subject matter.",
-          },
+          components: [
+            {
+              componentId: `content_comp_${timestamp}`,
+              componentType: "content-text",
+              order: 0,
+              data: {
+                title: "Course Introduction",
+                body: "In this section, we will cover the fundamental concepts that form the foundation of this subject matter.",
+              },
+            },
+          ],
         },
       ],
     };
 
     try {
       // Set the course in Redux first
-      dispatch(setCurrentCourse(exampleCourse));
+      dispatch(setCurrentCourse(exampleCourse as any));
       // Then save it to the backend
-      await dispatch(saveCourse(exampleCourse)).unwrap();
+      await dispatch(saveCourse(exampleCourse as any)).unwrap();
+      showToast(t("load.example.success", "Example course loaded successfully!"), "success");
       console.log("Example course loaded and saved successfully");
     } catch (error) {
       console.error("Failed to save example course:", error);
-      alert(
+      showToast(
         t(
           "load.example.error",
           "Failed to load example course. Please try again."
-        )
+        ),
+        "error"
       );
     }
   };
-  const structuralCount = useMemo(
-    () =>
-      validationErrors.filter(
-        (e) =>
-          (e as any).type === "value_error" || (e as any).type === "type_error"
-      ).length,
-    [validationErrors]
-  );
-  const businessCount = useMemo(
-    () =>
-      validationErrors.filter((e) => (e as any).type === "business_rule_error")
-        .length,
-    [validationErrors]
-  );
-  const blockingErrors = structuralCount + businessCount;
+  // Block export when there are real validation errors (from useValidation hook)
+  const blockingErrors = errors.length;
 
   if (!course) {
     return (
@@ -253,7 +274,7 @@ const Header: React.FC<HeaderProps> = ({
               disabled={isLoading}
               title="Load example course"
             >
-              📄 Load Example
+              <FileText size={14} /> Load Example
             </button>
           </div>
         </div>
@@ -283,7 +304,7 @@ const Header: React.FC<HeaderProps> = ({
             onClick={() => onViewChange("editor")}
             disabled={isLoading}
           >
-            <span className="nav-icon">✏️</span>
+            <Edit3 size={14} />
             Editor
           </button>
           <button
@@ -291,7 +312,7 @@ const Header: React.FC<HeaderProps> = ({
             onClick={() => onViewChange("preview")}
             disabled={isLoading}
           >
-            <span className="nav-icon">👁️</span>
+            <Eye size={14} />
             Preview
           </button>
         </nav>
@@ -300,16 +321,43 @@ const Header: React.FC<HeaderProps> = ({
       <div className="header-right">
         <div className="action-buttons">
           <button
+            className="action-button"
+            onClick={handleSave}
+            disabled={isLoading || !isDirty}
+            title="Save course (Ctrl+S)"
+          >
+            <Save size={14} /> Save
+          </button>
+          <button
+            className="action-button"
+            onClick={handleValidate}
+            disabled={isLoading || isValidating}
+            title="Validate course"
+          >
+            {isValidating ? <Loader size={14} className="spin-icon" /> : <ShieldCheck size={14} />} Validate
+          </button>
+          <button
             className="action-button primary"
             onClick={handleExport}
-            disabled={isLoading || !isBackendConnected || blockingErrors > 0}
+            disabled={isLoading || isExporting || !isBackendConnected || blockingErrors > 0}
             title={
               blockingErrors > 0
                 ? "Fix errors before exporting"
+                : isExporting
+                ? "Exporting..."
                 : "Export as SCORM"
             }
           >
-            📦 Export
+            {isExporting ? <Loader size={14} className="spin-icon" /> : <Download size={14} />}
+            {isExporting ? " Exporting..." : " Export"}
+          </button>
+          <button
+            className="action-button"
+            onClick={handleReset}
+            disabled={isLoading}
+            title="Reset course"
+          >
+            <RotateCcw size={14} /> Reset
           </button>
         </div>
 
@@ -332,7 +380,6 @@ const Header: React.FC<HeaderProps> = ({
             warnings={warnings}
             onErrorClick={(error) => {
               // TODO: Implement navigation to error location
-              console.log("Navigate to error:", error);
             }}
           />
         </div>

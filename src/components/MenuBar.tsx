@@ -5,7 +5,7 @@
  * Provides access to course management, undo/redo, validation, and other editor features.
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { normalizeTemplateType } from "../constants/templateTypes";
 import { t, translateMenuName } from "../i18n/strings";
 import { useAppDispatch, useAppSelector } from "../store";
@@ -22,6 +22,7 @@ import {
 import logger from "../utils/logger";
 import MediaUpload from "./MediaUpload";
 import "./MenuBar.css";
+import { useToast } from "./Toast";
 import ValidationErrorModal from "./ValidationErrorModal";
 
 interface MenuItem {
@@ -59,6 +60,7 @@ const isValidVideoUrl = (url: string): boolean => {
 
 const MenuBar: React.FC = () => {
   const dispatch = useAppDispatch();
+  const { showToast } = useToast();
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveAttempts, setSaveAttempts] = useState<number>(0);
   const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -68,6 +70,13 @@ const MenuBar: React.FC = () => {
   const { currentCourse } = courseState;
   const editorPresent = editorState.present || editorState;
   const { hasUnsavedChanges } = editorPresent;
+
+  // Refs to avoid stale closures in keyboard shortcuts
+  const handlersRef = useRef<{
+    handleNewCourse: () => void;
+    handleSaveCourse: () => void;
+    handleOpenCourse: () => void;
+  }>({ handleNewCourse: () => {}, handleSaveCourse: () => {}, handleOpenCourse: () => {} });
 
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [showMediaUpload, setShowMediaUpload] = useState(false);
@@ -90,22 +99,22 @@ const MenuBar: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Keyboard shortcuts
+  // Keyboard shortcuts — use ref to always call latest handler (no stale closure)
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey || event.metaKey) {
         switch (event.key) {
           case "n":
             event.preventDefault();
-            handleNewCourse();
+            handlersRef.current.handleNewCourse();
             break;
           case "s":
             event.preventDefault();
-            handleSaveCourse();
+            handlersRef.current.handleSaveCourse();
             break;
           case "o":
             event.preventDefault();
-            handleOpenCourse();
+            handlersRef.current.handleOpenCourse();
             break;
         }
       }
@@ -135,6 +144,7 @@ const MenuBar: React.FC = () => {
         id: Date.now(), // Temporary ID for client-side
         courseId,
         title,
+        author: "Course Author",
         description: "A new course",
         status: "draft",
         pages: [],
@@ -142,52 +152,49 @@ const MenuBar: React.FC = () => {
         updatedAt: new Date().toISOString(),
       };
 
-      dispatch(setCurrentCourse(newCourse));
+      // Save to backend immediately so page/component API calls work
+      try {
+        const saved = await dispatch(saveCourse(newCourse)).unwrap();
+        dispatch(setCurrentCourse(saved));
+        showToast(t("course.created", `Course "${title}" created!`), "success");
+        logger.info({
+          event: "course.created",
+          message: "New course created and saved to backend",
+          context: { courseId: saved.courseId },
+        });
+      } catch (err: any) {
+        // Fallback: set client-side so user can still work
+        dispatch(setCurrentCourse(newCourse));
+        showToast(t("course.created.local", `Course "${title}" created (offline mode)`), "warning");
+        logger.error({
+          event: "course.create.save_failed",
+          message: "Course created locally but failed to save to backend",
+          error: err,
+          context: { courseId },
+        });
+      }
       dispatch(clearCurrentPage());
-      logger.info({
-        event: "course.created",
-        message: "New course created (client-side)",
-        context: { courseId: newCourse.courseId },
-      });
     }
     setOpenMenu(null);
   };
 
   const handleOpenCourse = async () => {
     dispatch(fetchCourses());
-    // In a real app, this would show a course selection dialog
-    alert(
-      t("course.open.placeholder", "Course selection dialog would appear here")
-    );
+    // TODO: Show a course selection dialog
     setOpenMenu(null);
   };
 
   const handleSaveCourse = async () => {
-    if (!currentCourse) {
-      console.log("🚫 MenuBar.handleSaveCourse - No current course, aborting");
-      return;
-    }
-
-    console.log("🎯 MenuBar.handleSaveCourse - Save initiated from UI", {
-      courseId: currentCourse.courseId,
-      courseTitle: currentCourse.title,
-      pagesCount: currentCourse.pages.length,
-      hasId: !!currentCourse.id,
-      saveAttempts: saveAttempts,
-    });
+    if (!currentCourse) return;
 
     try {
-      console.log(
-        "🔄 MenuBar.handleSaveCourse - Clearing errors and setting loading"
-      );
       setSaveError(null);
       setIsSaving(true);
 
-      console.log("📡 MenuBar.handleSaveCourse - Dispatching saveCourse thunk");
       await dispatch(saveCourse(currentCourse)).unwrap();
 
-      console.log("✅ MenuBar.handleSaveCourse - Save completed successfully");
       setSaveAttempts(0);
+      showToast(t("save.success", "Course saved successfully!"), "success");
       logger.info({
         event: "course.save.success",
         message: "Course saved successfully",
@@ -196,13 +203,6 @@ const MenuBar: React.FC = () => {
       const attempt = saveAttempts + 1;
       setSaveAttempts(attempt);
       const message = err?.message || "Save failed";
-
-      console.error("❌ MenuBar.handleSaveCourse - Save failed", {
-        error: message,
-        attempt,
-        courseId: currentCourse.courseId,
-        courseTitle: currentCourse.title,
-      });
 
       setSaveError(message);
       logger.error({
@@ -215,11 +215,6 @@ const MenuBar: React.FC = () => {
       // Exponential backoff auto-retry up to 3 attempts
       if (attempt < 3) {
         const delay = Math.min(4000, 500 * 2 ** (attempt - 1));
-        console.log("🔄 MenuBar.handleSaveCourse - Scheduling retry", {
-          attempt: attempt + 1,
-          delay,
-        });
-
         logger.info({
           event: "course.save.retry.scheduled",
           message: "Scheduling retry",
@@ -230,7 +225,6 @@ const MenuBar: React.FC = () => {
         }, delay);
       }
     } finally {
-      console.log("🏁 MenuBar.handleSaveCourse - Setting loading to false");
       setIsSaving(false);
       setOpenMenu(null);
     }
@@ -246,20 +240,16 @@ const MenuBar: React.FC = () => {
           pageCount: currentCourse.pages.length,
         },
       });
-      // Placeholder alert retains UX until real export wired
-      alert(t("export.placeholder", "Export initiated (placeholder)"));
+      // Placeholder retains UX until real export wired
     }
     setOpenMenu(null);
   };
 
+  // Keep handlers ref up-to-date so keyboard shortcuts never go stale
+  handlersRef.current = { handleNewCourse, handleSaveCourse, handleOpenCourse };
+
   const handleAddPageFromTemplate = () => {
-    // This will be handled by the PageManager component
-    alert(
-      t(
-        "add.page.via.manager",
-        "Use the Page Manager panel to add pages from templates"
-      )
-    );
+    // Handled by the PageManager component
     setOpenMenu(null);
   };
 
@@ -670,7 +660,6 @@ const MenuBar: React.FC = () => {
       {
         label: t("menu.file.saveAs") + " (WIP)",
         action: () => {
-          alert("Save As not implemented yet");
           setOpenMenu(null);
         },
         disabled: true,
@@ -686,7 +675,6 @@ const MenuBar: React.FC = () => {
       {
         label: t("menu.edit.cut", "Cut") + " (WIP)",
         action: () => {
-          alert("Cut not implemented yet");
           setOpenMenu(null);
         },
         shortcut: "Ctrl+X",
@@ -695,7 +683,6 @@ const MenuBar: React.FC = () => {
       {
         label: t("menu.edit.copy", "Copy") + " (WIP)",
         action: () => {
-          alert("Copy not implemented yet");
           setOpenMenu(null);
         },
         shortcut: "Ctrl+C",
@@ -704,7 +691,6 @@ const MenuBar: React.FC = () => {
       {
         label: t("menu.edit.paste", "Paste") + " (WIP)",
         action: () => {
-          alert("Paste not implemented yet");
           setOpenMenu(null);
         },
         shortcut: "Ctrl+V",
@@ -741,7 +727,6 @@ const MenuBar: React.FC = () => {
       {
         label: t("menu.tools.previewCourse") + " (WIP)",
         action: () => {
-          alert("Preview functionality would be implemented here");
           setOpenMenu(null);
         },
         disabled: true,
@@ -751,7 +736,6 @@ const MenuBar: React.FC = () => {
       {
         label: t("menu.view.zoomIn") + " (WIP)",
         action: () => {
-          alert("Zoom functionality would be implemented here");
           setOpenMenu(null);
         },
         disabled: true,
@@ -759,7 +743,6 @@ const MenuBar: React.FC = () => {
       {
         label: t("menu.view.zoomOut") + " (WIP)",
         action: () => {
-          alert("Zoom functionality would be implemented here");
           setOpenMenu(null);
         },
         disabled: true,
@@ -767,7 +750,6 @@ const MenuBar: React.FC = () => {
       {
         label: t("menu.view.resetZoom") + " (WIP)",
         action: () => {
-          alert("Zoom functionality would be implemented here");
           setOpenMenu(null);
         },
         disabled: true,
@@ -776,7 +758,6 @@ const MenuBar: React.FC = () => {
       {
         label: t("menu.view.themeSettings") + " (WIP)",
         action: () => {
-          alert("Theme settings would be implemented here");
           setOpenMenu(null);
         },
         disabled: true,
@@ -794,9 +775,6 @@ const MenuBar: React.FC = () => {
       {
         label: t("menu.help.keyboardShortcuts") + " (WIP)",
         action: () => {
-          alert(
-            "Shortcuts:\\nCtrl+N - New Course\\nCtrl+O - Open Course\\nCtrl+S - Save"
-          );
           setOpenMenu(null);
         },
         disabled: true,
@@ -805,9 +783,6 @@ const MenuBar: React.FC = () => {
       {
         label: t("menu.help.about") + " (WIP)",
         action: () => {
-          alert(
-            "eLearning Authoring Tool v1.0.0\\nBuilt with React and FastAPI"
-          );
           setOpenMenu(null);
         },
         disabled: true,
@@ -1044,7 +1019,6 @@ const MenuBar: React.FC = () => {
             });
           }}
           onUploadComplete={(files) => {
-            console.log("Files uploaded successfully:", files);
             // TODO: Add files to course media library or current page
             setShowMediaUpload(false);
             logger.info({
@@ -1077,11 +1051,6 @@ const MenuBar: React.FC = () => {
               if (el) {
                 el.scrollIntoView({ behavior: "smooth", block: "center" });
                 el.focus({ preventScroll: true });
-              } else {
-                console.warn(
-                  "Validation navigation: element not found",
-                  elementId
-                );
               }
             });
             setShowValidationModal(false);
@@ -1091,18 +1060,15 @@ const MenuBar: React.FC = () => {
             });
           }}
           onAutoFix={(errorId: string) => {
-            console.log("Auto-fix error:", errorId);
             // TODO: Implement auto-fix functionality
           }}
           onIgnoreWarning={(errorId: string) => {
-            console.log("Ignore warning:", errorId);
             // Remove warning from list
             setValidationErrorsState((prev) =>
               prev.filter((e) => e.id !== errorId)
             );
           }}
           onExportReport={(errors) => {
-            console.log("Export validation report:", errors);
             logger.info({
               event: "validation.report.export",
               message: "Validation report exported",

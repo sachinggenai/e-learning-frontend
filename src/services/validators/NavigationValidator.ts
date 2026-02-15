@@ -10,9 +10,9 @@ export class NavigationValidator implements Validator {
     const errors: ValidationError[] = [];
 
     // Validate navigation settings
-    if (course.settings?.navigation) {
+    if (course.navigation) {
       errors.push(
-        ...this.validateNavigationSettings(course.settings.navigation)
+        ...this.validateNavigationSettings(course.navigation)
       );
     }
 

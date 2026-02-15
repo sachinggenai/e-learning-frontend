@@ -26,6 +26,7 @@ export interface Page {
 export interface EditorState {
   currentPage: Page | null;
   isEditing: boolean;
+  isPreviewMode: boolean;
   hasUnsavedChanges: boolean;
   validationErrors: string[];
 }
@@ -33,6 +34,7 @@ export interface EditorState {
 const initialState: EditorState = {
   currentPage: null,
   isEditing: false,
+  isPreviewMode: false,
   hasUnsavedChanges: false,
   validationErrors: [],
 };
@@ -44,26 +46,8 @@ const editorSlice = createSlice({
   reducers: {
     // Page Management
     setCurrentPage: (state, action: PayloadAction<Page>) => {
-      console.log("═══════════════════════════════════════════════════");
-      console.log("📝 editorSlice.setCurrentPage REDUCER");
-      console.log("═══════════════════════════════════════════════════");
-      console.log("📌 Previous currentPage ID:", state.currentPage?.id);
-      console.log(
-        "📌 Previous currentPage content:",
-        JSON.stringify(state.currentPage?.content, null, 2)
-      );
-      console.log("📌 New page ID:", action.payload.id);
-      console.log("📌 New page title:", action.payload.title);
-      console.log(
-        "📌 New page content:",
-        JSON.stringify(action.payload.content, null, 2)
-      );
-
       state.currentPage = action.payload;
       state.isEditing = true;
-
-      console.log("✅ editorSlice.currentPage updated");
-      console.log("═══════════════════════════════════════════════════\n");
     },
 
     clearCurrentPage: (state) => {
@@ -76,6 +60,10 @@ const editorSlice = createSlice({
     setCurrentPageToNull: (state) => {
       state.currentPage = null;
       state.isEditing = false;
+    },
+
+    setPreviewMode: (state, action: PayloadAction<boolean>) => {
+      state.isPreviewMode = action.payload;
     },
 
     // Content Editing (these actions will be undoable)
@@ -140,6 +128,7 @@ export const {
   setCurrentPage,
   clearCurrentPage,
   setCurrentPageToNull,
+  setPreviewMode,
   updatePageContent,
   updatePageTitle,
   setValidationErrors,
@@ -181,6 +170,7 @@ const undoableConfig = {
     "editor/setCurrentPage",
     "editor/clearCurrentPage",
     "editor/setCurrentPageToNull",
+    "editor/setPreviewMode",
     "editor/setValidationErrors",
     "editor/clearValidationErrors",
     "editor/markAsDraft",

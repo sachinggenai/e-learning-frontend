@@ -20,81 +20,30 @@ const PageEditor: React.FC<PageEditorProps> = ({ page }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  // Track render count and prop changes for debugging
-  const renderCountRef = React.useRef(0);
+  // Track last page id for navigation detection
   const lastPageIdRef = React.useRef(page.id);
-
-  React.useEffect(() => {
-    renderCountRef.current += 1;
-    const idChanged = lastPageIdRef.current !== page.id;
-
-    console.log(`\n🎨 PageEditor RENDER #${renderCountRef.current}`);
-    console.log("   Page prop ID:", page.id);
-    console.log("   Page prop title:", page.title);
-    console.log(
-      "   Page prop content keys:",
-      Object.keys(page.content || {}).join(", ")
-    );
-    console.log(
-      "   Page prop content sample:",
-      JSON.stringify(page.content).substring(0, 100)
-    );
-    console.log(
-      "   ID changed from last render?",
-      idChanged,
-      `(${lastPageIdRef.current} → ${page.id})`
-    );
-    console.log("   LocalPage ID:", localPage.id);
-    console.log(
-      "   LocalPage content keys:",
-      Object.keys(localPage.content || {}).join(", ")
-    );
-
-    lastPageIdRef.current = page.id;
-  });
 
   // --- EFFECTS ---
 
   /**
    * EFFECT 1: Sync on Navigation (Page ID Change Only)
-   * Fixed: Only triggers when navigating to a DIFFERENT page, not on save echoes
+   * Only triggers when navigating to a DIFFERENT page, not on save echoes
    */
   useEffect(() => {
-    console.log("═══════════════════════════════════════════════════");
-    console.log("📥 PageEditor useEffect TRIGGERED");
-    console.log("═══════════════════════════════════════════════════");
-    console.log("📌 Incoming page.id:", page.id);
-    console.log("📌 Incoming page.title:", page.title);
-    console.log(
-      "📌 Incoming page.content:",
-      JSON.stringify(page.content, null, 2)
-    );
-    console.log("📌 Current localPage.id:", localPage.id);
-    console.log(
-      "📌 Current localPage.content:",
-      JSON.stringify(localPage.content, null, 2)
-    );
-    console.log("📌 ID changed?", page.id !== localPage.id);
-
     // Only sync if we've navigated to a different page
     if (page.id !== localPage.id) {
-      console.log("✅ Page ID changed - syncing new page");
-
       // Warn if there are unsaved changes
       if (localPage !== committedPage) {
-        console.log("⚠️ User has unsaved changes - showing confirmation");
         const shouldDiscard = window.confirm(
           t("You have unsaved changes. Discard them and switch pages?")
         );
         if (!shouldDiscard) {
-          console.log("❌ User cancelled navigation");
           logger.info({
             event: "PageEditor.navigation.cancelled",
             message: "User cancelled navigation to preserve unsaved changes.",
           });
           return;
         }
-        console.log("✅ User confirmed - discarding changes");
       }
 
       logger.info({
@@ -106,18 +55,11 @@ const PageEditor: React.FC<PageEditorProps> = ({ page }) => {
         },
       });
 
-      console.log(
-        "💾 Setting localPage to:",
-        JSON.stringify(page.content, null, 2)
-      );
       setLocalPage(page);
       setCommittedPage(page);
       setSaveError(null);
-      console.log("✅ PageEditor state updated");
-    } else {
-      console.log("⏭️ Same page ID - skipping sync");
     }
-    console.log("═══════════════════════════════════════════════════\n");
+    lastPageIdRef.current = page.id;
   }, [page.id, localPage.id, localPage, committedPage]);
 
   /**
@@ -159,16 +101,6 @@ const PageEditor: React.FC<PageEditorProps> = ({ page }) => {
    * Fixed: Now async with proper error handling and data cleanup
    */
   const handleSave = async () => {
-    console.log("═══════════════════════════════════════════════════");
-    console.log("💾 PageEditor.handleSave INITIATED");
-    console.log("═══════════════════════════════════════════════════");
-    console.log("📌 Saving page ID:", localPage.id);
-    console.log("📌 Saving page title:", localPage.title);
-    console.log(
-      "📌 Saving page content:",
-      JSON.stringify(localPage.content, null, 2)
-    );
-
     setIsSaving(true);
     setSaveError(null);
 
@@ -177,7 +109,6 @@ const PageEditor: React.FC<PageEditorProps> = ({ page }) => {
       let cleanedPage = { ...localPage };
 
       if (normalizeTemplateType(localPage.templateType) === "mcq") {
-        console.log("🧹 Cleaning MCQ options...");
         // Remove empty options and trim existing ones
         const cleanedOptions =
           localPage.content?.options
@@ -198,7 +129,6 @@ const PageEditor: React.FC<PageEditorProps> = ({ page }) => {
           if (cleanedOptions.includes(trimmedCorrectAnswer)) {
             cleanedPage.content.correctAnswer = trimmedCorrectAnswer;
           } else {
-            // Check if the untrimmed correctAnswer matches any cleaned option
             const matchingOption = cleanedOptions.find(
               (opt: string) => opt === localPage.content.correctAnswer
             );
@@ -209,10 +139,6 @@ const PageEditor: React.FC<PageEditorProps> = ({ page }) => {
             }
           }
         }
-        console.log(
-          "✅ MCQ cleaned:",
-          JSON.stringify(cleanedPage.content, null, 2)
-        );
       }
 
       const updatedPage = {
@@ -220,44 +146,18 @@ const PageEditor: React.FC<PageEditorProps> = ({ page }) => {
         lastModified: new Date().toISOString(),
       };
 
-      console.log("📤 Dispatching updatePage to Redux...");
-      console.log(
-        "   Page content being dispatched:",
-        JSON.stringify(updatedPage.content).substring(0, 100)
-      );
-
       logger.info({
         event: "PageEditor.save.manual",
         message: "Manual save triggered. Dispatching update to Redux.",
         context: { pageId: updatedPage.id },
       });
 
-      // CRITICAL FIX: Update BOTH courseSlice AND editorSlice
-      // This ensures editorSlice.currentPage has the latest content
-      // so when we switch pages, it saves the correct data
-      dispatch(updatePage(updatedPage)); // Update courseSlice
-      dispatch(setCurrentPage(updatedPage)); // Update editorSlice ✅ NEW!
+      // Update BOTH courseSlice AND editorSlice
+      dispatch(updatePage(updatedPage));
+      dispatch(setCurrentPage(updatedPage));
 
-      // Only update committedPage after successful save
       setCommittedPage(updatedPage);
-      setLocalPage(updatedPage); // Also update localPage to reflect any backend changes
-
-      console.log("✅ PageEditor local state updated");
-      console.log(
-        "✅ BOTH courseSlice AND editorSlice updated with saved content"
-      );
-      console.log("\n🔬 VERIFICATION: Content saved to Redux?");
-      console.log(
-        "   We dispatched updatePage with content:",
-        JSON.stringify(updatedPage.content).substring(0, 100)
-      );
-      console.log(
-        "   Redux should now have this content in courseSlice.currentCourse.pages[]"
-      );
-      console.log(
-        "   To verify: Check the courseSlice.updatePage reducer logs above"
-      );
-      console.log("═══════════════════════════════════════════════════\n");
+      setLocalPage(updatedPage);
 
       logger.info({
         event: "PageEditor.save.success",
@@ -265,7 +165,6 @@ const PageEditor: React.FC<PageEditorProps> = ({ page }) => {
         context: { pageId: updatedPage.id },
       });
     } catch (error: any) {
-      console.log("❌ Save failed:", error);
       logger.error({
         event: "PageEditor.save.error",
         message: "Failed to save page.",
