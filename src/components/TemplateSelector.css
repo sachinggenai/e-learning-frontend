@@ -1,12 +1,12 @@
 /* ============================================================
-   Template Selector — Wix-Style Dark Modal
+   Template Selector — Modern Neutral Light Theme Modal
    ============================================================ */
 
 /* ── Overlay ─────────────────────────────────────────────── */
 .template-selector-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(10, 10, 18, 0.6);
+  background-color: rgba(15, 23, 42, 0.4);
   backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
@@ -113,7 +113,7 @@
 .template-search:focus {
   outline: none;
   border-color: var(--sidebar-accent);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.15);
 }
 
 /* ── Body grid ───────────────────────────────────────────── */
@@ -132,10 +132,10 @@
   overflow-y: auto;
 }
 
-/* Dark scrollbar */
+/* Light scrollbar */
 .template-list::-webkit-scrollbar { width: 5px; }
 .template-list::-webkit-scrollbar-track { background: transparent; }
-.template-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+.template-list::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.08); border-radius: 3px; }
 
 .template-list h3 {
   margin: 0 0 var(--space-3) 0;

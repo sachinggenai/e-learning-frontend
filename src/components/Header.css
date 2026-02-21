@@ -34,12 +34,20 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Left: Branding ────────────────────────────────────────────── */
+/* ── Left: Branding with Logo ────────────────────────────────────── */
 .header-left {
   display: flex;
   align-items: center;
   gap: var(--space-3);
   min-width: 0;
+  flex-shrink: 0;
+}
+
+.app-logo {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
 .app-title {
@@ -83,19 +91,33 @@
   line-height: 1;
 }
 
-/* ── Center: View Switcher ─────────────────────────────────────── */
+/* ── Center: App Title Right ─────────────────────────────────────── */
 .header-center {
   flex: 1;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
+  padding-right: var(--space-4);
+}
+
+.app-title-right {
+  display: flex;
+  align-items: center;
+}
+
+/* ── Navigation and Actions Wrapper ──────────────────────────────– */
+.header-nav-and-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-shrink: 0;
 }
 
 .view-switcher {
   display: flex;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(52, 152, 219, 0.08);
   border-radius: var(--radius-md);
   padding: 2px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(52, 152, 219, 0.15);
 }
 
 .nav-button {
@@ -118,14 +140,14 @@
 
 .nav-button:hover {
   opacity: 1;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(52, 152, 219, 0.1);
 }
 
 .nav-button.active {
-  background: var(--color-primary-600);
+  background: var(--color-primary-500);
   color: white;
   opacity: 1;
-  box-shadow: 0 1px 4px rgba(79, 70, 229, 0.3);
+  box-shadow: 0 1px 4px rgba(52, 152, 219, 0.3);
 }
 
 .nav-button:disabled {
@@ -155,9 +177,9 @@
   align-items: center;
   gap: 5px;
   padding: 5px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(52, 152, 219, 0.15);
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(52, 152, 219, 0.05);
   color: var(--topbar-text);
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -169,13 +191,13 @@
 }
 
 .action-button:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(52, 152, 219, 0.1);
   color: var(--topbar-text-bright);
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(52, 152, 219, 0.25);
 }
 
 .action-button:active {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(52, 152, 219, 0.08);
 }
 
 .action-button:disabled {
@@ -184,24 +206,26 @@
 }
 
 .action-button.primary {
-  background: rgba(16, 185, 129, 0.15);
-  border-color: rgba(16, 185, 129, 0.25);
-  color: #6ee7b7;
+  background: rgba(52, 152, 219, 0.15);
+  border-color: rgba(52, 152, 219, 0.35);
+  color: #2980b9;
+  font-weight: var(--font-semibold);
 }
 .action-button.primary:hover {
-  background: rgba(16, 185, 129, 0.25);
-  border-color: rgba(16, 185, 129, 0.4);
-  color: #a7f3d0;
+  background: rgba(52, 152, 219, 0.25);
+  border-color: rgba(52, 152, 219, 0.5);
+  color: #1a5276;
 }
 
 .action-button.danger {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.2);
-  color: #fca5a5;
+  background: rgba(231, 76, 60, 0.1);
+  border-color: rgba(231, 76, 60, 0.2);
+  color: #c0392b;
 }
 .action-button.danger:hover {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(231, 76, 60, 0.2);
+  border-color: rgba(231, 76, 60, 0.35);
+  color: #a93226;
 }
 
 .error-badge {

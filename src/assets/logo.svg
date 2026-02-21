@@ -1,0 +1,35 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Book/Learning Icon -->
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3498db;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Open Book Main Shape -->
+  <path d="M4 6C4 4.89543 4.89543 4 6 4H16V26H6C4.89543 26 4 25.1046 4 24V6Z" 
+        fill="url(#logoGradient)" />
+  <path d="M16 4H26C27.1046 4 28 4.89543 28 6V24C28 25.1046 27.1046 26 26 26H16V4Z" 
+        fill="url(#logoGradient)" opacity="0.7" />
+  
+  <!-- Spine divider -->
+  <line x1="16" y1="4" x2="16" y2="26" stroke="#FFFFFF" stroke-width="0.5" opacity="0.5" />
+  
+  <!-- Top accent bar (representing text) -->
+  <rect x="6" y="8" width="8" height="1.5" fill="#FFFFFF" opacity="0.9" rx="0.75" />
+  <rect x="18" y="8" width="8" height="1.5" fill="#FFFFFF" opacity="0.9" rx="0.75" />
+  
+  <!-- Text lines on pages -->
+  <rect x="6" y="11" width="8" height="0.8" fill="#FFFFFF" opacity="0.7" rx="0.4" />
+  <rect x="6" y="13" width="7" height="0.8" fill="#FFFFFF" opacity="0.7" rx="0.4" />
+  <rect x="6" y="15" width="8" height="0.8" fill="#FFFFFF" opacity="0.7" rx="0.4" />
+  
+  <rect x="18" y="11" width="8" height="0.8" fill="#FFFFFF" opacity="0.6" rx="0.4" />
+  <rect x="18" y="13" width="7" height="0.8" fill="#FFFFFF" opacity="0.6" rx="0.4" />
+  <rect x="18" y="15" width="8" height="0.8" fill="#FFFFFF" opacity="0.6" rx="0.4" />
+  
+  <!-- Bookmark accent -->
+  <path d="M12 2L12 10" stroke="#3498db" stroke-width="1.5" stroke-linecap="round" />
+  <circle cx="12" cy="2" r="1.5" fill="#3498db" />
+</svg>

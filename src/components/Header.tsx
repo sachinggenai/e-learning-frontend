@@ -28,6 +28,7 @@ import {
 } from "../store/slices/courseSlice";
 import { Course, HeaderProps } from "../types/comprehensive";
 import logger from "../utils/logger";
+import logoSvg from "../assets/logo.svg";
 import "./Header.css";
 import { useToast } from "./Toast";
 import { ValidationPanel } from "./ValidationPanel";
@@ -285,7 +286,7 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <header className="header">
       <div className="header-left">
-        <h1 className="app-title">eLearning Authoring Tool</h1>
+        <img src={logoSvg} alt="eLearning Logo" className="app-logo" />
         <div className="course-info">
           <span className="course-title">
             {course?.title || "Untitled Course"}
@@ -298,6 +299,12 @@ const Header: React.FC<HeaderProps> = ({
       </div>
 
       <div className="header-center">
+        <div className="app-title-right">
+          <h1 className="app-title">eLearning Authoring Tool</h1>
+        </div>
+      </div>
+
+      <div className="header-nav-and-actions">
         <nav className="view-switcher">
           <button
             className={`nav-button ${currentView === "editor" ? "active" : ""}`}
@@ -316,10 +323,9 @@ const Header: React.FC<HeaderProps> = ({
             Preview
           </button>
         </nav>
-      </div>
 
-      <div className="header-right">
-        <div className="action-buttons">
+        <div className="header-right">
+          <div className="action-buttons">
           <button
             className="action-button"
             onClick={handleSave}
@@ -369,6 +375,7 @@ const Header: React.FC<HeaderProps> = ({
           <span className="status-text">
             {isBackendConnected ? "API Connected" : "API Offline"}
           </span>
+        </div>
         </div>
       </div>
 

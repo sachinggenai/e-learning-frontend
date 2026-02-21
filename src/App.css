@@ -5,17 +5,17 @@
 
 /* ── Design Tokens ─────────────────────────────────────────────── */
 :root {
-  /* Primary palette (Indigo) */
-  --color-primary-50: #eef2ff;
-  --color-primary-100: #e0e7ff;
-  --color-primary-200: #c7d2fe;
-  --color-primary-300: #a5b4fc;
-  --color-primary-400: #818cf8;
-  --color-primary-500: #6366f1;
-  --color-primary-600: #4f46e5;
-  --color-primary-700: #4338ca;
-  --color-primary-800: #3730a3;
-  --color-primary-900: #312e81;
+  /* Primary palette (Modern Neutral - Sky Blue) */
+  --color-primary-50: #ebf7fd;
+  --color-primary-100: #d9edfc;
+  --color-primary-200: #b3d9f8;
+  --color-primary-300: #8dc4f2;
+  --color-primary-400: #67afed;
+  --color-primary-500: #3498db;
+  --color-primary-600: #2980b9;
+  --color-primary-700: #1e5a96;
+  --color-primary-800: #154373;
+  --color-primary-900: #0c2c50;
 
   /* Neutral palette (slate) */
   --color-gray-50: #f8fafc;
@@ -29,23 +29,23 @@
   --color-gray-800: #1e293b;
   --color-gray-900: #0f172a;
 
-  /* ── Dark sidebar tokens (Wix-inspired) ────────────────────── */
-  --sidebar-bg: #1e1e2e;
-  --sidebar-bg-hover: #2a2a3d;
-  --sidebar-bg-active: #33334d;
-  --sidebar-border: #2e2e44;
-  --sidebar-text: #c9cdd3;
-  --sidebar-text-muted: #8b8fa3;
-  --sidebar-text-bright: #f0f0f5;
-  --sidebar-accent: #818cf8;
-  --sidebar-section-bg: #252538;
+  /* ── Light sidebar tokens (Modern Neutral) ────────────────────── */
+  --sidebar-bg: #f5f7fa;
+  --sidebar-bg-hover: #ebf7fd;
+  --sidebar-bg-active: #dbe9f4;
+  --sidebar-border: #e2e8f0;
+  --sidebar-text: #2c3e50;
+  --sidebar-text-muted: #7f8c8d;
+  --sidebar-text-bright: #1a1a1a;
+  --sidebar-accent: #3498db;
+  --sidebar-section-bg: #ffffff;
 
-  /* ── Top bar tokens ────────────────────────────────────────── */
-  --topbar-bg: #17171f;
-  --topbar-border: #2a2a3a;
-  --topbar-text: #c9cdd3;
-  --topbar-text-bright: #f0f0f5;
-  --topbar-hover: #2a2a3d;
+  /* ── Top bar tokens (Light Theme) ─────────────────────────────── */
+  --topbar-bg: #ffffff;
+  --topbar-border: #e8eaed;
+  --topbar-text: #2c3e50;
+  --topbar-text-bright: #2c3e50;
+  --topbar-hover: #f0f3f6;
   --topbar-height: 48px;
 
   /* ── Canvas tokens ─────────────────────────────────────────── */
@@ -60,15 +60,15 @@
   --panel-header-bg: #f8fafc;
   --panel-width: 300px;
 
-  /* Semantic */
-  --color-success: #10b981;
-  --color-success-light: #d1fae5;
-  --color-warning: #f59e0b;
-  --color-warning-light: #fef3c7;
-  --color-error: #ef4444;
-  --color-error-light: #fee2e2;
-  --color-info: #3b82f6;
-  --color-info-light: #dbeafe;
+  /* Semantic (Modern Neutral) */
+  --color-success: #27ae60;
+  --color-success-light: #d5f4e6;
+  --color-warning: #f39c12;
+  --color-warning-light: #fef5e7;
+  --color-error: #e74c3c;
+  --color-error-light: #fadbd8;
+  --color-info: #3498db;
+  --color-info-light: #d6eaf8;
 
   /* Surface & backgrounds */
   --surface-ground: var(--canvas-bg);
@@ -83,7 +83,7 @@
   --text-secondary: #475569;
   --text-tertiary: #94a3b8;
   --text-inverse: #ffffff;
-  --text-link: #4f46e5;
+  --text-link: #3498db;
 
   /* Spacing scale (4px base) */
   --space-0: 0;
@@ -144,7 +144,7 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
   --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
-  --shadow-focus: 0 0 0 3px rgba(99, 102, 241, 0.25);
+  --shadow-focus: 0 0 0 3px rgba(52, 152, 219, 0.25);
 
   /* Transitions */
   --transition-fast: 100ms ease;
@@ -337,16 +337,16 @@ code {
   background: var(--color-gray-400);
 }
 
-/* Dark scrollbar for sidebars */
+/* Light scrollbar for sidebars */
 .dark-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
 .dark-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.08);
   border-radius: var(--radius-full);
 }
 .dark-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.15);
 }
 
 /* ── Utility Classes ───────────────────────────────────────────── */
