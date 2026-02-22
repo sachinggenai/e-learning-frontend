@@ -6,7 +6,32 @@
  */
 
 import React, { useEffect, useRef, useState } from "react";
-import { normalizeTemplateType } from "../constants/templateTypes";
+import type { LucideIcon } from "lucide-react";
+import {
+  BarChart3,
+  ClipboardCheck,
+  Columns,
+  Eye,
+  FileText,
+  Film,
+  FlaskConical,
+  GitMerge,
+  Hand,
+  Layers,
+  Map,
+  MessageSquare,
+  Route,
+  ShieldCheck,
+  Stethoscope,
+  Trophy,
+  Users,
+  Zap,
+} from "lucide-react";
+import {
+  COMPONENT_TYPE_CATEGORY,
+  normalizeTemplateType,
+  type ComponentCategory,
+} from "../constants/templateTypes";
 import { t } from "../i18n/strings";
 import { useAppDispatch, useAppSelector } from "../store";
 import {
@@ -241,24 +266,32 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
     }
   };
 
-  const getTemplateIcon = (type: string) => {
-    const t = normalizeTemplateType(type);
-    switch (t) {
-      case "welcome":
-        return "👋";
-      case "content-text":
-        return "📝";
-      case "content-video":
-        return "🎥";
-      case "mcq":
-        return "❓";
-      case "content-image":
-        return "🖼️";
-      case "interactive":
-        return "🎯";
-      default:
-        return "📄";
-    }
+  const categoryIconMap: Record<ComponentCategory, LucideIcon> = {
+    "content-presentation": Layers,
+    "process-flow": GitMerge,
+    interaction: Hand,
+    scenario: Route,
+    assessment: ClipboardCheck,
+    comparison: Columns,
+    "media-rich": Film,
+    microlearning: Zap,
+    navigation: Map,
+    gamification: Trophy,
+    compliance: ShieldCheck,
+    diagnostic: Stethoscope,
+    practice: FlaskConical,
+    feedback: MessageSquare,
+    social: Users,
+    accessibility: Eye,
+    analytics: BarChart3,
+  };
+
+  const getTemplateIcon = (type: string, size: "md" | "lg" = "md") => {
+    const normalized = normalizeTemplateType(type);
+    const category = COMPONENT_TYPE_CATEGORY[normalized] || "content-presentation";
+    const Icon = categoryIconMap[category] || FileText;
+    const iconSize = size === "lg" ? 32 : 24;
+    return <Icon size={iconSize} className="template-icon-svg" aria-hidden="true" />;
   };
 
   const getTemplateDescription = (template: Template) => {
@@ -376,17 +409,15 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                       }}
                     >
                       <div className="template-icon">
-                        {getTemplateIcon((template as any).type)}
+                        {getTemplateIcon((template as any).type, "md")}
                       </div>
-                      <div className="template-info">
-                        <h4>{(template as any).title}</h4>
-                        <p className="template-type">
-                          {(template as any).type}
-                        </p>
-                        <p className="template-description">
-                          {getTemplateDescription(template as any)}
-                        </p>
-                      </div>
+                      <h4>{(template as any).title}</h4>
+                      <p className="template-description">
+                        {getTemplateDescription(template as any)}
+                      </p>
+                      <p className="template-type">
+                        {(template as any).type}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -401,7 +432,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                   <div className="template-details">
                     <div className="detail-header">
                       <span className="template-icon large">
-                        {getTemplateIcon(selectedTemplate.type)}
+                        {getTemplateIcon(selectedTemplate.type, "lg")}
                       </span>
                       <div>
                         <h4>{selectedTemplate.title}</h4>

@@ -169,6 +169,10 @@
   cursor: pointer;
   transition: all var(--transition-fast) ease;
   background: var(--sidebar-section-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
   text-align: center;
 }
 
@@ -190,37 +194,56 @@
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
 }
 
-/* ── Template card content ───────────────────────────────── */
+/* ── Template icon (first row) ────────────────────────────── */
 .template-icon {
   font-size: 28px;
-  margin-bottom: var(--space-1_5);
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sidebar-accent);
+  order: 1;
 }
 
 .template-icon.large {
   font-size: 42px;
 }
 
-.template-info h4 {
-  margin: 0 0 2px 0;
+.template-icon-svg {
+  display: block;
+}
+
+/* ── Template title (second row) ────────────────────────────── */
+.template-card h4 {
+  margin: 0;
   font-size: var(--text-sm);
   font-weight: var(--font-semibold);
   color: var(--sidebar-text-bright);
+  order: 2;
+  text-align: center;
 }
 
-.template-type {
-  margin: 0 0 var(--space-1_5) 0;
-  font-size: var(--text-xs);
-  color: var(--sidebar-text-muted);
-  text-transform: capitalize;
-}
-
+/* ── Template description (third row) ───────────────────────── */
 .template-description {
   margin: 0;
   font-size: var(--text-xs);
   color: var(--sidebar-text);
   line-height: 1.45;
-  text-align: left;
+  text-align: center;
+  order: 3;
+}
+
+/* ── Template type (last row) ────────────────────────────── */
+.template-type {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--sidebar-text-muted);
+  text-transform: capitalize;
+  order: 4;
+  text-align: center;
+}
+
+.template-info {
+  width: 100%;
 }
 
 /* ── Preview panel (right column) ────────────────────────── */
