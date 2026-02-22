@@ -159,7 +159,7 @@ test.describe('UI Redesign - Light Theme & Layout Validation', () => {
       
       if (templateBox) {
         console.log(`  📏 Template width: ${templateBox.width}px / Window width: ${windowSize.width}px`);
-        const usagePercent = (templateBox.width / windowSize.width * 100).toFixed(1);
+        const usagePercent = parseFloat((templateBox.width / windowSize.width * 100).toFixed(1));
         console.log(`  📊 Width usage: ${usagePercent}%`);
         
         if (usagePercent > 90) {
