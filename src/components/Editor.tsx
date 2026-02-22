@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from "react";
+import { Plus, Palette, Edit3 } from "lucide-react";
 import { useAppSelector } from "../store";
 import { featureFlags } from "../utils/featureFlags";
 import { EditorProps } from "../types/comprehensive";
@@ -110,21 +111,30 @@ const Editor: React.FC<EditorProps> = ({
                   <h3>Quick Start:</h3>
                   <div className="quick-actions">
                     <div className="action-card">
-                      <h4>📝 Add Your First Page</h4>
+                      <div className="action-icon">
+                        <Plus size={24} />
+                      </div>
+                      <h4>Add Your First Page</h4>
                       <p>
                         Click the "<strong>+ Add Page</strong>" button in the
                         Page Manager to create a page from a template.
                       </p>
                     </div>
                     <div className="action-card">
-                      <h4>🎨 Choose a Template</h4>
+                      <div className="action-icon">
+                        <Palette size={24} />
+                      </div>
+                      <h4>Choose a Template</h4>
                       <p>
                         Select from welcome, video, quiz, content, and more
                         template types.
                       </p>
                     </div>
                     <div className="action-card">
-                      <h4>✏️ Edit Content</h4>
+                      <div className="action-icon">
+                        <Edit3 size={24} />
+                      </div>
+                      <h4>Edit Content</h4>
                       <p>
                         Click any page in the Page Manager to start editing its
                         content.

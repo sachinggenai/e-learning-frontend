@@ -8,6 +8,7 @@
  */
 
 import React, { useCallback, useEffect, useState } from 'react';
+import { Plus, Palette, Edit3 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../store';
 import type { AppDispatch, RootState } from '../store';
 import { fetchComponents, addComponent } from '../store/slices/componentsSlice';
@@ -136,15 +137,24 @@ const EditorV2: React.FC<EditorV2Props> = ({
                   <h3>Quick Start:</h3>
                   <div className="quick-actions">
                     <div className="action-card">
-                      <h4>📝 Add Your First Page</h4>
+                      <div className="action-icon">
+                        <Plus size={24} />
+                      </div>
+                      <h4>Add Your First Page</h4>
                       <p>Click the "<strong>+ Add Page</strong>" button in the Page Manager to create a page from a template.</p>
                     </div>
                     <div className="action-card">
-                      <h4>🎨 Choose Components</h4>
+                      <div className="action-icon">
+                        <Palette size={24} />
+                      </div>
+                      <h4>Choose Components</h4>
                       <p>Add text, images, video, quizzes, and interactive components to your pages.</p>
                     </div>
                     <div className="action-card">
-                      <h4>✏️ Edit Content</h4>
+                      <div className="action-icon">
+                        <Edit3 size={24} />
+                      </div>
+                      <h4>Edit Content</h4>
                       <p>Click any page in the Page Manager to start editing its content.</p>
                     </div>
                   </div>
