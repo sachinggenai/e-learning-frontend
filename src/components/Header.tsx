@@ -262,7 +262,6 @@ const Header: React.FC<HeaderProps> = ({
     return (
       <header className="header">
         <div className="header-left">
-          <h1 className="app-title">eLearning Authoring Tool</h1>
           <div className="course-info">
             <span className="course-title">No Course Loaded</span>
           </div>
@@ -286,7 +285,6 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <header className="header">
       <div className="header-left">
-        <img src={logoSvg} alt="eLearning Logo" className="app-logo" />
         <div className="course-info">
           <span className="course-title">
             {course?.title || "Untitled Course"}
@@ -295,12 +293,6 @@ const Header: React.FC<HeaderProps> = ({
             by {course?.author || "Unknown"} • v{course?.version || "1.0.0"}
             {isDirty && <span className="dirty-indicator">*</span>}
           </span>
-        </div>
-      </div>
-
-      <div className="header-center">
-        <div className="app-title-right">
-          <h1 className="app-title">eLearning Authoring Tool</h1>
         </div>
       </div>
 

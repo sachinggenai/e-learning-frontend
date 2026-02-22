@@ -17,6 +17,33 @@
   flex-shrink: 0;
 }
 
+/* Logo and App Title branding section on the left */
+.menu-bar-branding {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  margin-right: 8px;
+  border-right: 1px solid var(--topbar-border);
+}
+
+.menu-bar-branding .app-logo {
+  width: 24px;
+  height: 24px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.menu-bar-branding .app-title {
+  font-size: 13px;
+  font-weight: var(--font-bold);
+  color: var(--topbar-text);
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
 .menu-item {
   position: relative;
 }

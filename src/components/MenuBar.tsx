@@ -24,6 +24,7 @@ import MediaUpload from "./MediaUpload";
 import "./MenuBar.css";
 import { useToast } from "./Toast";
 import ValidationErrorModal from "./ValidationErrorModal";
+import logoSvg from "../assets/logo.svg";
 
 interface MenuItem {
   label?: string;
@@ -937,6 +938,12 @@ const MenuBar: React.FC = () => {
 
   return (
     <div className="menu-bar" ref={menuRef}>
+      {/* Logo and App Title section on the left */}
+      <div className="menu-bar-branding">
+        <img src={logoSvg} alt="eLearning Logo" className="app-logo" />
+        <h1 className="app-title">eLearning Authoring Tool</h1>
+      </div>
+
       {Object.entries(menus).map(([menuName, items], idx) => (
         <div key={menuName} className="menu-item">
           <button
