@@ -6,14 +6,16 @@
 import React, { useState } from "react";
 import { useAppSelector } from "../store";
 import { featureFlags } from "../utils/featureFlags";
+import { EditorProps } from "../types/comprehensive";
 import CustomTemplateEditor from "./CustomTemplateEditor";
 import "./Editor.css";
 import PageEditor from "./PageEditor";
 import PageManager from "./PageManager";
 
-const Editor: React.FC = () => {
-  const [showCustomTemplateEditor, setShowCustomTemplateEditor] =
-    useState(false);
+const Editor: React.FC<EditorProps> = ({
+  showCustomTemplateEditor = false,
+  onCloseTemplateEditor = () => {},
+}) => {
 
   // Safe Redux selector with null checking
   const courseState = useAppSelector((state) => (state as any).course);
@@ -76,7 +78,7 @@ const Editor: React.FC = () => {
       {featureFlags.isEnabled("custom-template") && (
         <CustomTemplateEditor
           isOpen={showCustomTemplateEditor}
-          onClose={() => setShowCustomTemplateEditor(false)}
+          onClose={onCloseTemplateEditor}
         />
       )}
 
@@ -88,18 +90,6 @@ const Editor: React.FC = () => {
 
         {/* Main Content Area */}
         <div className="editor-main">
-          {/* Custom Template Button */}
-          {featureFlags.isEnabled("custom-template") && (
-            <div className="editor-toolbar">
-              <button
-                className="btn btn-custom-template"
-                onClick={() => setShowCustomTemplateEditor(true)}
-                title="Create custom template"
-              >
-                ✨ Create Custom Template
-              </button>
-            </div>
-          )}
           {/* DEBUG: Check conditional rendering */}
           {currentPage ? (
             <PageEditor key={currentPage.id} page={currentPage} />

@@ -188,10 +188,17 @@ export interface HeaderProps {
   currentView: 'editor' | 'preview';
   onViewChange: (view: 'editor' | 'preview') => void;
   isBackendConnected: boolean;
+  onOpenTemplateEditor?: () => void;
 }
 
 export interface EditorProps {
-  // Editor component uses Redux — no required props
+  showCustomTemplateEditor?: boolean;
+  onCloseTemplateEditor?: () => void;
+}
+
+export interface EditorV2Props {
+  showCustomTemplateEditor?: boolean;
+  onCloseTemplateEditor?: () => void;
 }
 
 export interface DynamicComponentRendererProps {

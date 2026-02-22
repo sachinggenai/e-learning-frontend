@@ -29,6 +29,7 @@ import {
 import { Course, HeaderProps } from "../types/comprehensive";
 import logger from "../utils/logger";
 import logoSvg from "../assets/logo.svg";
+import { featureFlags } from "../utils/featureFlags";
 import "./Header.css";
 import { useToast } from "./Toast";
 import { ValidationPanel } from "./ValidationPanel";
@@ -37,6 +38,7 @@ const Header: React.FC<HeaderProps> = ({
   currentView,
   onViewChange,
   isBackendConnected,
+  onOpenTemplateEditor,
 }) => {
   const dispatch = useAppDispatch();
   const { validate, errors, warnings, hasErrors, hasWarnings, isValidating } =
@@ -314,6 +316,32 @@ const Header: React.FC<HeaderProps> = ({
             <Eye size={14} />
             Preview
           </button>
+          {onOpenTemplateEditor && featureFlags.isEnabled("custom-template") && (
+            <button
+              className="nav-button template-button"
+              onClick={onOpenTemplateEditor}
+              disabled={isLoading || !course}
+              title="Create a custom template from this course"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-copy"
+                aria-hidden="true"
+              >
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+              </svg>
+              Template
+            </button>
+          )}
         </nav>
 
         <div className="header-right">

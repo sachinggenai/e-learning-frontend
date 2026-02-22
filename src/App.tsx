@@ -49,6 +49,9 @@ const AppContent: React.FC = () => {
     loading: true,
   });
 
+  // Custom Template Editor state
+  const [showCustomTemplateEditor, setShowCustomTemplateEditor] = useState(false);
+
   // Check backend connectivity on mount
   useEffect(() => {
     const checkBackend = async () => {
@@ -98,13 +101,13 @@ const AppContent: React.FC = () => {
         currentView={appState.currentView}
         onViewChange={handleViewChange}
         isBackendConnected={appState.isBackendConnected}
+        onOpenTemplateEditor={() => setShowCustomTemplateEditor(true)}
       />
 
       <main id="main" className="app-main" tabIndex={-1}>
         {appState.currentView === "editor"
-          ? (featureFlags.isEnabled("v2-editor") ? <EditorV2 /> : <Editor />)
-          : (featureFlags.isEnabled("v2-preview") ? <PreviewV2 /> : <Preview />)
-        }
+          ? (featureFlags.isEnabled("v2-editor") ? <EditorV2 showCustomTemplateEditor={showCustomTemplateEditor} onCloseTemplateEditor={() => setShowCustomTemplateEditor(false)} /> : <Editor showCustomTemplateEditor={showCustomTemplateEditor} onCloseTemplateEditor={() => setShowCustomTemplateEditor(false)} />)
+          : (featureFlags.isEnabled("v2-preview") ? <PreviewV2 /> : <Preview />)}
       </main>
     </div>
   );

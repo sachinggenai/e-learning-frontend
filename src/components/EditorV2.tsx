@@ -14,15 +14,18 @@ import { fetchComponents, addComponent } from '../store/slices/componentsSlice';
 import { setCurrentPage, clearCurrentPage, updatePageTitle } from '../store/slices/editorSlice';
 import { updatePage } from '../store/slices/courseSlice';
 import { featureFlags } from '../utils/featureFlags';
+import { EditorV2Props } from '../types/comprehensive';
 import { ComponentList } from './ComponentList';
 import { ComponentSettings } from './ComponentSettings';
 import CustomTemplateEditor from './CustomTemplateEditor';
 import PageManager from './PageManager';
 import './Editor.css';
 
-const EditorV2: React.FC = () => {
+const EditorV2: React.FC<EditorV2Props> = ({
+  showCustomTemplateEditor = false,
+  onCloseTemplateEditor = () => {},
+}) => {
   const dispatch = useAppDispatch();
-  const [showCustomTemplateEditor, setShowCustomTemplateEditor] = useState(false);
   const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null);
 
   const courseState = useAppSelector((state) => (state as any).course);
@@ -80,7 +83,7 @@ const EditorV2: React.FC = () => {
       {featureFlags.isEnabled('custom-template') && (
         <CustomTemplateEditor
           isOpen={showCustomTemplateEditor}
-          onClose={() => setShowCustomTemplateEditor(false)}
+          onClose={onCloseTemplateEditor}
         />
       )}
 
@@ -92,19 +95,6 @@ const EditorV2: React.FC = () => {
 
         {/* Main Content Area */}
         <div className="editor-main">
-          {/* Custom Template Button */}
-          {featureFlags.isEnabled('custom-template') && (
-            <div className="editor-toolbar">
-              <button
-                className="btn btn-custom-template"
-                onClick={() => setShowCustomTemplateEditor(true)}
-                title="Create custom template"
-              >
-                ✨ Create Custom Template
-              </button>
-            </div>
-          )}
-
           {pageId ? (
             <div className="editor-v2__component-area">
               <div className="editor-v2__page-header">
