@@ -278,7 +278,7 @@ const legacyAliases: Record<string, ComponentTypeId> = {
 
 /**
  * Normalize a raw template/component type string to a canonical ComponentTypeId.
- * Handles legacy aliases and case-insensitive lookup.
+ * Handles legacy aliases, category names, and case-insensitive lookup.
  */
 export function normalizeTemplateType(
   raw: string | undefined | null,
@@ -288,6 +288,27 @@ export function normalizeTemplateType(
   if (key in legacyAliases) return legacyAliases[key];
   // Check if it's a valid component type ID
   if (key in COMPONENT_TYPE_CATEGORY) return key as ComponentTypeId;
+  // Check if it's a category name directly and map to a representative type
+  const categoryMap: Record<string, ComponentTypeId> = {
+    'content-presentation': 'tabs',
+    'process-flow': 'step-by-step',
+    'interaction': 'drag-and-drop',
+    'scenario': 'scenario',
+    'assessment': 'mcq',
+    'comparison': 'comparison-table',
+    'media-rich': 'video-slide',
+    'microlearning': 'microlearning-cards',
+    'navigation': 'course-menu',
+    'gamification': 'quiz-game',
+    'compliance': 'policy-acknowledgement',
+    'diagnostic': 'pre-assessment',
+    'practice': 'guided-practice',
+    'feedback': 'reflective-question',
+    'social': 'discussion-prompt',
+    'accessibility': 'accessibility-tip',
+    'analytics': 'progress-summary',
+  };
+  if (key in categoryMap) return categoryMap[key as ComponentCategory];
   // Default fallback
   return 'content-text';
 }
