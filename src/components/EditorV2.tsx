@@ -13,7 +13,7 @@ import { useAppDispatch, useAppSelector } from '../store';
 import type { AppDispatch, RootState } from '../store';
 import { fetchComponents, addComponent } from '../store/slices/componentsSlice';
 import { setCurrentPage, clearCurrentPage, updatePageTitle } from '../store/slices/editorSlice';
-import { updatePage } from '../store/slices/courseSlice';
+import { updatePageTitleThunk } from '../store/slices/courseSlice';
 import { featureFlags } from '../utils/featureFlags';
 import { EditorV2Props } from '../types/comprehensive';
 import { ComponentList } from './ComponentList';
@@ -103,10 +103,16 @@ const EditorV2: React.FC<EditorV2Props> = ({
                   className="editor-v2__page-title-input"
                   value={currentPage?.title ?? 'Untitled Page'}
                   onChange={(e) => {
-                    dispatch(updatePageTitle(e.target.value));
-                    // Also sync to courseSlice so it persists in the page list
-                    if (currentPage) {
-                      dispatch(updatePage({ ...currentPage, title: e.target.value }));
+                    const newTitle = e.target.value;
+                    // Update local editor state immediately
+                    dispatch(updatePageTitle(newTitle));
+                    // Persist to backend
+                    if (currentPage && courseId) {
+                      dispatch(updatePageTitleThunk({
+                        courseId,
+                        pageId: currentPage.id,
+                        title: newTitle
+                      }));
                     }
                   }}
                   placeholder="Enter page title..."

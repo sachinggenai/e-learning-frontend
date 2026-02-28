@@ -244,6 +244,29 @@ export const deletePageFromCourse = createAsyncThunk(
   }
 );
 
+// Update page title with backend persistence
+export const updatePageTitleThunk = createAsyncThunk(
+  "course/updatePageTitle",
+  async (
+    { courseId, pageId, title }: { courseId: string; pageId: string; title: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await pageService.updatePage(courseId, pageId, { title });
+      return response;
+    } catch (error: any) {
+      logger.error({
+        event: "updatePageTitleThunk.error",
+        message: "Failed to update page title",
+        context: { courseId, pageId, title, error: error.message },
+      });
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update page title"
+      );
+    }
+  }
+);
+
 const courseSlice = createSlice({
   name: "course",
   initialState,
@@ -421,6 +444,40 @@ const courseSlice = createSlice({
         state.saveStatus = "idle";
       }
     });
+
+    // Update Page Title (via PATCH /courses/{courseId}/pages/{pageId})
+    builder
+      .addCase(updatePageTitleThunk.pending, (state) => {
+        state.isSaving = true;
+        state.error = null;
+      })
+      .addCase(updatePageTitleThunk.fulfilled, (state, action) => {
+        state.isSaving = false;
+        if (state.currentCourse) {
+          const pageIndex = state.currentCourse.pages.findIndex(
+            (p) => p.id === action.payload.pageId || p.id === (action.payload as any).id
+          );
+          if (pageIndex !== -1) {
+            // Map backend response to frontend Page model
+            const responsePage = action.payload as any;
+            state.currentCourse.pages[pageIndex] = mapBackendPageToPage({
+              id: responsePage.pageId || responsePage.id,
+              course_id: responsePage.courseId || responsePage.course_id || "",
+              title: responsePage.title,
+              type: state.currentCourse.pages[pageIndex].templateType,
+              content: state.currentCourse.pages[pageIndex].content,
+              page_order: state.currentCourse.pages[pageIndex].order,
+              is_published: true,
+              created_at: responsePage.createdAt || state.currentCourse.pages[pageIndex].lastModified,
+              updated_at: responsePage.updatedAt || new Date().toISOString(),
+            });
+          }
+        }
+      })
+      .addCase(updatePageTitleThunk.rejected, (state, action) => {
+        state.isSaving = false;
+        state.error = action.payload as string;
+      });
   },
 });
 
