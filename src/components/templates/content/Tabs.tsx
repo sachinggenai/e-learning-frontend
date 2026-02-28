@@ -6,7 +6,7 @@
  * Self-registers with the component registry.
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
 
 // ─── Preview Component ───────────────────────────────────────────
@@ -17,8 +17,25 @@ export const TabsPreview: React.FC<ComponentPreviewProps> = ({
   onComplete,
 }) => {
   const tabs: Array<{ id: string; title: string; body: string }> = data.tabs || [];
-  const [activeTab, setActiveTab] = useState(data.defaultTabId || tabs[0]?.id || '');
+  const defaultTabId = useMemo(() => {
+    const configuredDefault = data.defaultTabId;
+    if (configuredDefault && tabs.some((tab) => tab.id === configuredDefault)) {
+      return configuredDefault;
+    }
+    return tabs[0]?.id || '';
+  }, [data.defaultTabId, tabs]);
+
+  const [activeTab, setActiveTab] = useState(defaultTabId);
   const [visitedTabs, setVisitedTabs] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    setActiveTab((currentTabId: string) => {
+      if (currentTabId && tabs.some((tab) => tab.id === currentTabId)) {
+        return currentTabId;
+      }
+      return defaultTabId;
+    });
+  }, [defaultTabId, tabs]);
 
   const handleTabClick = useCallback((tabId: string) => {
     setActiveTab(tabId);
@@ -44,19 +61,20 @@ export const TabsPreview: React.FC<ComponentPreviewProps> = ({
   }
 
   return (
-    <div className="tabs-component" role="tablist" aria-label="Content tabs">
-      <div className="tabs-header">
+    <div className="tpl-tabs-preview" role="presentation">
+      <div className="tpl-tabs-preview__tablist" role="tablist" aria-label="Content tabs">
         {tabs.map((tab) => (
           <button
             key={tab.id}
+            id={`tab-${tab.id}`}
+            type="button"
             role="tab"
             aria-selected={activeTab === tab.id}
             aria-controls={`tabpanel-${tab.id}`}
-            className={`tab-button ${activeTab === tab.id ? 'tab-button--active' : ''} ${visitedTabs.has(tab.id) ? 'tab-button--visited' : ''}`}
+            className={`tpl-tabs-preview__tab ${activeTab === tab.id ? 'tpl-tabs-preview__tab--active' : ''} ${visitedTabs.has(tab.id) ? 'tpl-tabs-preview__tab--visited' : ''}`}
             onClick={() => handleTabClick(tab.id)}
           >
             {tab.title}
-            {visitedTabs.has(tab.id) && <span className="tab-visited-indicator" aria-hidden="true">✓</span>}
           </button>
         ))}
       </div>
@@ -67,9 +85,9 @@ export const TabsPreview: React.FC<ComponentPreviewProps> = ({
           role="tabpanel"
           aria-labelledby={`tab-${tab.id}`}
           hidden={activeTab !== tab.id}
-          className="tab-panel"
+          className="tpl-tabs-preview__panel"
         >
-          <div dangerouslySetInnerHTML={{ __html: tab.body }} />
+          <div className="tpl-tabs-preview__panel-card" dangerouslySetInnerHTML={{ __html: tab.body }} />
         </div>
       ))}
     </div>
@@ -114,11 +132,11 @@ export const TabsEditor: React.FC<ComponentEditorProps> = ({
   }, [tabs, updateTabs]);
 
   return (
-    <div className="tabs-editor">
+    <div className="tabs-editor tpl-editor">
       <div className="tabs-editor__header">
         <h4>Tabs Editor</h4>
         <button
-          className="btn btn-sm btn-secondary"
+          className="tpl-btn tpl-btn--primary tpl-btn--sm"
           onClick={addTab}
           disabled={readOnly}
           aria-label="Add new tab"
@@ -127,11 +145,12 @@ export const TabsEditor: React.FC<ComponentEditorProps> = ({
         </button>
       </div>
 
-      <div className="tabs-editor__tab-list">
+      <div className="tpl-tabs-editor__tab-nav">
         {tabs.map((tab, index) => (
           <div key={tab.id} className={`tabs-editor__tab-item ${editingTab === index ? 'tabs-editor__tab-item--active' : ''}`}>
             <button
-              className="tabs-editor__tab-select"
+              type="button"
+              className={`tpl-tabs-editor__tab-btn ${editingTab === index ? 'tpl-tabs-editor__tab-btn--active' : ''}`}
               onClick={() => setEditingTab(index)}
               aria-label={`Edit ${tab.title}`}
             >
@@ -139,11 +158,12 @@ export const TabsEditor: React.FC<ComponentEditorProps> = ({
             </button>
             {tabs.length > 1 && !readOnly && (
               <button
-                className="tabs-editor__tab-remove"
+                type="button"
+                className="tpl-btn tpl-btn--danger tpl-btn--sm"
                 onClick={() => removeTab(index)}
                 aria-label={`Remove ${tab.title}`}
               >
-                ×
+                Remove
               </button>
             )}
           </div>

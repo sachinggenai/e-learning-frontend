@@ -7,16 +7,11 @@ import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 // Declare mock fn first so factory can reference it safely
 const mockHealthCheck = jest.fn();
-// Mock the API service
-jest.mock("./services/api", () => {
+// Mock backend health check client
+jest.mock("./services/httpClient", () => {
   return {
-    apiService: {
-      healthCheck: (...args: any[]) => mockHealthCheck(...args),
-      validateCourse: jest.fn(),
-      exportCourse: jest.fn(),
-      getExportFormats: jest.fn(),
-      uploadAsset: jest.fn(),
-      deleteAsset: jest.fn(),
+    httpClient: {
+      get: (...args: any[]) => mockHealthCheck(...args),
     },
   };
 });
@@ -46,8 +41,20 @@ jest.mock("./components/Editor", () => {
   };
 });
 
+jest.mock("./components/EditorV2", () => {
+  return function MockEditorV2() {
+    return <div data-testid="editor">Editor Component</div>;
+  };
+});
+
 jest.mock("./components/Preview", () => {
   return function MockPreview() {
+    return <div data-testid="preview">Preview Component</div>;
+  };
+});
+
+jest.mock("./components/PreviewV2", () => {
+  return function MockPreviewV2() {
     return <div data-testid="preview">Preview Component</div>;
   };
 });

@@ -85,7 +85,26 @@ export const ALL_COMPONENT_TYPES: ComponentTypeDetail[] = [
   ct('tabs', 'content-presentation', 'Tabs', 'Tabbed content panels with per-tab audio', 'panel-top',
     ['tabs', 'tabbed', 'panels'], ['view', 'interact', 'audio'], false,
     { perComponent: false, perInteraction: true, interactionPoints: ['per tab'] },
-    { tabs: [{ id: 'tab-1', title: 'Tab 1', body: 'Content for tab 1' }, { id: 'tab-2', title: 'Tab 2', body: 'Content for tab 2' }], defaultTabId: 'tab-1' }, 0),
+    {
+      tabs: [
+        {
+          id: 'tab-1',
+          title: 'Overview',
+          body: '<p>This section introduces the topic and explains why it matters in day-to-day work.</p>',
+        },
+        {
+          id: 'tab-2',
+          title: 'Key Steps',
+          body: '<p>Follow these core steps in sequence to complete the task accurately and consistently.</p>',
+        },
+        {
+          id: 'tab-3',
+          title: 'Best Practices',
+          body: '<p>Use these practical tips to avoid common mistakes and improve quality.</p>',
+        },
+      ],
+      defaultTabId: 'tab-1',
+    }, 0),
   ct('accordion', 'content-presentation', 'Accordion', 'Expandable/collapsible panels with per-panel audio', 'list-collapse',
     ['accordion', 'expand', 'collapse'], ['view', 'interact', 'audio'], false,
     { perComponent: false, perInteraction: true, interactionPoints: ['per panel'] },

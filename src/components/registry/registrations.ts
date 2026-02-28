@@ -177,8 +177,21 @@ r({
   audioSupport: { perComponent: false, perInteraction: true, interactionLabel: 'per tab' },
   defaultData: {
     tabs: [
-      { id: 'tab-1', title: 'Tab 1', body: '<p>Content for tab 1</p>' },
-      { id: 'tab-2', title: 'Tab 2', body: '<p>Content for tab 2</p>' },
+      {
+        id: 'tab-1',
+        title: 'Overview',
+        body: '<p>This section introduces the topic and explains why it matters in day-to-day work.</p>',
+      },
+      {
+        id: 'tab-2',
+        title: 'Key Steps',
+        body: '<p>Follow these core steps in sequence to complete the task accurately and consistently.</p>',
+      },
+      {
+        id: 'tab-3',
+        title: 'Best Practices',
+        body: '<p>Use these practical tips to avoid common mistakes and improve quality.</p>',
+      },
     ],
     defaultTabId: 'tab-1',
   },
