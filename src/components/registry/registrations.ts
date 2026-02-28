@@ -212,8 +212,21 @@ r({
   audioSupport: { perComponent: false, perInteraction: true, interactionLabel: 'per panel' },
   defaultData: {
     panels: [
-      { id: 'panel-1', title: 'Panel 1', body: '<p>Content for panel 1</p>' },
-      { id: 'panel-2', title: 'Panel 2', body: '<p>Content for panel 2</p>' },
+      {
+        id: 'panel-1',
+        title: 'Safety Guidelines',
+        body: '<p>Review the core safety protocols before starting work to reduce risk and ensure a secure environment.</p>',
+      },
+      {
+        id: 'panel-2',
+        title: 'Compliance Requirements',
+        body: '<p>Follow all applicable policies and regulatory standards to maintain quality and audit readiness.</p>',
+      },
+      {
+        id: 'panel-3',
+        title: 'Emergency Procedures',
+        body: '<p>Use the documented response steps to act quickly and effectively during incidents or unexpected events.</p>',
+      },
     ],
     allowMultipleOpen: false,
   },

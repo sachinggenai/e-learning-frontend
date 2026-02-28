@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useCallback } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
 
 // ─── Preview Component ───────────────────────────────────────────
@@ -55,28 +55,30 @@ export const AccordionPreview: React.FC<ComponentPreviewProps> = ({
   }
 
   return (
-    <div className="accordion-component" role="presentation">
+    <div className="tpl-accordion-preview" role="presentation">
       {panels.map((panel) => {
         const isOpen = openPanels.has(panel.id);
         return (
-          <div key={panel.id} className={`accordion-panel ${isOpen ? 'accordion-panel--open' : ''}`}>
+          <div key={panel.id} className={`tpl-accordion-preview__panel ${isOpen ? 'tpl-accordion-preview__panel--open' : ''}`}>
             <button
-              className="accordion-panel__header"
+              id={`accordion-header-${panel.id}`}
+              type="button"
+              className="tpl-accordion-preview__header"
               onClick={() => togglePanel(panel.id)}
               aria-expanded={isOpen}
               aria-controls={`accordion-body-${panel.id}`}
             >
-              <span className="accordion-panel__icon" aria-hidden="true">
-                {isOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+              <span className={`tpl-accordion-preview__chevron ${isOpen ? 'tpl-accordion-preview__chevron--open' : ''}`} aria-hidden="true">
+                <ChevronRight size={18} />
               </span>
-              <span className="accordion-panel__title">{panel.title}</span>
+              <span className="tpl-accordion-preview__title">{panel.title}</span>
               {visitedPanels.has(panel.id) && (
-                <span className="accordion-panel__visited" aria-label="Visited">✓</span>
+                <span className="tpl-accordion-preview__visited" aria-label="Visited">✓</span>
               )}
             </button>
             <div
               id={`accordion-body-${panel.id}`}
-              className="accordion-panel__body"
+              className="tpl-accordion-preview__body"
               role="region"
               aria-labelledby={`accordion-header-${panel.id}`}
               hidden={!isOpen}
@@ -125,11 +127,11 @@ export const AccordionEditor: React.FC<ComponentEditorProps> = ({
   }, [panels, updatePanels]);
 
   return (
-    <div className="accordion-editor">
+    <div className="accordion-editor tpl-editor">
       <div className="accordion-editor__header">
         <h4>Accordion Editor</h4>
         <div className="accordion-editor__controls">
-          <label className="form-checkbox">
+          <label className="accordion-editor__toggle">
             <input
               type="checkbox"
               checked={allowMultipleOpen}
@@ -139,7 +141,8 @@ export const AccordionEditor: React.FC<ComponentEditorProps> = ({
             Allow multiple panels open
           </label>
           <button
-            className="btn btn-sm btn-secondary"
+            type="button"
+            className="tpl-btn tpl-btn--primary tpl-btn--sm"
             onClick={addPanel}
             disabled={readOnly}
             aria-label="Add new panel"
@@ -164,7 +167,8 @@ export const AccordionEditor: React.FC<ComponentEditorProps> = ({
             />
             {panels.length > 1 && !readOnly && (
               <button
-                className="btn btn-sm btn-danger"
+                type="button"
+                className="tpl-btn tpl-btn--danger tpl-btn--sm"
                 onClick={() => removePanel(index)}
                 aria-label={`Remove panel ${index + 1}`}
               >

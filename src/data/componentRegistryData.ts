@@ -108,7 +108,26 @@ export const ALL_COMPONENT_TYPES: ComponentTypeDetail[] = [
   ct('accordion', 'content-presentation', 'Accordion', 'Expandable/collapsible panels with per-panel audio', 'list-collapse',
     ['accordion', 'expand', 'collapse'], ['view', 'interact', 'audio'], false,
     { perComponent: false, perInteraction: true, interactionPoints: ['per panel'] },
-    { panels: [{ id: 'panel-1', title: 'Panel 1', body: 'Content for panel 1' }, { id: 'panel-2', title: 'Panel 2', body: 'Content for panel 2' }], allowMultipleOpen: false }, 1),
+    {
+      panels: [
+        {
+          id: 'panel-1',
+          title: 'Safety Guidelines',
+          body: '<p>Review the core safety protocols before starting work to reduce risk and ensure a secure environment.</p>',
+        },
+        {
+          id: 'panel-2',
+          title: 'Compliance Requirements',
+          body: '<p>Follow all applicable policies and regulatory standards to maintain quality and audit readiness.</p>',
+        },
+        {
+          id: 'panel-3',
+          title: 'Emergency Procedures',
+          body: '<p>Use the documented response steps to act quickly and effectively during incidents or unexpected events.</p>',
+        },
+      ],
+      allowMultipleOpen: false,
+    }, 1),
   ct('click-reveal', 'content-presentation', 'Click and Reveal', 'Hidden content revealed on click with per-item audio', 'mouse-pointer-click',
     ['click', 'reveal', 'explore'], ['view', 'interact', 'audio'], false,
     { perComponent: false, perInteraction: true, interactionPoints: ['per reveal item'] },
