@@ -6,6 +6,7 @@
  */
 
 import React, { memo, useRef, useState } from "react";
+import { FileText, Home, Video, Image, HelpCircle, Zap, Box, Trash2, Check, AlertCircle } from 'lucide-react';
 import { normalizeTemplateType } from "../constants/templateTypes";
 import { t } from "../i18n/strings";
 import { useAppDispatch, useAppSelector } from "../store";
@@ -315,19 +316,19 @@ const PageManager: React.FC = () => {
     const t = normalizeTemplateType(templateType);
     switch (t) {
       case "welcome":
-        return "👋";
+        return <Home size={20} color="var(--sidebar-accent)" strokeWidth={2} aria-label="Welcome" />;
       case "content-text":
-        return "📝";
+        return <FileText size={20} color="var(--sidebar-accent)" strokeWidth={2} aria-label="Text" />;
       case "content-video":
-        return "🎥";
+        return <Video size={20} color="var(--sidebar-accent)" strokeWidth={2} aria-label="Video" />;
       case "mcq":
-        return "❓";
+        return <HelpCircle size={20} color="var(--sidebar-accent)" strokeWidth={2} aria-label="Quiz" />;
       case "content-image":
-        return "🖼️";
+        return <Image size={20} color="var(--sidebar-accent)" strokeWidth={2} aria-label="Image" />;
       case "interactive":
-        return "🎯";
+        return <Zap size={20} color="var(--sidebar-accent)" strokeWidth={2} aria-label="Interactive" />;
       default:
-        return "📄";
+        return <Box size={20} color="var(--sidebar-accent)" strokeWidth={2} aria-label="Page" />;
     }
   };
 
@@ -335,21 +336,21 @@ const PageManager: React.FC = () => {
     if (page.isDraft) {
       return (
         <span className="status-indicator draft" title="Draft">
-          Draft
+          <AlertCircle size={16} color="var(--sidebar-text-muted)" strokeWidth={2} aria-label="Draft" />
         </span>
       );
     }
     if (page.isValid) {
       return (
         <span className="status-indicator valid" title="Valid">
-          ✓
+          <Check size={16} color="var(--success, #22c55e)" strokeWidth={2} aria-label="Valid" />
         </span>
       );
     }
     if (page.isValid === false) {
       return (
         <span className="status-indicator invalid" title="Has errors">
-          !
+          <AlertCircle size={16} color="var(--error, #ef4444)" strokeWidth={2} aria-label="Error" />
         </span>
       );
     }
@@ -443,7 +444,7 @@ interface PageItemProps {
   onDragOver: (e: React.DragEvent) => void;
   onDrop: (id: string, e: React.DragEvent) => void;
   onDragEnd: () => void;
-  getPageIcon: (type: string) => string;
+  getPageIcon: (type: string) => JSX.Element;
   getPageStatusIndicator: (p: Page) => React.ReactNode;
 }
 
@@ -563,47 +564,55 @@ const PageItem: React.FC<PageItemProps> = ({
       onDrop={(e) => onDrop(page.id, e)}
       onDragEnd={onDragEnd}
     >
-      <div className="page-order">{index + 1}</div>
-      <div className="page-icon">{getPageIcon(page.templateType)}</div>
-      <div className="page-info">
-        {isEditingTitle ? (
-          <input
-            ref={inputRef}
-            type="text"
-            className="page-title-input"
-            value={editingValue}
-            onChange={(e) => setEditingValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
-            onFocus={handleInputFocus}
-            onClick={(e) => e.stopPropagation()}
-            disabled={isSaving}
-            autoComplete="off"
-          />
-        ) : (
-          <div 
-            className="page-title" 
-            onDoubleClick={handleDoubleClick}
-            title="Double-click to edit"
-          >
-            {page.title}
-          </div>
-        )}
-        <div className="page-meta">
+      <div className="page-top-row">
+        <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+          <div className="page-icon">{getPageIcon(page.templateType)}</div>
           <span className="page-type">{page.templateType}</span>
-          {getPageStatusIndicator(page)}
-          {isSaving && <span className="saving-indicator">Saving...</span>}
+        </div>
+        <div className="page-actions">
+          <button
+            className="delete-page-button"
+            onClick={(e) => onDelete(page.id, e)}
+            title="Delete page"
+            aria-label={`Delete ${page.title}`}
+          >
+            <Trash2 size={16} color="#f87171" strokeWidth={2} aria-label="Delete" />
+          </button>
         </div>
       </div>
-      <div className="page-actions">
-        <button
-          className="delete-page-button"
-          onClick={(e) => onDelete(page.id, e)}
-          title="Delete page"
-          aria-label={`Delete ${page.title}`}
-        >
-          🗑️
-        </button>
+      <div className="page-bottom-row">
+        <div className="page-order" aria-label={`Page order ${index + 1}`}>{index + 1}</div>
+        <div className="page-info">
+          {isEditingTitle ? (
+            <input
+              ref={inputRef}
+              type="text"
+              className="page-title-input"
+              value={editingValue}
+              onChange={(e) => setEditingValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onBlur={handleBlur}
+              onFocus={handleInputFocus}
+              onClick={(e) => e.stopPropagation()}
+              disabled={isSaving}
+              autoComplete="off"
+              style={{ textAlign: 'left' }}
+            />
+          ) : (
+            <div
+              className="page-title"
+              onDoubleClick={handleDoubleClick}
+              title="Double-click to edit"
+              style={{ textAlign: 'left' }}
+            >
+              {page.title}
+            </div>
+          )}
+          <div className="page-meta">
+            {getPageStatusIndicator(page)}
+            {isSaving && <span className="saving-indicator">Saving...</span>}
+          </div>
+        </div>
       </div>
     </div>
   );

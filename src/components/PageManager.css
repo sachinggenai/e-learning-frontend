@@ -1,3 +1,16 @@
+/* Top and bottom row for sidebar page item layout */
+.page-top-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.page-bottom-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
 /* ================================================================
    Page Manager — Wix-Style Dark Sidebar Page Navigation
    ================================================================ */
@@ -61,33 +74,42 @@
   cursor: not-allowed;
 }
 
-.button-icon {
-  font-size: var(--text-md);
-  font-weight: bold;
-  line-height: 1;
-}
 
-/* ── Page List ─────────────────────────────────────────────────── */
-.page-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--space-2);
+.page-order {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  background: var(--sidebar-bg-hover);
+  color: var(--sidebar-text-muted);
+  border-radius: 50%;
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  border: 1px solid var(--sidebar-border);
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
 }
-
-/* Light scrollbar for sidebar */
-.page-list::-webkit-scrollbar { width: 5px; }
 .page-list::-webkit-scrollbar-track { background: transparent; }
 .page-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 3px; }
 .page-list::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.15); }
 
+  border: 1px solid var(--sidebar-accent);
 .empty-state {
   text-align: center;
-  padding: var(--space-8) var(--space-4);
-  color: var(--sidebar-text-muted);
+.page-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+  margin-right: 6px;
+  line-height: 1;
+  flex-shrink: 0;
 }
-
-.empty-state p {
-  margin: 0 0 var(--space-2);
   font-size: var(--text-sm);
   color: var(--sidebar-text-muted);
 }
@@ -95,6 +117,7 @@
 .empty-hint {
   font-size: var(--text-xs);
   font-style: italic;
+  justify-content: center;
   color: var(--sidebar-text-muted);
   opacity: 0.65;
 }
@@ -108,11 +131,13 @@
 /* ── Page Item (Dark Card) ─────────────────────────────────────── */
 .page-item {
   display: flex;
-  align-items: flex-start;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding: 8px 18px 8px 12px;
   background: transparent;
   border: 1px solid transparent;
+  border-bottom: 1px solid var(--sidebar-border, #374151);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -145,12 +170,15 @@
   justify-content: center;
   width: 22px;
   height: 22px;
-  margin-top: 2px;
-  background: rgba(255,255,255,0.08);
+  margin-top: 0;
+  margin-right: 2px;
+  background: var(--sidebar-bg-hover);
   color: var(--sidebar-text-muted);
-  border-radius: var(--radius-sm);
+  border-radius: 50%;
   font-size: var(--text-xs);
   font-weight: var(--font-bold);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  border: 1px solid var(--sidebar-border);
   flex-shrink: 0;
   transition: all var(--transition-fast);
 }
@@ -158,13 +186,19 @@
 .page-item.active .page-order {
   background: var(--sidebar-accent);
   color: var(--text-inverse);
+  border: 1px solid var(--sidebar-accent);
 }
 
 .page-icon {
-  font-size: var(--text-lg);
-  flex-shrink: 0;
-  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-top: 0;
+  margin-right: 2px;
   line-height: 1;
+  flex-shrink: 0;
 }
 
 /* ── Page Info ─────────────────────────────────────────────────── */
@@ -172,24 +206,26 @@
   flex: 1;
   min-width: 0;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
 }
 
 .page-title {
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
   color: var(--sidebar-text);
-  margin-bottom: 1px;
+  margin-bottom: 0;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
   line-height: 1.4;
   cursor: text;
-  padding: 2px 4px;
+  padding: 2px 0 2px 0;
   border-radius: var(--radius-sm);
   transition: background var(--transition-fast);
   min-height: 1.4em;
+  text-align: left;
 }
 
 .page-title:hover {
@@ -240,6 +276,9 @@
 .page-type {
   color: var(--sidebar-text-muted);
   text-transform: capitalize;
+  font-size: 11px;
+  margin-top: 2px;
+  margin-left: 0;
 }
 
 /* Saving Indicator */
@@ -261,37 +300,57 @@
 }
 
 /* ── Status Badges ─────────────────────────────────────────────── */
+
 .status-indicator {
-  padding: 1px 6px;
-  border-radius: var(--radius-full);
-  font-size: 9px;
-  font-weight: var(--font-bold);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0;
+  padding: 0 2px;
+  border-radius: var(--radius-sm);
+  margin-left: 6px;
+  transition: color var(--transition-fast);
+  background: none;
 }
 
-.status-indicator.draft {
-  background: rgba(251, 191, 36, 0.15);
-  color: #fbbf24;
+.status-indicator.draft svg {
+  color: var(--sidebar-text-muted);
 }
 
-.status-indicator.valid {
-  background: rgba(52, 211, 153, 0.15);
-  color: #34d399;
+.status-indicator.valid svg {
+  color: var(--success, #22c55e);
 }
 
-.status-indicator.invalid {
-  background: rgba(248, 113, 113, 0.15);
-  color: #f87171;
+.status-indicator.invalid svg {
+  color: var(--error, #ef4444);
 }
 
 /* ── Page Actions (show on hover) ──────────────────────────────── */
 .page-actions {
   display: flex;
   align-items: center;
-  gap: 2px;
-  opacity: 0;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
   transition: opacity var(--transition-fast);
+
+.page-top-row .page-icon svg {
+  width: 13px;
+  height: 13px;
+}
+
+.page-top-row .page-type {
+  font-weight: 500;
+}
+
+.page-top-row .page-actions {
+  margin-left: auto;
+}
+
+.page-top-row .delete-page-button svg {
+  width: 16px;
+  height: 16px;
+}
   margin-top: 2px;
 }
 
