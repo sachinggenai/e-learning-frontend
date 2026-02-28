@@ -15,6 +15,7 @@ import {
   removePage,
   reorderPages,
   updatePage,
+  updatePageTitleThunk,
 } from "../store/slices/courseSlice";
 import { clearCurrentPage, setCurrentPage } from "../store/slices/editorSlice";
 import logger from "../utils/logger";
@@ -239,6 +240,28 @@ const PageManager: React.FC = () => {
     }
   };
 
+  const handlePageTitleEdit = React.useCallback(
+    (pageId: string, newTitle: string) => {
+      const apiCourseId = currentCourse?.courseId || String(currentCourse?.id ?? '');
+      if (!apiCourseId) return;
+
+      dispatch(
+        updatePageTitleThunk({
+          courseId: apiCourseId,
+          pageId,
+          title: newTitle,
+        })
+      );
+
+      logger.info({
+        event: "page.title.updated",
+        message: "Page title updated from PageManager",
+        context: { pageId, newTitle },
+      });
+    },
+    [currentCourse, dispatch]
+  );
+
   const dragImageRef = useRef<HTMLDivElement | null>(null);
 
   const handleDragStart = (page: Page, ev: React.DragEvent) => {
@@ -362,8 +385,10 @@ const PageManager: React.FC = () => {
                 page={page}
                 index={index}
                 active={currentPage?.id === page.id}
+                courseId={currentCourse?.courseId || String(currentCourse?.id ?? '')}
                 onSelect={handlePageSelect}
                 onDelete={handleDeletePage}
+                onTitleEdit={handlePageTitleEdit}
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
@@ -410,8 +435,10 @@ interface PageItemProps {
   page: Page;
   index: number;
   active: boolean;
+  courseId: string;
   onSelect: (p: Page) => void;
   onDelete: (id: string, e: React.MouseEvent) => void;
+  onTitleEdit: (pageId: string, newTitle: string) => void;
   onDragStart: (p: Page, e: React.DragEvent) => void;
   onDragOver: (e: React.DragEvent) => void;
   onDrop: (id: string, e: React.DragEvent) => void;
@@ -424,8 +451,10 @@ const PageItem: React.FC<PageItemProps> = ({
   page,
   index,
   active,
+  courseId,
   onSelect,
   onDelete,
+  onTitleEdit,
   onDragStart,
   onDragOver,
   onDrop,
@@ -433,11 +462,102 @@ const PageItem: React.FC<PageItemProps> = ({
   getPageIcon,
   getPageStatusIndicator,
 }) => {
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [editingValue, setEditingValue] = useState(page.title);
+  const [isSaving, setIsSaving] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Update editingValue when page.title changes externally
+  React.useEffect(() => {
+    if (!isEditingTitle) {
+      setEditingValue(page.title);
+    }
+  }, [page.title, isEditingTitle]);
+
+  // Focus input when entering edit mode
+  React.useEffect(() => {
+    if (isEditingTitle && inputRef.current) {
+      // Clear any pending blur timeout
+      if (blurTimeoutRef.current) {
+        clearTimeout(blurTimeoutRef.current);
+        blurTimeoutRef.current = null;
+      }
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditingTitle]);
+
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsEditingTitle(true);
+    setEditingValue(page.title);
+  };
+
+  const handleSave = React.useCallback(() => {
+    const trimmedTitle = editingValue.trim();
+    
+    // Don't save if empty or unchanged
+    if (!trimmedTitle || trimmedTitle === page.title) {
+      setIsEditingTitle(false);
+      setEditingValue(page.title);
+      return;
+    }
+
+    setIsSaving(true);
+    onTitleEdit(page.id, trimmedTitle);
+    setIsEditingTitle(false);
+    // Note: isSaving gets reset in parent component after API response
+  }, [editingValue, page.title, page.id, onTitleEdit]);
+
+  const handleCancel = React.useCallback(() => {
+    setIsEditingTitle(false);
+    setEditingValue(page.title);
+  }, [page.title]);
+
+  const handleKeyDown = React.useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSave();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        handleCancel();
+      }
+    },
+    [handleSave, handleCancel]
+  );
+
+  const handleBlur = React.useCallback(() => {
+    // Debounce blur to avoid closing edit mode immediately
+    // Only save if user truly clicked outside and stays outside for 100ms
+    blurTimeoutRef.current = setTimeout(() => {
+      handleSave();
+    }, 100);
+  }, [handleSave]);
+
+  const handleInputFocus = React.useCallback(() => {
+    // If focus returns to input, cancel the blur timeout
+    if (blurTimeoutRef.current) {
+      clearTimeout(blurTimeoutRef.current);
+      blurTimeoutRef.current = null;
+    }
+  }, []);
+
+  React.useEffect(() => {
+    return () => {
+      // Cleanup timeout on unmount
+      if (blurTimeoutRef.current) {
+        clearTimeout(blurTimeoutRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div
-      className={`page-item ${active ? "active" : ""}`}
-      onClick={() => onSelect(page)}
-      draggable
+      className={`page-item ${active ? "active" : ""} ${isSaving ? "saving" : ""}`}
+      onClick={() => !isEditingTitle && onSelect(page)}
+      draggable={!isEditingTitle}
       onDragStart={(e) => onDragStart(page, e)}
       onDragOver={onDragOver}
       onDrop={(e) => onDrop(page.id, e)}
@@ -446,10 +566,33 @@ const PageItem: React.FC<PageItemProps> = ({
       <div className="page-order">{index + 1}</div>
       <div className="page-icon">{getPageIcon(page.templateType)}</div>
       <div className="page-info">
-        <div className="page-title">{page.title}</div>
+        {isEditingTitle ? (
+          <input
+            ref={inputRef}
+            type="text"
+            className="page-title-input"
+            value={editingValue}
+            onChange={(e) => setEditingValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
+            onFocus={handleInputFocus}
+            onClick={(e) => e.stopPropagation()}
+            disabled={isSaving}
+            autoComplete="off"
+          />
+        ) : (
+          <div 
+            className="page-title" 
+            onDoubleClick={handleDoubleClick}
+            title="Double-click to edit"
+          >
+            {page.title}
+          </div>
+        )}
         <div className="page-meta">
           <span className="page-type">{page.templateType}</span>
           {getPageStatusIndicator(page)}
+          {isSaving && <span className="saving-indicator">Saving...</span>}
         </div>
       </div>
       <div className="page-actions">

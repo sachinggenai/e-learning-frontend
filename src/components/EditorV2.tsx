@@ -7,8 +7,8 @@
  * Layout: sidebar (PageManager) + main area (ComponentList for selected page)
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { Plus, Palette, Edit3 } from 'lucide-react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { Plus, Palette, Edit3, Check, X } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../store';
 import type { AppDispatch, RootState } from '../store';
 import { fetchComponents, addComponent } from '../store/slices/componentsSlice';
@@ -28,6 +28,10 @@ const EditorV2: React.FC<EditorV2Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [editingTitle, setEditingTitle] = useState('');
+  const titleDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const courseState = useAppSelector((state) => (state as any).course);
   const currentCourse = courseState?.currentCourse ?? null;
@@ -54,6 +58,67 @@ const EditorV2: React.FC<EditorV2Props> = ({
       dispatch(fetchComponents({ courseId, pageId }));
     }
   }, [dispatch, courseId, pageId]);
+
+  // Cleanup title debounce timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (titleDebounceRef.current) {
+        clearTimeout(titleDebounceRef.current);
+      }
+    };
+  }, []);
+
+  // Focus input when entering edit mode
+  useEffect(() => {
+    if (isEditingTitle && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditingTitle]);
+
+  // Enter edit mode
+  const handleEditTitle = () => {
+    setEditingTitle(currentPage?.title ?? 'Untitled Page');
+    setIsEditingTitle(true);
+  };
+
+  // Save title
+  const handleSaveTitle = () => {
+    const trimmedTitle = editingTitle.trim();
+    if (!trimmedTitle || trimmedTitle === currentPage?.title) {
+      setIsEditingTitle(false);
+      return;
+    }
+
+    dispatch(updatePageTitle(trimmedTitle));
+    
+    if (currentPage && courseId) {
+      dispatch(updatePageTitleThunk({
+        courseId,
+        pageId: currentPage.id,
+        title: trimmedTitle
+      }));
+    }
+
+    setIsEditingTitle(false);
+  };
+
+  // Cancel edit
+  const handleCancelEdit = () => {
+    setIsEditingTitle(false);
+    setEditingTitle('');
+  };
+
+  // Handle key press in input
+  const handleTitleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSaveTitle();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      handleCancelEdit();
+    }
+  };
 
   /* ── No course loaded ──────────────────────────────────────── */
   if (!currentCourse) {
@@ -99,25 +164,48 @@ const EditorV2: React.FC<EditorV2Props> = ({
           {pageId ? (
             <div className="editor-v2__component-area">
               <div className="editor-v2__page-header">
-                <input
-                  className="editor-v2__page-title-input"
-                  value={currentPage?.title ?? 'Untitled Page'}
-                  onChange={(e) => {
-                    const newTitle = e.target.value;
-                    // Update local editor state immediately
-                    dispatch(updatePageTitle(newTitle));
-                    // Persist to backend
-                    if (currentPage && courseId) {
-                      dispatch(updatePageTitleThunk({
-                        courseId,
-                        pageId: currentPage.id,
-                        title: newTitle
-                      }));
-                    }
-                  }}
-                  placeholder="Enter page title..."
-                  aria-label="Page title"
-                />
+                {isEditingTitle ? (
+                  <div className="editor-v2__title-edit-mode">
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      className="editor-v2__page-title-input"
+                      value={editingTitle}
+                      onChange={(e) => setEditingTitle(e.target.value)}
+                      onKeyDown={handleTitleKeyDown}
+                      placeholder="Enter page title..."
+                      aria-label="Page title"
+                    />
+                    <button
+                      className="editor-v2__title-save-btn"
+                      onClick={handleSaveTitle}
+                      title="Save title (Enter)"
+                      aria-label="Save title"
+                    >
+                      <Check size={18} />
+                    </button>
+                    <button
+                      className="editor-v2__title-cancel-btn"
+                      onClick={handleCancelEdit}
+                      title="Cancel (Esc)"
+                      aria-label="Cancel"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="editor-v2__title-view-mode">
+                    <span className="editor-v2__page-title">{currentPage?.title ?? 'Untitled Page'}</span>
+                    <button
+                      className="editor-v2__title-edit-btn"
+                      onClick={handleEditTitle}
+                      title="Edit title"
+                      aria-label="Edit title"
+                    >
+                      <Edit3 size={16} />
+                    </button>
+                  </div>
+                )}
               </div>
               {componentError && (
                 <div className="editor-v2__error-banner" role="alert">

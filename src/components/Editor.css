@@ -715,14 +715,6 @@
   border-bottom: 1px solid var(--surface-border);
 }
 
-.editor-v2__page-title {
-  margin: 0;
-  font-size: var(--text-xl);
-  font-weight: var(--font-bold);
-  color: var(--text-primary);
-  letter-spacing: -0.01em;
-}
-
 .editor-v2__page-title-input {
   width: 100%;
   margin: 0;
@@ -747,6 +739,115 @@
   border-color: var(--accent-primary);
   background: var(--surface-primary);
   box-shadow: 0 0 0 2px rgba(56, 132, 255, 0.15);
+}
+
+/* Title Edit/View Mode Containers */
+.editor-v2__title-view-mode {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  transition: background-color 0.15s ease;
+}
+
+.editor-v2__title-view-mode:hover {
+  background: var(--surface-secondary);
+}
+
+.editor-v2__page-title {
+  flex: 1;
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  word-break: break-word;
+}
+
+.editor-v2__title-edit-btn,
+.editor-v2__title-save-btn,
+.editor-v2__title-cancel-btn {
+  padding: 6px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
+}
+
+.editor-v2__title-edit-btn {
+  opacity: 0;
+  color: var(--text-secondary);
+}
+
+.editor-v2__title-view-mode:hover .editor-v2__title-edit-btn {
+  opacity: 1;
+}
+
+.editor-v2__title-edit-btn:hover {
+  background: var(--surface-tertiary);
+  color: var(--accent-primary);
+}
+
+/* Title Edit Mode */
+.editor-v2__title-edit-mode {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1);
+  background: var(--surface-secondary);
+  border: 1px solid var(--accent-primary);
+  border-radius: var(--radius-sm);
+}
+
+.editor-v2__title-edit-mode .editor-v2__page-title-input {
+  flex: 1;
+  margin: 0;
+  padding: 4px 6px;
+  background: var(--surface-primary);
+  border: 1px solid var(--surface-border);
+  box-shadow: none;
+}
+
+.editor-v2__title-edit-mode .editor-v2__page-title-input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: none;
+}
+/* Fixed stray line, restored correct selector */
+.editor-v2__title-save-btn {
+  color: var(--success, #22c55e);
+  border: 1px solid var(--success, #22c55e);
+}
+
+.editor-v2__title-save-btn:hover {
+  background: var(--success, #22c55e);
+  color: white;
+  transform: scale(1.05);
+}
+
+.editor-v2__title-cancel-btn {
+  background: var(--surface-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--surface-border);
+}
+
+.editor-v2__title-cancel-btn:hover {
+  background: var(--error-bg, rgba(239, 68, 68, 0.1));
+  color: var(--error, #ef4444);
+  border-color: var(--error, #ef4444);
+  transform: scale(1.05);
+}
+
+.editor-v2__title-cancel-btn:active {
+  background: var(--error, #ef4444);
+  color: white;
 }
 
 .editor-v2__error-banner {
