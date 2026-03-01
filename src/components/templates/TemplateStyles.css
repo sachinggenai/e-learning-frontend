@@ -894,3 +894,57 @@
     overflow-x: auto;
   }
 }
+/* ═══════════════════════════════════════════════════════════════
+ *  Click and Reveal
+ * ═══════════════════════════════════════════════════════════════ */
+.tpl-click-reveal-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: var(--theme-background, #fff);
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 8px;
+}
+
+.tpl-click-reveal-preview__item {
+  padding: 14px 18px;
+  border: 2px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  background: var(--theme-surface, #f8fafc);
+  color: var(--theme-text, #1e293b);
+  font-size: 15px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.tpl-click-reveal-preview__item--revealed {
+  border-color: var(--theme-primary, #2563eb);
+  background: #eff6ff;
+  color: var(--theme-primary, #2563eb);
+}
+
+.tpl-click-reveal-preview__item-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.tpl-click-reveal-preview__item-desc {
+  font-size: 14px;
+  color: var(--theme-text-secondary, #64748b);
+}
+
+.tpl-click-reveal-preview__reveal-btn {
+  margin-top: 10px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: var(--theme-primary, #2563eb);
+  color: #fff;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.tpl-click-reveal-preview__reveal-btn:hover {
+  background: #1d4ed8;
+}

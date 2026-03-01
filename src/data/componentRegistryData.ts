@@ -129,9 +129,32 @@ export const ALL_COMPONENT_TYPES: ComponentTypeDetail[] = [
       allowMultipleOpen: false,
     }, 1),
   ct('click-reveal', 'content-presentation', 'Click and Reveal', 'Hidden content revealed on click with per-item audio', 'mouse-pointer-click',
-    ['click', 'reveal', 'explore'], ['view', 'interact', 'audio'], false,
-    { perComponent: false, perInteraction: true, interactionPoints: ['per reveal item'] },
-    { title: '', items: [{ id: 'item-1', label: 'Item 1', content: 'Hidden content 1' }, { id: 'item-2', label: 'Item 2', content: 'Hidden content 2' }], columns: 3 }, 2),
+      ['click', 'reveal', 'explore'], ['view', 'interact', 'audio'], false,
+      { perComponent: false, perInteraction: true, interactionPoints: ['per reveal item'] },
+      {
+        title: 'Explore Key Concepts',
+        items: [
+          {
+            id: 'item-1',
+            title: 'What is a Variable?',
+            desc: 'Click to reveal a simple explanation of variables in programming.',
+            revealed: 'A variable stores data that can change during program execution.'
+          },
+          {
+            id: 'item-2',
+            title: 'Why Use Functions?',
+            desc: 'Click to reveal why functions are important.',
+            revealed: 'Functions organize code into reusable blocks, making programs easier to read and maintain.'
+          },
+          {
+            id: 'item-3',
+            title: 'What is a Loop?',
+            desc: 'Click to reveal the purpose of loops.',
+            revealed: 'Loops repeat actions until a condition is met, helping automate repetitive tasks.'
+          }
+        ],
+        columns: 3
+      }, 2),
   ct('timeline', 'content-presentation', 'Timeline', 'Chronological event display with per-event audio', 'calendar-range',
     ['timeline', 'history', 'chronology'], ['view', 'interact', 'audio'], false,
     { perComponent: false, perInteraction: true, interactionPoints: ['per event'] },

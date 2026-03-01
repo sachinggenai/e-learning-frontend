@@ -446,7 +446,28 @@ r({
   completionCapabilities: ['interact'],
   scoringEnabled: false,
   audioSupport: { perComponent: true, perInteraction: false },
-  defaultData: { title: '', items: [], columns: 3 },
+  defaultData: {
+    title: 'Explore Key Concepts',
+    instructions: 'Click each item to reveal more information.',
+    items: [
+      {
+        id: '1',
+        label: 'What is a Variable?',
+        content: 'A variable is a named container that stores data in a program. The data can change during program execution, which is why it\'s called a "variable." Variables help us organize and manipulate information efficiently.'
+      },
+      {
+        id: '2',
+        label: 'Why Use Functions?',
+        content: 'Functions organize code into reusable blocks that perform specific tasks. They make programs easier to read, maintain, and test. Instead of repeating the same code multiple times, we can write it once in a function and call it whenever needed.'
+      },
+      {
+        id: '3',
+        label: 'What is a Loop?',
+        content: 'Loops repeat actions until a condition is met. They help automate repetitive tasks and reduce code duplication. Common loop types include for loops (repeat a fixed number of times) and while loops (repeat until a condition becomes false).'
+      }
+    ],
+    columns: 3
+  },
   sortOrder: 1,
   editorComponent: ClickRevealEditor,
   previewComponent: ClickRevealPreview,

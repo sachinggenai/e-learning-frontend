@@ -1,0 +1,323 @@
+/**
+ * ClickReveal Component Styles
+ * 
+ * Theme-aligned design for click-to-reveal interactive component.
+ * Uses CSS custom properties for consistent styling across all themes.
+ */
+
+/* ═══════════════════════════════════════════════════════════════
+ *  CONTAINER & LAYOUT
+ * ═══════════════════════════════════════════════════════════════ */
+
+.tpl-click-reveal {
+  width: 100%;
+  padding: 0;
+}
+
+/* Title styling */
+.tpl-click-reveal__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+/* Instructions text */
+.tpl-click-reveal__instructions {
+  font-size: 14px;
+  color: var(--theme-text-secondary, #64748b);
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ *  GRID LAYOUT
+ * ═══════════════════════════════════════════════════════════════ */
+
+.tpl-click-reveal__grid {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.tpl-click-reveal__grid--1col {
+  grid-template-columns: 1fr;
+}
+
+.tpl-click-reveal__grid--2col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.tpl-click-reveal__grid--3col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 768px) {
+  .tpl-click-reveal__grid--3col,
+  .tpl-click-reveal__grid--2col {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ *  CARD STYLING
+ * ═══════════════════════════════════════════════════════════════ */
+
+.tpl-click-reveal__card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  
+  /* Dimensions & Spacing */
+  padding: 16px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 8px;
+  
+  /* Appearance */
+  background: var(--theme-background, #ffffff);
+  cursor: pointer;
+  user-select: none;
+  
+  /* Transitions */
+  transition: all 0.2s ease-out;
+  
+  /* Accessibility */
+  outline: none;
+}
+
+/* Hover state */
+.tpl-click-reveal__card:hover {
+  border-color: var(--theme-primary, #2563eb);
+  background: var(--theme-surface, #f8fafc);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Focus state for keyboard navigation */
+.tpl-click-reveal__card:focus {
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px var(--theme-primary, #2563eb) + 20;
+  background: var(--theme-surface, #f8fafc);
+}
+
+/* Active/Revealed state */
+.tpl-click-reveal__card--revealed {
+  border-color: var(--theme-primary, #2563eb);
+  background: linear-gradient(135deg, var(--theme-surface, #f8fafc) 0%, var(--theme-background, #ffffff) 100%);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ *  CARD HEADER (Label + Toggle Icon)
+ * ═══════════════════════════════════════════════════════════════ */
+
+.tpl-click-reveal__card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.tpl-click-reveal__card-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  word-break: break-word;
+  flex: 1;
+}
+
+.tpl-click-reveal__card-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-text-secondary, #64748b);
+  transition: transform 0.2s ease;
+}
+
+.tpl-click-reveal__card--revealed .tpl-click-reveal__card-icon {
+  color: var(--theme-primary, #2563eb);
+  transform: rotate(180deg);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ *  CARD CONTENT (Revealed Text)
+ * ═══════════════════════════════════════════════════════════════ */
+
+.tpl-click-reveal__card-content {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--theme-text, #1e293b);
+  padding: 12px 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--theme-border, #e2e8f0);
+  
+  /* Hidden by default, shown when card is revealed */
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.25s ease;
+}
+
+.tpl-click-reveal__card--revealed .tpl-click-reveal__card-content {
+  max-height: 500px;
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ *  PROGRESS INDICATOR
+ * ═══════════════════════════════════════════════════════════════ */
+
+.tpl-click-reveal__progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  
+  font-size: 12px;
+  color: var(--theme-text-secondary, #64748b);
+  margin-top: 12px;
+  padding: 8px 0;
+}
+
+.tpl-click-reveal__progress-count {
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-click-reveal__progress--complete {
+  color: var(--theme-success, #22c55e);
+}
+
+.tpl-click-reveal__progress--complete .tpl-click-reveal__progress-count {
+  color: var(--theme-success, #22c55e);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ *  EDITOR STYLES
+ * ═══════════════════════════════════════════════════════════════ */
+
+.tpl-click-reveal-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tpl-click-reveal-editor__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tpl-click-reveal-editor__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-click-reveal-editor__input,
+.tpl-click-reveal-editor__textarea {
+  padding: 8px 10px;
+  font-size: 13px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  background: var(--theme-background, #ffffff);
+  color: var(--theme-text, #1e293b);
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+
+.tpl-click-reveal-editor__input:focus,
+.tpl-click-reveal-editor__textarea:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.tpl-click-reveal-editor__textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.tpl-click-reveal-editor__item {
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  padding: 12px;
+  background: var(--theme-surface, #f8fafc);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tpl-click-reveal-editor__item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.tpl-click-reveal-editor__item-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-click-reveal-editor__item-delete {
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+
+.tpl-click-reveal-editor__item-delete:hover {
+  opacity: 0.7;
+}
+
+.tpl-click-reveal-editor__add-button {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px dashed var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  background: var(--theme-background, #ffffff);
+  color: var(--theme-primary, #2563eb);
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tpl-click-reveal-editor__add-button:hover {
+  border-color: var(--theme-primary, #2563eb);
+  background: var(--theme-surface, #f8fafc);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ *  ACCESSIBILITY
+ * ═══════════════════════════════════════════════════════════════ */
+
+.tpl-click-reveal__card[role="button"] {
+  cursor: pointer;
+}
+
+.tpl-click-reveal__card[role="button"]:not([tabindex="-1"]) {
+  position: relative;
+}
+
+/* Visual indicator for keyboard navigation */
+.tpl-click-reveal__card[role="button"]:focus-visible {
+  outline: 2px solid var(--theme-primary, #2563eb);
+  outline-offset: 2px;
+}

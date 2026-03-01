@@ -9,6 +9,7 @@
 
 import React, { useState, useCallback } from 'react';
 import type { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
+import './ClickReveal.css';
 
 interface RevealItem {
   id: string;
@@ -44,13 +45,16 @@ export const ClickRevealPreview: React.FC<ComponentPreviewProps> = ({
     });
   }, [items.length, onInteraction, onComplete]);
 
+  const columns = data?.columns ?? 3;
+  const gridClass = `tpl-click-reveal__grid--${Math.min(columns, 3)}col`;
+
   return (
-    <div className="click-reveal">
-      {data?.title && <h3 style={{ marginBottom: 16 }}>{data.title}</h3>}
+    <div className="tpl-click-reveal">
+      {data?.title && <h3 className="tpl-click-reveal__title">{data.title}</h3>}
       {data?.instructions && (
-        <p style={{ color: '#64748b', fontSize: 14, marginBottom: 16 }}>{data.instructions}</p>
+        <p className="tpl-click-reveal__instructions">{data.instructions}</p>
       )}
-      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${data?.columns ?? 2}, 1fr)`, gap: 12 }}>
+      <div className={`tpl-click-reveal__grid ${gridClass}`}>
         {items.map((item) => {
           const isOpen = revealed.has(item.id);
           return (
@@ -61,22 +65,17 @@ export const ClickRevealPreview: React.FC<ComponentPreviewProps> = ({
               tabIndex={0}
               role="button"
               aria-expanded={isOpen}
-              style={{
-                border: `1px solid ${isOpen ? '#3b82f6' : '#e2e8f0'}`,
-                borderRadius: 8,
-                padding: 16,
-                cursor: 'pointer',
-                background: isOpen ? '#eff6ff' : '#fff',
-                transition: 'all 0.2s',
-              }}
+              className={`tpl-click-reveal__card ${isOpen ? 'tpl-click-reveal__card--revealed' : ''}`}
             >
-              <div style={{ fontWeight: 600, fontSize: 14, marginBottom: isOpen ? 8 : 0 }}>
-                {item.icon && <span style={{ marginRight: 8 }}>{item.icon}</span>}
-                {item.label}
-                <span style={{ float: 'right', color: '#94a3b8' }}>{isOpen ? '▲' : '▼'}</span>
+              <div className="tpl-click-reveal__card-header">
+                <div className="tpl-click-reveal__card-label">
+                  {item.icon && <span style={{ marginRight: 8 }}>{item.icon}</span>}
+                  {item.label}
+                </div>
+                <div className="tpl-click-reveal__card-icon">{isOpen ? '▲' : '▼'}</div>
               </div>
               {isOpen && (
-                <div style={{ fontSize: 13, color: '#475569', lineHeight: 1.6 }}>
+                <div className="tpl-click-reveal__card-content">
                   {item.content}
                 </div>
               )}
@@ -84,8 +83,8 @@ export const ClickRevealPreview: React.FC<ComponentPreviewProps> = ({
           );
         })}
       </div>
-      <p style={{ marginTop: 12, fontSize: 12, color: '#94a3b8', textAlign: 'center' }}>
-        {revealed.size} / {items.length} revealed
+      <p className={`tpl-click-reveal__progress ${revealed.size === items.length ? 'tpl-click-reveal__progress--complete' : ''}`}>
+        <span className="tpl-click-reveal__progress-count">{revealed.size}</span> / {items.length} revealed
       </p>
     </div>
   );
@@ -118,47 +117,67 @@ export const ClickRevealEditor: React.FC<ComponentEditorProps> = ({
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>Title</label>
+    <div className="tpl-click-reveal-editor">
+      <div className="tpl-click-reveal-editor__field">
+        <label className="tpl-click-reveal-editor__label">Title</label>
         <input
           type="text"
+          className="tpl-click-reveal-editor__input"
           value={data?.title ?? ''}
           onChange={(e) => onChange({ data: { ...data, title: e.target.value } })}
-          placeholder="Click to Reveal"
-          style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }}
+          placeholder="Explore Key Concepts"
         />
       </div>
 
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>Instructions</label>
+      <div className="tpl-click-reveal-editor__field">
+        <label className="tpl-click-reveal-editor__label">Instructions</label>
         <input
           type="text"
+          className="tpl-click-reveal-editor__input"
           value={data?.instructions ?? ''}
           onChange={(e) => onChange({ data: { ...data, instructions: e.target.value } })}
           placeholder="Click each item to learn more"
-          style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }}
         />
       </div>
 
       {items.map((item, idx) => (
-        <div key={item.id} style={{ border: '1px solid #e2e8f0', borderRadius: 6, padding: 12, marginBottom: 10, background: '#f9fafb' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-            <span style={{ fontWeight: 600, fontSize: 13 }}>Item {idx + 1}</span>
-            <button onClick={() => removeItem(idx)} style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: 18, cursor: 'pointer' }}>×</button>
+        <div key={item.id} className="tpl-click-reveal-editor__item">
+          <div className="tpl-click-reveal-editor__item-header">
+            <span className="tpl-click-reveal-editor__item-title">Item {idx + 1}</span>
+            <button 
+              onClick={() => removeItem(idx)} 
+              className="tpl-click-reveal-editor__item-delete"
+              aria-label={`Delete item ${idx + 1}`}
+            >
+              ×
+            </button>
           </div>
-          <div style={{ marginBottom: 8 }}>
-            <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Label</label>
-            <input type="text" value={item.label} onChange={(e) => updateItem(idx, 'label', e.target.value)} style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+          <div className="tpl-click-reveal-editor__field">
+            <label className="tpl-click-reveal-editor__label">Label</label>
+            <input 
+              type="text" 
+              className="tpl-click-reveal-editor__input"
+              value={item.label} 
+              onChange={(e) => updateItem(idx, 'label', e.target.value)}
+              placeholder="Item title"
+            />
           </div>
-          <div>
-            <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Content</label>
-            <textarea value={item.content} onChange={(e) => updateItem(idx, 'content', e.target.value)} rows={3} style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+          <div className="tpl-click-reveal-editor__field">
+            <label className="tpl-click-reveal-editor__label">Content</label>
+            <textarea 
+              className="tpl-click-reveal-editor__textarea"
+              value={item.content} 
+              onChange={(e) => updateItem(idx, 'content', e.target.value)}
+              placeholder="Enter the revealed content..."
+            />
           </div>
         </div>
       ))}
 
-      <button onClick={addItem} style={{ width: '100%', padding: 10, border: '2px dashed #cbd5e1', borderRadius: 6, background: 'transparent', color: '#3b82f6', fontWeight: 500, cursor: 'pointer' }}>
+      <button 
+        onClick={addItem}
+        className="tpl-click-reveal-editor__add-button"
+      >
         + Add Item
       </button>
     </div>
