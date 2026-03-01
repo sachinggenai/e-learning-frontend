@@ -97,6 +97,9 @@ export class TemplateValidator implements Validator {
         case "step-by-step":
           errors.push(...this.validateStepByStep(page, index));
           break;
+        case "cycle-diagram":
+          errors.push(...this.validateCycleDiagram(page, index));
+          break;
         case "comparison-table":
           errors.push(...this.validateComparisonTable(page, index));
           break;
@@ -577,6 +580,24 @@ export class TemplateValidator implements Validator {
     content.steps.forEach((step: any, s: number) => {
       if (!this.isNonEmptyString(step.title) && !this.isNonEmptyString(step.body)) {
         errors.push(this.makeWarning(index, `content.steps[${s}]`, "Each step should include content"));
+      }
+    });
+
+    return errors;
+  }
+
+  private validateCycleDiagram(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.hasMinItems(content.stages, 1)) {
+      errors.push(this.makeError(index, "content.stages", "Cycle diagram requires at least one stage"));
+      return errors;
+    }
+
+    content.stages.forEach((stage: any, s: number) => {
+      if (!this.isNonEmptyString(stage.label)) {
+        errors.push(this.makeWarning(index, `content.stages[${s}]`, "Each stage should have a label"));
       }
     });
 

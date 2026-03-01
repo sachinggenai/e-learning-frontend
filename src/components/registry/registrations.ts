@@ -66,6 +66,8 @@ const CarouselPreview = React.lazy(() => import('../templates/interaction/Carous
 // Process-Flow
 const StepByStepEditor = React.lazy(() => import('../templates/process/StepByStep').then(m => ({ default: m.StepByStepEditor })));
 const StepByStepPreview = React.lazy(() => import('../templates/process/StepByStep').then(m => ({ default: m.StepByStepPreview })));
+const CycleDiagramEditor = React.lazy(() => import('../templates/process/CycleDiagram').then(m => ({ default: m.CycleDiagramEditor })));
+const CycleDiagramPreview = React.lazy(() => import('../templates/process/CycleDiagram').then(m => ({ default: m.CycleDiagramPreview })));
 
 // Comparison
 const ComparisonTableEditor = React.lazy(() => import('../templates/comparison/ComparisonTable').then(m => ({ default: m.ComparisonTableEditor })));
@@ -608,6 +610,22 @@ r({
   sortOrder: 0,
   editorComponent: StepByStepEditor,
   previewComponent: StepByStepPreview,
+});
+
+r({
+  typeId: 'cycle-diagram',
+  displayName: 'Cycle Diagram',
+  description: 'Circular process diagram showing repeating stages',
+  category: 'process-flow',
+  icon: 'refresh-cw',
+  tags: ['cycle', 'circular', 'loop', 'process'],
+  completionCapabilities: ['view'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: { title: '', stages: [] },
+  sortOrder: 1,
+  editorComponent: CycleDiagramEditor,
+  previewComponent: CycleDiagramPreview,
 });
 
 // ─── Comparison ──────────────────────────────────────────────────

@@ -1,0 +1,224 @@
+.tpl-cycle-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tpl-cycle-diagram__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-cycle-diagram__canvas {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  background: var(--theme-surface, #f8fafc);
+  border-radius: 8px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+}
+
+.tpl-cycle-diagram__svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.tpl-cycle-diagram__line {
+  stroke: var(--theme-primary, #2563eb);
+  stroke-width: 2;
+  fill: none;
+}
+
+.tpl-cycle-diagram__arrow {
+  fill: var(--theme-primary, #2563eb);
+}
+
+.tpl-cycle-diagram__node {
+  fill: var(--theme-info, #3b82f6);
+  stroke: var(--theme-primary, #2563eb);
+  stroke-width: 2;
+  transition: all 200ms ease;
+}
+
+.tpl-cycle-diagram__svg:hover .tpl-cycle-diagram__node {
+  r: 35;
+  filter: drop-shadow(0 2px 8px rgba(37, 99, 235, 0.3));
+}
+
+.tpl-cycle-diagram__node-label {
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-weight: 600;
+  font-size: 14px;
+  fill: #fff;
+  pointer-events: none;
+}
+
+/* Stage descriptions */
+.tpl-cycle-diagram__stages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.tpl-cycle-diagram__stage-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px;
+  background: var(--theme-surface, #f8fafc);
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+}
+
+.tpl-cycle-diagram__stage-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 50%;
+  background: var(--theme-primary, #2563eb);
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.tpl-cycle-diagram__stage-label {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-cycle-diagram__stage-description {
+  margin: 0;
+  font-size: 12px;
+  color: var(--theme-text-secondary, #475569);
+  line-height: 1.5;
+}
+
+/* Empty state */
+.tpl-cycle-diagram__empty {
+  padding: 30px;
+  text-align: center;
+  color: var(--theme-text-secondary, #64748b);
+  font-size: 13px;
+  background: var(--theme-surface, #f8fafc);
+  border-radius: 8px;
+  border: 1px dashed var(--theme-border, #e2e8f0);
+}
+
+/* ─── Editor Styles ────────────────────────────────────────────────── */
+
+.tpl-cycle-diagram-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tpl-cycle-diagram-editor__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tpl-cycle-diagram-editor__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-cycle-diagram-editor__input,
+.tpl-cycle-diagram-editor__textarea {
+  width: 100%;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  background: var(--theme-background, #fff);
+  color: var(--theme-text, #1e293b);
+  font-family: inherit;
+}
+
+.tpl-cycle-diagram-editor__input:focus,
+.tpl-cycle-diagram-editor__textarea:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.tpl-cycle-diagram-editor__stage-card {
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  padding: 12px;
+  background: var(--theme-surface, #f8fafc);
+}
+
+.tpl-cycle-diagram-editor__stage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.tpl-cycle-diagram-editor__stage-label {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-cycle-diagram-editor__remove-btn {
+  background: none;
+  border: none;
+  color: var(--theme-error, #ef4444);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 200ms ease;
+}
+
+.tpl-cycle-diagram-editor__remove-btn:hover:not(:disabled) {
+  color: #dc2626;
+}
+
+.tpl-cycle-diagram-editor__remove-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tpl-cycle-diagram-editor__add-btn {
+  width: 100%;
+  padding: 10px;
+  border: 2px dashed var(--theme-border, #cbd5e1);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--theme-primary, #2563eb);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 200ms ease;
+  font-size: 13px;
+}
+
+.tpl-cycle-diagram-editor__add-btn:hover:not(:disabled) {
+  background: var(--theme-surface, #f8fafc);
+  border-color: var(--theme-primary, #2563eb);
+}
+
+.tpl-cycle-diagram-editor__add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .tpl-cycle-diagram__stages {
+    grid-template-columns: 1fr;
+  }
+
+  .tpl-cycle-diagram__canvas {
+    padding: 10px;
+  }
+}
