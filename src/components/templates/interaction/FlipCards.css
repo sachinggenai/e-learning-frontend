@@ -1,40 +1,66 @@
-/* FlipCards styles */
-.flip-cards__title {
-  margin: 0 0 16px;
+/* ─── FlipCards Component Styles ──────────────────────────────
+   BEM naming + theme tokens for Flip Cards template
+   ──────────────────────────────────────────────────────────────── */
+
+/* ─── Main Container ──────────────────────────────────────────── */
+.tpl-flip-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  padding: 0;
+}
+
+.tpl-flip-cards__title {
+  margin: 0;
   font-size: 18px;
   font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  line-height: 1.4;
 }
 
-.flip-cards__grid {
+/* ─── Grid Layout ─────────────────────────────────────────────── */
+.tpl-flip-cards__grid {
   display: grid;
   gap: 16px;
+  width: 100%;
 }
 
-.flip-card {
-  perspective: 800px;
+/* ─── Individual Card Container ───────────────────────────────── */
+.tpl-flip-cards__card {
+  perspective: 1000px;
   cursor: pointer;
   outline: none;
+  position: relative;
+  transition: box-shadow 150ms ease;
 }
-.flip-card:focus-visible {
-  outline: 2px solid var(--primary, #3b82f6);
+
+.tpl-flip-cards__card:hover {
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+}
+
+.tpl-flip-cards__card:focus-visible {
+  outline: 2px solid var(--theme-primary, #2563eb);
   outline-offset: 2px;
   border-radius: 8px;
 }
 
-.flip-card__inner {
+/* ─── Card Flip Animation ─────────────────────────────────────── */
+.tpl-flip-cards__card-inner {
   position: relative;
   width: 100%;
-  min-height: 160px;
-  transition: transform 0.6s ease;
+  min-height: 180px;
+  transition: transform 600ms ease;
   transform-style: preserve-3d;
 }
 
-.flip-card--flipped .flip-card__inner {
+.tpl-flip-cards__card--flipped .tpl-flip-cards__card-inner {
   transform: rotateY(180deg);
 }
 
-.flip-card__front,
-.flip-card__back {
+/* ─── Card Sides ──────────────────────────────────────────────── */
+.tpl-flip-cards__card-front,
+.tpl-flip-cards__card-back {
   position: absolute;
   top: 0;
   left: 0;
@@ -48,89 +74,205 @@
   justify-content: center;
   padding: 20px;
   text-align: center;
+  box-sizing: border-box;
 }
 
-.flip-card__front {
-  background: var(--card-front-bg, #f1f5f9);
-  border: 1px solid var(--border, #e2e8f0);
-  color: #334155;
+.tpl-flip-cards__card-front {
+  background: var(--theme-surface, #f8fafc);
+  border: 2px solid var(--theme-border, #e2e8f0);
+  color: var(--theme-text, #1e293b);
   font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
-.flip-card__back {
-  background: var(--primary, #3b82f6);
+.tpl-flip-cards__card-back {
+  background: var(--theme-primary, #2563eb);
   color: #fff;
+  font-size: 14px;
+  line-height: 1.6;
   transform: rotateY(180deg);
 }
 
-.flip-card__image {
+/* ─── Card Image ──────────────────────────────────────────────── */
+.tpl-flip-cards__card-image {
   max-width: 80px;
   max-height: 80px;
-  margin-bottom: 8px;
-  border-radius: 4px;
-  object-fit: cover;
-}
-
-.flip-cards__hint {
-  margin-top: 12px;
-  font-size: 12px;
-  color: #94a3b8;
-  text-align: center;
-}
-
-/* Editor styles */
-.flip-cards-editor .editor-card {
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  padding: 12px;
   margin-bottom: 12px;
-  background: #f9fafb;
+  border-radius: 6px;
+  object-fit: cover;
+  display: block;
 }
-.flip-cards-editor .editor-card-header {
+
+/* ─── Progress Hint ───────────────────────────────────────────── */
+.tpl-flip-cards__progress {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--theme-text-secondary, #64748b);
+  text-align: center;
+  font-weight: 500;
+}
+
+.tpl-flip-cards__progress--complete {
+  color: var(--theme-success, #22c55e);
+}
+
+/* ─── Editor Container ────────────────────────────────────────── */
+.tpl-flip-cards-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--theme-surface, #f8fafc);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.tpl-flip-cards-editor__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tpl-flip-cards-editor__label {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--theme-text, #1e293b);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tpl-flip-cards-editor__input,
+.tpl-flip-cards-editor__select,
+.tpl-flip-cards-editor__textarea {
+  padding: 8px 12px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--theme-text, #1e293b);
+  background: var(--theme-background, #fff);
+  transition: border-color 150ms ease;
+}
+
+.tpl-flip-cards-editor__input:hover:not(:disabled),
+.tpl-flip-cards-editor__select:hover:not(:disabled),
+.tpl-flip-cards-editor__textarea:hover:not(:disabled) {
+  border-color: var(--theme-primary, #2563eb);
+}
+
+.tpl-flip-cards-editor__input:focus,
+.tpl-flip-cards-editor__select:focus,
+.tpl-flip-cards-editor__textarea:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.tpl-flip-cards-editor__textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* ─── Card Editor Item ────────────────────────────────────────── */
+.tpl-flip-cards-editor__card-item {
+  padding: 12px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  background: var(--theme-background, #fff);
+}
+
+.tpl-flip-cards-editor__card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--theme-border, #e2e8f0);
+}
+
+.tpl-flip-cards-editor__card-label {
   font-weight: 600;
-  font-size: 13px;
-}
-.flip-cards-editor .editor-remove {
-  background: none;
-  border: none;
-  color: #ef4444;
-  font-size: 18px;
-  cursor: pointer;
-}
-.flip-cards-editor .editor-field {
-  margin-bottom: 8px;
-}
-.flip-cards-editor .editor-field label {
-  display: block;
   font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 3px;
-  color: #64748b;
+  color: var(--theme-primary, #2563eb);
 }
-.flip-cards-editor .editor-field input,
-.flip-cards-editor .editor-field textarea,
-.flip-cards-editor .editor-field select {
-  width: 100%;
-  padding: 6px 8px;
-  border: 1px solid #e2e8f0;
+
+.tpl-flip-cards-editor__remove-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: var(--theme-error, #ef4444);
+  color: #fff;
+  border: none;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.flip-cards-editor .editor-add {
-  width: 100%;
-  padding: 10px;
-  border: 2px dashed #cbd5e1;
+
+.tpl-flip-cards-editor__remove-btn:hover:not(:disabled) {
+  background: var(--theme-error, #dc2626);
+}
+
+.tpl-flip-cards-editor__remove-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Add Button ──────────────────────────────────────────────── */
+.tpl-flip-cards-editor__add-btn {
+  padding: 10px 12px;
+  border: 2px dashed var(--theme-border, #e2e8f0);
   border-radius: 6px;
   background: transparent;
-  color: #3b82f6;
-  font-weight: 500;
+  color: var(--theme-primary, #2563eb);
+  font-weight: 600;
   cursor: pointer;
+  transition: all 150ms ease;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
 }
-.flip-cards-editor .editor-add:hover {
-  border-color: #3b82f6;
-  background: rgba(59, 130, 246, 0.04);
+
+.tpl-flip-cards-editor__add-btn:hover:not(:disabled) {
+  border-color: var(--theme-primary, #2563eb);
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.tpl-flip-cards-editor__add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Responsive Design ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  .tpl-flip-cards {
+    gap: 12px;
+  }
+
+  .tpl-flip-cards__grid {
+    gap: 12px;
+  }
+
+  .tpl-flip-cards__card-inner {
+    min-height: 160px;
+  }
+
+  .tpl-flip-cards__card-front,
+  .tpl-flip-cards__card-back {
+    padding: 16px;
+    font-size: 14px;
+  }
+
+  .tpl-flip-cards-editor {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .tpl-flip-cards-editor__card-item {
+    padding: 10px;
+  }
 }

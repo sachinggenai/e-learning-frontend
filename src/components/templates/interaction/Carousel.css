@@ -1,0 +1,349 @@
+/* ─── Carousel Component Styles ────────────────────────────────
+   BEM naming + theme tokens for Carousel template
+   ──────────────────────────────────────────────────────────────── */
+
+/* ─── Main Container ──────────────────────────────────────────── */
+.tpl-carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  padding: 0;
+}
+
+.tpl-carousel__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  line-height: 1.4;
+}
+
+/* ─── Slide Container ──────────────────────────────────────────── */
+.tpl-carousel__slide-container {
+  position: relative;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--theme-background, #fff);
+  min-height: 240px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 150ms ease;
+}
+
+.tpl-carousel__slide-container:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ─── Slide Image ──────────────────────────────────────────────── */
+.tpl-carousel__slide-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  background: var(--theme-surface, #f8fafc);
+}
+
+/* ─── Slide Content ────────────────────────────────────────────── */
+.tpl-carousel__slide-content {
+  padding: 24px;
+  background: var(--theme-background, #fff);
+}
+
+.tpl-carousel__slide-title {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  line-height: 1.4;
+}
+
+.tpl-carousel__slide-text {
+  margin: 0;
+  font-size: 14px;
+  color: var(--theme-text-secondary, #64748b);
+  line-height: 1.6;
+}
+
+/* ─── Navigation Controls ──────────────────────────────────────── */
+.tpl-carousel__nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+/* ─── Navigation Buttons ──────────────────────────────────────── */
+.tpl-carousel__nav-button {
+  padding: 8px 16px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  background: var(--theme-background, #fff);
+  color: var(--theme-text, #1e293b);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 150ms ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tpl-carousel__nav-button:hover:not(:disabled) {
+  border-color: var(--theme-primary, #2563eb);
+  color: var(--theme-primary, #2563eb);
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.tpl-carousel__nav-button:focus-visible {
+  outline: 2px solid var(--theme-primary, #2563eb);
+  outline-offset: 2px;
+}
+
+.tpl-carousel__nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Dot Indicators ──────────────────────────────────────────── */
+.tpl-carousel__indicators {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.tpl-carousel__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: var(--theme-border, #e2e8f0);
+  cursor: pointer;
+  transition: all 150ms ease;
+  padding: 0;
+}
+
+.tpl-carousel__dot:hover {
+  transform: scale(1.2);
+}
+
+.tpl-carousel__dot--active {
+  background: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.tpl-carousel__dot--visited {
+  background: rgba(37, 99, 235, 0.4);
+}
+
+.tpl-carousel__dot:focus-visible {
+  outline: 2px solid var(--theme-primary, #2563eb);
+  outline-offset: 2px;
+}
+
+/* ─── Progress Indicator ──────────────────────────────────────── */
+.tpl-carousel__progress {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--theme-text-secondary, #64748b);
+  text-align: center;
+  font-weight: 500;
+}
+
+.tpl-carousel__progress--complete {
+  color: var(--theme-success, #22c55e);
+}
+
+/* ─── Empty State ──────────────────────────────────────────────── */
+.tpl-carousel__empty {
+  padding: 32px 24px;
+  text-align: center;
+  color: var(--theme-text-secondary, #64748b);
+  font-size: 14px;
+  background: var(--theme-surface, #f8fafc);
+  border-radius: 8px;
+  border: 1px dashed var(--theme-border, #e2e8f0);
+}
+
+/* ─── Editor Container ────────────────────────────────────────── */
+.tpl-carousel-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--theme-surface, #f8fafc);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.tpl-carousel-editor__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tpl-carousel-editor__label {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--theme-text, #1e293b);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tpl-carousel-editor__input,
+.tpl-carousel-editor__textarea {
+  padding: 8px 12px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--theme-text, #1e293b);
+  background: var(--theme-background, #fff);
+  transition: border-color 150ms ease;
+}
+
+.tpl-carousel-editor__input:hover:not(:disabled),
+.tpl-carousel-editor__textarea:hover:not(:disabled) {
+  border-color: var(--theme-primary, #2563eb);
+}
+
+.tpl-carousel-editor__input:focus,
+.tpl-carousel-editor__textarea:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.tpl-carousel-editor__textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* ─── Slide Editor Item ────────────────────────────────────────── */
+.tpl-carousel-editor__slide-item {
+  padding: 12px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  background: var(--theme-background, #fff);
+}
+
+.tpl-carousel-editor__slide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--theme-border, #e2e8f0);
+}
+
+.tpl-carousel-editor__slide-label {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--theme-primary, #2563eb);
+}
+
+.tpl-carousel-editor__remove-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: var(--theme-error, #ef4444);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tpl-carousel-editor__remove-btn:hover:not(:disabled) {
+  background: var(--theme-error, #dc2626);
+}
+
+.tpl-carousel-editor__remove-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Add Button ──────────────────────────────────────────────── */
+.tpl-carousel-editor__add-btn {
+  padding: 10px 12px;
+  border: 2px dashed var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--theme-primary, #2563eb);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 150ms ease;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.tpl-carousel-editor__add-btn:hover:not(:disabled) {
+  border-color: var(--theme-primary, #2563eb);
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.tpl-carousel-editor__add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Responsive Design ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  .tpl-carousel {
+    gap: 12px;
+  }
+
+  .tpl-carousel__slide-container {
+    min-height: 220px;
+  }
+
+  .tpl-carousel__slide-image {
+    height: 160px;
+  }
+
+  .tpl-carousel__slide-content {
+    padding: 16px;
+  }
+
+  .tpl-carousel__slide-title {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .tpl-carousel__slide-text {
+    font-size: 13px;
+  }
+
+  .tpl-carousel__nav {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tpl-carousel__nav-button {
+    padding: 6px 12px;
+    font-size: 12px;
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .tpl-carousel__indicators {
+    gap: 6px;
+    order: -1;
+    width: 100%;
+  }
+
+  .tpl-carousel-editor {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .tpl-carousel-editor__slide-item {
+    padding: 10px;
+  }
+}

@@ -73,8 +73,8 @@ export interface CategoryDefinition {
 // ─── Component Props Contracts ───────────────────────────────────
 /** Props every editor component receives */
 export interface ComponentEditorProps {
-  componentId: string;
-  componentType: string;
+  componentId?: string;
+  componentType?: string;
   data: Record<string, any>;
   audioConfig?: AudioConfig;
   completionCriteria?: CompletionCriteria;
@@ -85,14 +85,15 @@ export interface ComponentEditorProps {
 
 /** Props every preview component receives */
 export interface ComponentPreviewProps {
-  componentId: string;
-  componentType: string;
+  componentId?: string;
+  componentType?: string;
   data: Record<string, any>;
+  readOnly?: boolean;
   audioConfig?: AudioConfig;
   completionCriteria?: CompletionCriteria;
   styling?: ComponentStyling;
   onInteraction?: (event: ComponentInteractionEvent) => void;
-  onComplete?: (componentId: string) => void;
+  onComplete?: (componentId?: string) => void;
 }
 
 /** Partial update payload from editor onChange  */
@@ -105,7 +106,7 @@ export interface ComponentDataUpdate {
 
 /** Interaction event emitted by preview components */
 export interface ComponentInteractionEvent {
-  componentId: string;
+  componentId?: string;
   interactionType: string;
   interactionId?: string;
   value?: any;

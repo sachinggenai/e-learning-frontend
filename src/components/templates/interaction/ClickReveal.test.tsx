@@ -71,11 +71,12 @@ describe('ClickReveal Component', () => {
 
     it('updates progress counter', () => {
       render(<ClickRevealPreview {...mockProps} />);
-      expect(screen.getByText('0 / 3 revealed')).toBeInTheDocument();
+      const progressElement = document.querySelector('.tpl-click-reveal__progress');
+      expect(progressElement?.textContent).toMatch(/0\s*\/\s*3\s*revealed/i);
       
       const firstItem = screen.getByText('Item 1').closest('[role="button"]');
       fireEvent.click(firstItem!);
-      expect(screen.getByText('1 / 3 revealed')).toBeInTheDocument();
+      expect(progressElement?.textContent).toMatch(/1\s*\/\s*3\s*revealed/i);
     });
 
     it('supports keyboard navigation with Enter key', () => {
@@ -136,7 +137,8 @@ describe('ClickReveal Component', () => {
     it('handles empty items gracefully', () => {
       const emptyData = { ...mockData, items: [] };
       render(<ClickRevealPreview {...mockProps} data={emptyData} />);
-      expect(screen.getByText('0 / 0 revealed')).toBeInTheDocument();
+      const progressElement = document.querySelector('.tpl-click-reveal__progress');
+      expect(progressElement?.textContent).toMatch(/0\s*\/\s*0\s*revealed/i);
     });
 
     it('sets aria-expanded attribute correctly', () => {
@@ -172,12 +174,11 @@ describe('ClickReveal Component', () => {
       expect(screen.getByDisplayValue('Click to reveal')).toBeInTheDocument();
     });
 
-    it('updates title when input changes', async () => {
+    it('updates title when input changes', () => {
       render(<ClickRevealEditor {...editorProps} />);
-      const titleInput = screen.getByDisplayValue('Test Concepts');
+      const titleInput = screen.getByDisplayValue('Test Concepts') as HTMLInputElement;
       
-      await userEvent.clear(titleInput);
-      await userEvent.type(titleInput, 'New Title');
+      fireEvent.change(titleInput, { target: { value: 'New Title' } });
       
       expect(mockOnChange).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -225,12 +226,11 @@ describe('ClickReveal Component', () => {
       );
     });
 
-    it('updates item label', async () => {
+    it('updates item label', () => {
       render(<ClickRevealEditor {...editorProps} />);
-      const labelInputs = screen.getAllByDisplayValue(/Item/);
+      const labelInputs = screen.getAllByDisplayValue(/Item/) as HTMLInputElement[];
       
-      await userEvent.clear(labelInputs[0]);
-      await userEvent.type(labelInputs[0], 'Updated Label');
+      fireEvent.change(labelInputs[0], { target: { value: 'Updated Label' } });
       
       expect(mockOnChange).toHaveBeenCalledWith(
         expect.objectContaining({

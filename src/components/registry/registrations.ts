@@ -541,7 +541,17 @@ r({
   completionCapabilities: ['interact', 'score'],
   scoringEnabled: true,
   audioSupport: { perComponent: true, perInteraction: false },
-  defaultData: { title: '', instructions: '', items: [] },
+  defaultData: {
+    title: 'Arrange in Correct Order',
+    instructions: 'Drag the items to put them in the correct sequence',
+    items: [
+      { id: 'item-1', text: 'Analyze the requirements', correctOrder: 0 },
+      { id: 'item-2', text: 'Design the solution', correctOrder: 1 },
+      { id: 'item-3', text: 'Implement the code', correctOrder: 2 },
+      { id: 'item-4', text: 'Test and validate', correctOrder: 3 },
+      { id: 'item-5', text: 'Deploy to production', correctOrder: 4 },
+    ],
+  },
   sortOrder: 2,
   editorComponent: DragDropSortEditor,
   previewComponent: DragDropSortPreview,

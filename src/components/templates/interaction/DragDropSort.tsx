@@ -10,6 +10,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import type { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
+import './DragDropSort.css';
 
 interface SortItem {
   id: string;
@@ -71,57 +72,51 @@ export const DragDropSortPreview: React.FC<ComponentPreviewProps> = ({
   }, [correctItems]);
 
   return (
-    <div style={{ maxWidth: 500 }}>
-      {data?.title && <h3 style={{ marginBottom: 8 }}>{data.title}</h3>}
+    <div className="tpl-drag-drop-sort" data-testid="drag-drop-sort-preview">
+      {data?.title && <h3 className="tpl-drag-drop-sort__title" data-testid="title">{data.title}</h3>}
       {data?.instructions && (
-        <p style={{ color: '#64748b', fontSize: 14, marginBottom: 16 }}>{data.instructions}</p>
+        <p className="tpl-drag-drop-sort__instructions" data-testid="instructions">{data.instructions}</p>
       )}
 
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId="sort-list">
           {(provided) => (
-            <div ref={provided.innerRef} {...provided.droppableProps}>
+            <div ref={provided.innerRef} {...provided.droppableProps} className="tpl-drag-drop-sort__list" data-testid="sortable-list">
               {items.map((item, idx) => (
                 <Draggable key={item.id} draggableId={item.id} index={idx} isDragDisabled={submitted}>
-                  {(prov, snap) => (
-                    <div
-                      ref={prov.innerRef}
-                      {...prov.draggableProps}
-                      {...prov.dragHandleProps}
-                      style={{
-                        ...prov.draggableProps.style,
-                        padding: '12px 16px',
-                        marginBottom: 8,
-                        borderRadius: 6,
-                        border: `1px solid ${
-                          submitted
-                            ? item.correctOrder === idx
-                              ? '#22c55e'
-                              : '#ef4444'
-                            : snap.isDragging
-                            ? '#3b82f6'
-                            : '#e2e8f0'
-                        }`,
-                        background: snap.isDragging
-                          ? '#eff6ff'
-                          : submitted
-                          ? item.correctOrder === idx
-                            ? '#f0fdf4'
-                            : '#fef2f2'
-                          : '#fff',
-                        cursor: submitted ? 'default' : 'grab',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 12,
-                      }}
-                    >
-                      <span style={{ color: '#94a3b8', fontSize: 14 }}>⠿</span>
-                      <span style={{ flex: 1 }}>{item.text}</span>
-                      {submitted && (
-                        <span>{item.correctOrder === idx ? '✓' : '✗'}</span>
-                      )}
-                    </div>
-                  )}
+                  {(prov, snap) => {
+                    const baseClasses = ['tpl-drag-drop-sort__item'];
+                    if (snap.isDragging) baseClasses.push('tpl-drag-drop-sort__item--dragging');
+                    if (submitted) {
+                      baseClasses.push('tpl-drag-drop-sort__item--submitted');
+                      if (item.correctOrder === idx) {
+                        baseClasses.push('tpl-drag-drop-sort__item--correct');
+                      } else {
+                        baseClasses.push('tpl-drag-drop-sort__item--incorrect');
+                      }
+                    }
+
+                    return (
+                      <div
+                        ref={prov.innerRef}
+                        {...prov.draggableProps}
+                        {...prov.dragHandleProps}
+                        className={baseClasses.join(' ')}
+                        data-testid={`sort-item-${idx}`}
+                        data-item-id={item.id}
+                        data-correct={item.correctOrder === idx}
+                        style={prov.draggableProps.style}
+                      >
+                        <span className="tpl-drag-drop-sort__item-drag-handle" aria-hidden="true">⠿</span>
+                        <span className="tpl-drag-drop-sort__item-text">{item.text}</span>
+                        {submitted && (
+                          <span className="tpl-drag-drop-sort__item-result" data-testid={`item-result-${idx}`}>
+                            {item.correctOrder === idx ? '✓' : '✗'}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  }}
                 </Draggable>
               ))}
               {provided.placeholder}
@@ -130,42 +125,35 @@ export const DragDropSortPreview: React.FC<ComponentPreviewProps> = ({
         </Droppable>
       </DragDropContext>
 
-      <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+      {isCorrect && submitted && (
+        <div className="tpl-drag-drop-sort__feedback tpl-drag-drop-sort__feedback--success" data-testid="success-feedback">
+          Correct! You've sorted the items in the right order.
+        </div>
+      )}
+      {!isCorrect && submitted && (
+        <div className="tpl-drag-drop-sort__feedback tpl-drag-drop-sort__feedback--error" data-testid="error-feedback">
+          Not quite right. Try again to get the order correct.
+        </div>
+      )}
+
+      <div className="tpl-drag-drop-sort__actions" data-testid="actions">
         {!submitted ? (
           <button
             onClick={handleSubmit}
-            style={{
-              padding: '10px 24px',
-              background: '#3b82f6',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 6,
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
+            className="tpl-drag-drop-sort__button tpl-drag-drop-sort__button--primary"
+            data-testid="submit-button"
           >
             Check Order
           </button>
         ) : (
           <>
-            <span
-              style={{
-                padding: '10px 16px',
-                fontWeight: 600,
-                color: isCorrect ? '#16a34a' : '#dc2626',
-              }}
-            >
+            <div className={`tpl-drag-drop-sort__progress ${isCorrect ? 'tpl-drag-drop-sort__progress--complete' : ''}`} data-testid="progress-text">
               {isCorrect ? 'Correct!' : 'Not quite right'}
-            </span>
+            </div>
             <button
               onClick={handleReset}
-              style={{
-                padding: '10px 24px',
-                background: '#f1f5f9',
-                border: '1px solid #e2e8f0',
-                borderRadius: 6,
-                cursor: 'pointer',
-              }}
+              className="tpl-drag-drop-sort__button tpl-drag-drop-sort__button--secondary"
+              data-testid="reset-button"
             >
               Try Again
             </button>
@@ -209,53 +197,77 @@ export const DragDropSortEditor: React.FC<ComponentEditorProps> = ({
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>Title</label>
+    <div className="tpl-drag-drop-sort-editor" data-testid="drag-drop-sort-editor">
+      <div className="tpl-drag-drop-sort-editor__field">
+        <label className="tpl-drag-drop-sort-editor__label">Title</label>
         <input
           type="text"
           value={data?.title ?? ''}
           onChange={(e) => onChange({ data: { ...data, title: e.target.value } })}
           placeholder="Put these in order"
-          style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }}
+          className="tpl-drag-drop-sort-editor__input"
+          data-testid="title-input"
         />
       </div>
 
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>Instructions</label>
+      <div className="tpl-drag-drop-sort-editor__field">
+        <label className="tpl-drag-drop-sort-editor__label">Instructions</label>
         <input
           type="text"
           value={data?.instructions ?? ''}
           onChange={(e) => onChange({ data: { ...data, instructions: e.target.value } })}
           placeholder="Drag items into the correct order"
-          style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }}
+          className="tpl-drag-drop-sort-editor__input"
+          data-testid="instructions-input"
         />
       </div>
 
-      <p style={{ fontSize: 12, color: '#64748b', marginBottom: 8 }}>
+      <div style={{ fontSize: 12, color: 'var(--theme-text-secondary, #64748b)', marginBottom: 8 }}>
         Items listed here are in the <strong>correct</strong> order. They will be shuffled for learners.
-      </p>
+      </div>
 
-      {items.map((item, idx) => (
-        <div key={item.id} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center' }}>
-          <span style={{ fontSize: 12, color: '#94a3b8', width: 20 }}>{idx + 1}.</span>
-          <input
-            type="text"
-            value={item.text}
-            onChange={(e) => updateItem(idx, e.target.value)}
-            placeholder={`Item ${idx + 1}`}
-            style={{ flex: 1, padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }}
-          />
-          <button
-            onClick={() => removeItem(idx)}
-            style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: 18, cursor: 'pointer' }}
-          >
-            ×
-          </button>
-        </div>
-      ))}
+      <div data-testid="items-list">
+        {items.map((item, idx) => (
+          <div key={item.id} className="tpl-drag-drop-sort-editor__item-card" data-testid={`item-editor-${idx}`}>
+            <div className="tpl-drag-drop-sort-editor__item-header">
+              <span className="tpl-drag-drop-sort-editor__item-label">Item {idx + 1}</span>
+              <button
+                onClick={() => removeItem(idx)}
+                className="tpl-drag-drop-sort-editor__remove-btn"
+                data-testid={`remove-item-${idx}`}
+                aria-label={`Remove item ${idx + 1}`}
+              >
+                ×
+              </button>
+            </div>
+            <input
+              type="text"
+              value={item.text}
+              onChange={(e) => updateItem(idx, e.target.value)}
+              placeholder={`Item ${idx + 1} text`}
+              className="tpl-drag-drop-sort-editor__input"
+              data-testid={`item-text-${idx}`}
+            />
+          </div>
+        ))}
+      </div>
 
-      <button onClick={addItem} style={{ width: '100%', padding: 10, border: '2px dashed #cbd5e1', borderRadius: 6, background: 'transparent', color: '#3b82f6', fontWeight: 500, cursor: 'pointer' }}>
+      <button
+        onClick={addItem}
+        className="tpl-drag-drop-sort-editor__add-btn"
+        data-testid="add-item-button"
+        style={{
+          width: '100%',
+          padding: 10,
+          border: '2px dashed var(--theme-border, #e2e8f0)',
+          borderRadius: 6,
+          background: 'transparent',
+          color: 'var(--theme-primary, #3b82f6)',
+          fontWeight: 500,
+          cursor: 'pointer',
+          marginTop: 12,
+        }}
+      >
         + Add Item
       </button>
     </div>
