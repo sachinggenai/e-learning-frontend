@@ -1,0 +1,239 @@
+.tpl-flowchart {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tpl-flowchart__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-flowchart__canvas {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  background: var(--theme-surface, #f8fafc);
+  border-radius: 8px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  overflow-x: auto;
+}
+
+.tpl-flowchart__svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.tpl-flowchart__line {
+  stroke: var(--theme-primary, #2563eb);
+  stroke-width: 2;
+  fill: none;
+}
+
+/* Node shapes and styles */
+.tpl-flowchart__node {
+  stroke: var(--theme-primary, #2563eb);
+  stroke-width: 2;
+  transition: all 200ms ease;
+}
+
+.tpl-flowchart__node--terminal {
+  fill: var(--theme-success, #22c55e);
+}
+
+.tpl-flowchart__node--process {
+  fill: var(--theme-info, #3b82f6);
+}
+
+.tpl-flowchart__node--decision {
+  fill: var(--theme-warning, #f59e0b);
+}
+
+.tpl-flowchart__svg:hover .tpl-flowchart__node {
+  filter: drop-shadow(0 2px 8px rgba(37, 99, 235, 0.3));
+  stroke-width: 3;
+}
+
+.tpl-flowchart__node-label {
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-weight: 600;
+  font-size: 12px;
+  fill: #fff;
+  pointer-events: none;
+  word-wrap: break-word;
+}
+
+/* Node list */
+.tpl-flowchart__nodes-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.tpl-flowchart__node-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px;
+  background: var(--theme-surface, #f8fafc);
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+}
+
+.tpl-flowchart__node-type-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 50%;
+  background: var(--theme-primary, #2563eb);
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.tpl-flowchart__node-type-indicator--start,
+.tpl-flowchart__node-type-indicator--end {
+  background: var(--theme-success, #22c55e);
+}
+
+.tpl-flowchart__node-type-indicator--decision {
+  background: var(--theme-warning, #f59e0b);
+}
+
+.tpl-flowchart__node-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-flowchart__node-type {
+  font-size: 11px;
+  color: var(--theme-text-secondary, #64748b);
+  margin-top: 2px;
+}
+
+/* Empty state */
+.tpl-flowchart__empty {
+  padding: 30px;
+  text-align: center;
+  color: var(--theme-text-secondary, #64748b);
+  font-size: 13px;
+  background: var(--theme-surface, #f8fafc);
+  border-radius: 8px;
+  border: 1px dashed var(--theme-border, #e2e8f0);
+}
+
+/* ─── Editor Styles ────────────────────────────────────────────────── */
+
+.tpl-flowchart-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tpl-flowchart-editor__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tpl-flowchart-editor__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-flowchart-editor__input {
+  width: 100%;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  background: var(--theme-background, #fff);
+  color: var(--theme-text, #1e293b);
+  font-family: inherit;
+}
+
+.tpl-flowchart-editor__input:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.tpl-flowchart-editor__node-card {
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  padding: 12px;
+  background: var(--theme-surface, #f8fafc);
+}
+
+.tpl-flowchart-editor__node-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.tpl-flowchart-editor__node-label {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-flowchart-editor__remove-btn {
+  background: none;
+  border: none;
+  color: var(--theme-error, #ef4444);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 200ms ease;
+}
+
+.tpl-flowchart-editor__remove-btn:hover:not(:disabled) {
+  color: #dc2626;
+}
+
+.tpl-flowchart-editor__remove-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tpl-flowchart-editor__add-btn {
+  width: 100%;
+  padding: 10px;
+  border: 2px dashed var(--theme-border, #cbd5e1);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--theme-primary, #2563eb);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 200ms ease;
+  font-size: 13px;
+}
+
+.tpl-flowchart-editor__add-btn:hover:not(:disabled) {
+  background: var(--theme-surface, #f8fafc);
+  border-color: var(--theme-primary, #2563eb);
+}
+
+.tpl-flowchart-editor__add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .tpl-flowchart__nodes-list {
+    grid-template-columns: 1fr;
+  }
+
+  .tpl-flowchart__canvas {
+    padding: 10px;
+  }
+}

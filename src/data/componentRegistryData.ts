@@ -247,7 +247,20 @@ export const ALL_COMPONENT_TYPES: ComponentTypeDetail[] = [
   ct('flowchart', 'process-flow', 'Flowchart', 'Visual flowchart diagram for processes and decisions', 'git-merge',
     ['flowchart', 'diagram', 'flow', 'process'], ['view', 'interact'], false,
     { perComponent: true, perInteraction: false },
-    { title: '', nodes: [{ id: 'node-1', type: 'start', label: 'Start' }], connections: [] }, 2),
+    {
+      title: 'Process Flow',
+      nodes: [
+        { id: 'node-1', type: 'start', label: 'Start' },
+        { id: 'node-2', type: 'process', label: 'Execute Task' },
+        { id: 'node-3', type: 'decision', label: 'Success?' },
+        { id: 'node-4', type: 'end', label: 'Complete' },
+      ],
+      connections: [
+        { from: 'node-1', to: 'node-2' },
+        { from: 'node-2', to: 'node-3' },
+        { from: 'node-3', to: 'node-4' },
+      ],
+    }, 2),
   ct('process-map', 'process-flow', 'Process Map', 'Detailed process map with roles and swimlanes', 'trello',
     ['process', 'map', 'swimlane', 'workflow'], ['view', 'interact'], false,
     { perComponent: true, perInteraction: false },

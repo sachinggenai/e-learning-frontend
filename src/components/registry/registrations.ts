@@ -68,6 +68,8 @@ const StepByStepEditor = React.lazy(() => import('../templates/process/StepBySte
 const StepByStepPreview = React.lazy(() => import('../templates/process/StepByStep').then(m => ({ default: m.StepByStepPreview })));
 const CycleDiagramEditor = React.lazy(() => import('../templates/process/CycleDiagram').then(m => ({ default: m.CycleDiagramEditor })));
 const CycleDiagramPreview = React.lazy(() => import('../templates/process/CycleDiagram').then(m => ({ default: m.CycleDiagramPreview })));
+const FlowchartEditor = React.lazy(() => import('../templates/process/Flowchart').then(m => ({ default: m.FlowchartEditor })));
+const FlowchartPreview = React.lazy(() => import('../templates/process/Flowchart').then(m => ({ default: m.FlowchartPreview })));
 
 // Comparison
 const ComparisonTableEditor = React.lazy(() => import('../templates/comparison/ComparisonTable').then(m => ({ default: m.ComparisonTableEditor })));
@@ -626,6 +628,22 @@ r({
   sortOrder: 1,
   editorComponent: CycleDiagramEditor,
   previewComponent: CycleDiagramPreview,
+});
+
+r({
+  typeId: 'flowchart',
+  displayName: 'Flowchart',
+  description: 'Visual flowchart diagram with different node types and connections',
+  category: 'process-flow',
+  icon: 'share-2',
+  tags: ['flowchart', 'diagram', 'flow', 'process'],
+  completionCapabilities: ['view'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: { title: '', nodes: [], connections: [] },
+  sortOrder: 2,
+  editorComponent: FlowchartEditor,
+  previewComponent: FlowchartPreview,
 });
 
 // ─── Comparison ──────────────────────────────────────────────────

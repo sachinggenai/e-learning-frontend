@@ -100,6 +100,9 @@ export class TemplateValidator implements Validator {
         case "cycle-diagram":
           errors.push(...this.validateCycleDiagram(page, index));
           break;
+        case "flowchart":
+          errors.push(...this.validateFlowchart(page, index));
+          break;
         case "comparison-table":
           errors.push(...this.validateComparisonTable(page, index));
           break;
@@ -598,6 +601,27 @@ export class TemplateValidator implements Validator {
     content.stages.forEach((stage: any, s: number) => {
       if (!this.isNonEmptyString(stage.label)) {
         errors.push(this.makeWarning(index, `content.stages[${s}]`, "Each stage should have a label"));
+      }
+    });
+
+    return errors;
+  }
+
+  private validateFlowchart(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.hasMinItems(content.nodes, 1)) {
+      errors.push(this.makeError(index, "content.nodes", "Flowchart requires at least one node"));
+      return errors;
+    }
+
+    content.nodes.forEach((node: any, n: number) => {
+      if (!this.isNonEmptyString(node.label)) {
+        errors.push(this.makeWarning(index, `content.nodes[${n}]`, "Each node should have a label"));
+      }
+      if (!node.type || !['start', 'process', 'decision', 'end'].includes(node.type)) {
+        errors.push(this.makeWarning(index, `content.nodes[${n}].type`, "Node type should be start, process, decision, or end"));
       }
     });
 
