@@ -1,0 +1,257 @@
+/* ─── DecisionTree Component Styles ───────────────────────
+   BEM naming + theme tokens
+   ─────────────────────────────────────────────────────────────── */
+
+/* ─── Preview Container ────────────────────────────────────── */
+.tpl-decision-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: var(--theme-background, #fff);
+}
+
+.tpl-decision-tree__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  border-bottom: 2px solid var(--theme-primary, #2563eb);
+  padding-bottom: 8px;
+}
+
+.tpl-decision-tree__empty {
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--theme-text-secondary, #475569);
+  font-style: italic;
+  background: var(--theme-surface, #f8fafc);
+  border-radius: 8px;
+  border: 1px dashed var(--theme-border, #e2e8f0);
+}
+
+/* Root question */
+.tpl-decision-tree__root-node {
+  display: flex;
+  justify-content: center;
+}
+
+.tpl-decision-tree__question-card {
+  width: min(100%, 520px);
+  background: var(--theme-primary, #2563eb);
+  border-radius: 8px;
+  padding: 16px;
+  color: #fff;
+  text-align: center;
+}
+
+.tpl-decision-tree__question-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  opacity: 0.85;
+  margin-bottom: 6px;
+}
+
+.tpl-decision-tree__question-text {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* Branches */
+.tpl-decision-tree__branches {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.tpl-decision-tree__branch-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.tpl-decision-tree__branch-connector {
+  width: 2px;
+  height: 22px;
+  background: var(--theme-border, #cbd5e1);
+}
+
+.tpl-decision-tree__option-card {
+  width: 100%;
+  background: var(--theme-surface, #f8fafc);
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.tpl-decision-tree__option-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--theme-info, #3b82f6);
+  margin-bottom: 4px;
+}
+
+.tpl-decision-tree__option-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  margin-bottom: 6px;
+}
+
+.tpl-decision-tree__outcome {
+  font-size: 13px;
+  color: var(--theme-text-secondary, #475569);
+}
+
+/* ─── Editor Styles ────────────────────────────────────────── */
+.tpl-decision-tree-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--theme-surface, #f8fafc);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.tpl-decision-tree-editor__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tpl-decision-tree-editor__label {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--theme-text, #1e293b);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tpl-decision-tree-editor__input,
+.tpl-decision-tree-editor__textarea {
+  padding: 8px 12px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--theme-text, #1e293b);
+  background: var(--theme-background, #fff);
+  transition: border-color 150ms ease;
+}
+
+.tpl-decision-tree-editor__textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.tpl-decision-tree-editor__input:hover:not(:disabled),
+.tpl-decision-tree-editor__textarea:hover:not(:disabled) {
+  border-color: var(--theme-primary, #2563eb);
+}
+
+.tpl-decision-tree-editor__input:focus,
+.tpl-decision-tree-editor__textarea:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+}
+
+.tpl-decision-tree-editor__input:disabled,
+.tpl-decision-tree-editor__textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Option cards */
+.tpl-decision-tree-editor__option-card {
+  padding: 12px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  background: var(--theme-background, #fff);
+}
+
+.tpl-decision-tree-editor__option-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--theme-border, #e2e8f0);
+}
+
+.tpl-decision-tree-editor__option-number {
+  font-weight: 600;
+  color: var(--theme-primary, #2563eb);
+}
+
+.tpl-decision-tree-editor__add-btn {
+  padding: 8px 12px;
+  background: var(--theme-primary, #2563eb);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.tpl-decision-tree-editor__add-btn:hover:not(:disabled) {
+  background: var(--theme-primary, #1d4ed8);
+}
+
+.tpl-decision-tree-editor__add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tpl-decision-tree-editor__remove-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: var(--theme-error, #ef4444);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tpl-decision-tree-editor__remove-btn:hover:not(:disabled) {
+  background: var(--theme-error, #dc2626);
+}
+
+.tpl-decision-tree-editor__remove-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Responsive Design ────────────────────────────────────── */
+@media (max-width: 768px) {
+  .tpl-decision-tree {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .tpl-decision-tree__branches {
+    grid-template-columns: 1fr;
+  }
+
+  .tpl-decision-tree-editor {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .tpl-decision-tree-editor__option-card {
+    padding: 10px;
+  }
+}

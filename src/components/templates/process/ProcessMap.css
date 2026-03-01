@@ -1,0 +1,284 @@
+/* ─── ProcessMap Component Styles ─────────────────────────
+   BEM naming + theme tokens for consistency with other templates
+   ─────────────────────────────────────────────────────────────── */
+
+/* ─── Preview Container ────────────────────────────────────── */
+.tpl-process-map {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: var(--theme-background, #fff);
+}
+
+.tpl-process-map__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  border-bottom: 2px solid var(--theme-primary, #2563eb);
+  padding-bottom: 8px;
+}
+
+.tpl-process-map__empty {
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--theme-text-secondary, #475569);
+  font-style: italic;
+  background: var(--theme-surface, #f8fafc);
+  border-radius: 8px;
+  border: 1px dashed var(--theme-border, #e2e8f0);
+}
+
+/* ─── Canvas & Swimlanes ───────────────────────────────────── */
+.tpl-process-map__canvas {
+  background: var(--theme-surface, #f8fafc);
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 8px;
+  overflow-x: auto;
+  padding: 12px;
+}
+
+.tpl-process-map__svg {
+  display: block;
+}
+
+/* Swimlane background */
+.tpl-process-map__lane {
+  fill: var(--theme-background, #fff);
+  stroke: var(--theme-border, #e2e8f0);
+  stroke-width: 1;
+  rx: 4;
+}
+
+/* Lane label */
+.tpl-process-map__lane-label {
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--theme-text-secondary, #475569);
+  text-anchor: start;
+}
+
+/* Step box styling */
+.tpl-process-map__step-box {
+  fill: var(--theme-primary, #2563eb);
+  stroke: var(--theme-primary, #2563eb);
+  stroke-width: 2;
+  rx: 4;
+}
+
+.tpl-process-map__step-label {
+  font-size: 12px;
+  font-weight: 500;
+  fill: #fff;
+  text-anchor: middle;
+}
+
+/* ─── Summary Section ──────────────────────────────────────── */
+.tpl-process-map__lanes-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.tpl-process-map__lane-item {
+  padding: 12px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  background: var(--theme-surface, #f8fafc);
+}
+
+.tpl-process-map__lane-item-name {
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  margin-bottom: 4px;
+}
+
+.tpl-process-map__lane-item-steps {
+  font-size: 12px;
+  color: var(--theme-text-secondary, #475569);
+}
+
+/* ─── Editor Styles ────────────────────────────────────────── */
+.tpl-process-map-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--theme-surface, #f8fafc);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.tpl-process-map-editor__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tpl-process-map-editor__label {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--theme-text, #1e293b);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tpl-process-map-editor__input {
+  padding: 8px 12px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--theme-text, #1e293b);
+  background: var(--theme-background, #fff);
+  transition: border-color 150ms ease;
+}
+
+.tpl-process-map-editor__input:hover:not(:disabled) {
+  border-color: var(--theme-primary, #2563eb);
+}
+
+.tpl-process-map-editor__input:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px var(--theme-primary, #2563eb) 20%;
+}
+
+.tpl-process-map-editor__input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Lane cards */
+.tpl-process-map-editor__lane-card {
+  padding: 12px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  background: var(--theme-background, #fff);
+}
+
+.tpl-process-map-editor__lane-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--theme-border, #e2e8f0);
+}
+
+.tpl-process-map-editor__lane-label {
+  font-weight: 600;
+  color: var(--theme-primary, #2563eb);
+}
+
+/* Step cards */
+.tpl-process-map-editor__step-card {
+  padding: 10px;
+  margin-top: 10px;
+  border-left: 3px solid var(--theme-info, #3b82f6);
+  background: var(--theme-surface, #f8fafc);
+  border-radius: 4px;
+}
+
+.tpl-process-map-editor__step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.tpl-process-map-editor__step-number {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-info, #3b82f6);
+}
+
+/* Buttons */
+.tpl-process-map-editor__add-step-btn,
+.tpl-process-map-editor__add-lane-btn {
+  padding: 8px 12px;
+  background: var(--theme-primary, #2563eb);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.tpl-process-map-editor__add-step-btn:hover:not(:disabled),
+.tpl-process-map-editor__add-lane-btn:hover:not(:disabled) {
+  background: var(--theme-primary, #1d4ed8);
+}
+
+.tpl-process-map-editor__add-step-btn:disabled,
+.tpl-process-map-editor__add-lane-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tpl-process-map-editor__add-step-btn {
+  margin-top: 8px;
+  background: var(--theme-info, #3b82f6);
+  font-size: 11px;
+}
+
+.tpl-process-map-editor__add-step-btn:hover:not(:disabled) {
+  background: var(--theme-info, #2563eb);
+}
+
+.tpl-process-map-editor__remove-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: var(--theme-error, #ef4444);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tpl-process-map-editor__remove-btn:hover:not(:disabled) {
+  background: var(--theme-error, #dc2626);
+}
+
+.tpl-process-map-editor__remove-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Responsive Design ────────────────────────────────────── */
+@media (max-width: 768px) {
+  .tpl-process-map {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .tpl-process-map__canvas {
+    overflow-x: auto;
+  }
+
+  .tpl-process-map__lanes-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .tpl-process-map-editor {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .tpl-process-map-editor__lane-card {
+    padding: 10px;
+  }
+
+  .tpl-process-map-editor__step-card {
+    padding: 8px;
+  }
+}

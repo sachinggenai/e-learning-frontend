@@ -103,6 +103,12 @@ export class TemplateValidator implements Validator {
         case "flowchart":
           errors.push(...this.validateFlowchart(page, index));
           break;
+        case "process-map":
+          errors.push(...this.validateProcessMap(page, index));
+          break;
+        case "decision-tree":
+          errors.push(...this.validateDecisionTree(page, index));
+          break;
         case "comparison-table":
           errors.push(...this.validateComparisonTable(page, index));
           break;
@@ -622,6 +628,54 @@ export class TemplateValidator implements Validator {
       }
       if (!node.type || !['start', 'process', 'decision', 'end'].includes(node.type)) {
         errors.push(this.makeWarning(index, `content.nodes[${n}].type`, "Node type should be start, process, decision, or end"));
+      }
+    });
+
+    return errors;
+  }
+
+  private validateProcessMap(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.hasMinItems(content.lanes, 1)) {
+      errors.push(this.makeError(index, "content.lanes", "Process map requires at least one lane"));
+      return errors;
+    }
+
+    content.lanes.forEach((lane: any, l: number) => {
+      if (!this.isNonEmptyString(lane.label)) {
+        errors.push(this.makeWarning(index, `content.lanes[${l}]`, "Each lane should have a label"));
+      }
+      if (lane.steps && Array.isArray(lane.steps)) {
+        lane.steps.forEach((step: any, s: number) => {
+          if (!this.isNonEmptyString(step.label)) {
+            errors.push(this.makeWarning(index, `content.lanes[${l}].steps[${s}]`, "Each step should have a label"));
+          }
+        });
+      }
+    });
+
+    return errors;
+  }
+
+  private validateDecisionTree(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!content.rootNode || !this.isNonEmptyString(content.rootNode.question)) {
+      errors.push(this.makeError(index, "content.rootNode.question", "Decision tree requires a root question"));
+      return errors;
+    }
+
+    if (!this.hasMinItems(content.rootNode.options, 1)) {
+      errors.push(this.makeError(index, "content.rootNode.options", "Decision tree requires at least one option"));
+      return errors;
+    }
+
+    content.rootNode.options.forEach((option: any, o: number) => {
+      if (!this.isNonEmptyString(option.label)) {
+        errors.push(this.makeWarning(index, `content.rootNode.options[${o}]`, "Each option should have a label"));
       }
     });
 

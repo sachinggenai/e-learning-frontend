@@ -70,6 +70,10 @@ const CycleDiagramEditor = React.lazy(() => import('../templates/process/CycleDi
 const CycleDiagramPreview = React.lazy(() => import('../templates/process/CycleDiagram').then(m => ({ default: m.CycleDiagramPreview })));
 const FlowchartEditor = React.lazy(() => import('../templates/process/Flowchart').then(m => ({ default: m.FlowchartEditor })));
 const FlowchartPreview = React.lazy(() => import('../templates/process/Flowchart').then(m => ({ default: m.FlowchartPreview })));
+const ProcessMapEditor = React.lazy(() => import('../templates/process/ProcessMap').then(m => ({ default: m.ProcessMapEditor })));
+const ProcessMapPreview = React.lazy(() => import('../templates/process/ProcessMap').then(m => ({ default: m.ProcessMapPreview })));
+const DecisionTreeEditor = React.lazy(() => import('../templates/process/DecisionTree').then(m => ({ default: m.DecisionTreeEditor })));
+const DecisionTreePreview = React.lazy(() => import('../templates/process/DecisionTree').then(m => ({ default: m.DecisionTreePreview })));
 
 // Comparison
 const ComparisonTableEditor = React.lazy(() => import('../templates/comparison/ComparisonTable').then(m => ({ default: m.ComparisonTableEditor })));
@@ -644,6 +648,38 @@ r({
   sortOrder: 2,
   editorComponent: FlowchartEditor,
   previewComponent: FlowchartPreview,
+});
+
+r({
+  typeId: 'process-map',
+  displayName: 'Process Map',
+  description: 'Swimlane-based process diagram showing parallel workflows',
+  category: 'process-flow',
+  icon: 'trello',
+  tags: ['process', 'map', 'swimlane', 'workflow'],
+  completionCapabilities: ['view'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: { title: '', lanes: [], connections: [] },
+  sortOrder: 3,
+  editorComponent: ProcessMapEditor,
+  previewComponent: ProcessMapPreview,
+});
+
+r({
+  typeId: 'decision-tree',
+  displayName: 'Decision Tree',
+  description: 'Interactive branching decision tree with configurable outcomes',
+  category: 'process-flow',
+  icon: 'git-branch',
+  tags: ['decision', 'tree', 'branch', 'choice'],
+  completionCapabilities: ['view'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: { title: '', rootNode: { id: 'root', question: '', options: [] } },
+  sortOrder: 4,
+  editorComponent: DecisionTreeEditor,
+  previewComponent: DecisionTreePreview,
 });
 
 // ─── Comparison ──────────────────────────────────────────────────

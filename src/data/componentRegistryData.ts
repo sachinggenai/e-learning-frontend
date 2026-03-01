@@ -264,11 +264,45 @@ export const ALL_COMPONENT_TYPES: ComponentTypeDetail[] = [
   ct('process-map', 'process-flow', 'Process Map', 'Detailed process map with roles and swimlanes', 'trello',
     ['process', 'map', 'swimlane', 'workflow'], ['view', 'interact'], false,
     { perComponent: true, perInteraction: false },
-    { title: '', lanes: [{ id: 'lane-1', label: 'Lane 1', steps: [] }] }, 3),
+    {
+      title: 'Customer Service Process',
+      lanes: [
+        {
+          id: 'lane-1',
+          label: 'Customer',
+          actor: 'Customer',
+          steps: [
+            { id: 'step-1', label: 'Submit Request' },
+            { id: 'step-2', label: 'Receive Resolution' },
+          ],
+        },
+        {
+          id: 'lane-2',
+          label: 'Support Team',
+          actor: 'Support',
+          steps: [
+            { id: 'step-3', label: 'Receive & Log' },
+            { id: 'step-4', label: 'Investigate' },
+            { id: 'step-5', label: 'Provide Solution' },
+          ],
+        },
+      ],
+      connections: [],
+    }, 3),
   ct('decision-tree', 'process-flow', 'Decision Tree', 'Interactive branching decision tree with node exploration', 'git-branch',
     ['decision', 'tree', 'branch', 'choice'], ['view', 'interact'], false,
     { perComponent: false, perInteraction: true, interactionPoints: ['per node'] },
-    { title: '', rootNode: { id: 'root', question: 'Start question?', options: [] } }, 4),
+    {
+      title: 'Support Triage Decision Tree',
+      rootNode: {
+        id: 'root',
+        question: 'Is the issue business critical?',
+        options: [
+          { id: 'opt-1', label: 'Yes', outcome: 'Escalate to Priority Support' },
+          { id: 'opt-2', label: 'No', outcome: 'Create standard support ticket' },
+        ],
+      },
+    }, 4),
 
   // ── Interaction (5) ──────────────────────────────────────────
   ct('drag-and-drop', 'interaction', 'Drag and Drop', 'Drag items to correct drop zones', 'grip-vertical',
