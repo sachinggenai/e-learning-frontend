@@ -6,6 +6,7 @@
 
 import React, { useState } from 'react';
 import type { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
+import './CaseStudy.css';
 
 interface AnalysisPrompt {
   id: string;
@@ -38,138 +39,64 @@ export const CaseStudyPreview: React.FC<ComponentPreviewProps> = ({
   const allAnswered = prompts.every((p) => (answers[p.id] ?? '').trim().length > 0);
 
   return (
-    <div style={{ maxWidth: 700, margin: '0 auto' }}>
-      {data?.title && <h3 style={{ marginBottom: 4 }}>{data.title}</h3>}
-      {data?.subtitle && (
-        <p style={{ color: '#64748b', fontSize: 14, marginBottom: 16 }}>{data.subtitle}</p>
-      )}
+    <div className="tpl-case-study" data-testid="case-study-preview">
+      {data?.title && <h3 className="tpl-case-study__title">{data.title}</h3>}
+      {data?.subtitle && <p className="tpl-case-study__subtitle">{data.subtitle}</p>}
 
-      {/* Context section */}
-      <div
-        style={{
-          background: '#f0f9ff',
-          border: '1px solid #bae6fd',
-          borderRadius: 10,
-          padding: 20,
-          marginBottom: 24,
-          lineHeight: 1.7,
-          fontSize: 14,
-          color: '#1e3a5f',
-        }}
-      >
-        <h4 style={{ margin: '0 0 8px', fontSize: 15 }}>📋 Background</h4>
-        <div style={{ whiteSpace: 'pre-wrap' }}>{data?.context ?? 'No context provided.'}</div>
+      <div className="tpl-case-study__background">
+        <h4 className="tpl-case-study__background-header">📋 Background</h4>
+        <div className="tpl-case-study__background-text">{data?.context ?? 'No context provided.'}</div>
       </div>
 
-      {data?.imageUrl && (
-        <img
-          src={data.imageUrl}
-          alt=""
-          style={{ width: '100%', borderRadius: 8, marginBottom: 20 }}
-        />
-      )}
+      {data?.imageUrl && <img src={data.imageUrl} alt="" className="tpl-case-study__image" />}
 
-      {/* Analysis prompts */}
-      {prompts.map((p, idx) => (
-        <div
-          key={p.id}
-          style={{
-            border: '1px solid #e2e8f0',
-            borderRadius: 8,
-            padding: 16,
-            marginBottom: 14,
-          }}
-        >
-          <h5 style={{ margin: '0 0 8px', fontSize: 14 }}>
-            {idx + 1}. {p.question}
-          </h5>
-          <textarea
-            value={answers[p.id] ?? ''}
-            onChange={(e) => setAnswers((a) => ({ ...a, [p.id]: e.target.value }))}
-            placeholder="Type your analysis here…"
-            rows={4}
-            disabled={submitted}
-            style={{
-              width: '100%',
-              padding: '8px 10px',
-              border: '1px solid #e2e8f0',
-              borderRadius: 6,
-              fontSize: 13,
-              resize: 'vertical',
-              lineHeight: 1.5,
-              background: submitted ? '#f8fafc' : '#fff',
-            }}
-          />
-          {submitted && p.sampleAnswer && (
-            <div style={{ marginTop: 8 }}>
-              <button
-                onClick={() =>
-                  setShowSample((s) => ({ ...s, [p.id]: !s[p.id] }))
-                }
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#3b82f6',
-                  fontSize: 12,
-                  cursor: 'pointer',
-                  textDecoration: 'underline',
-                }}
-              >
-                {showSample[p.id] ? 'Hide' : 'Show'} sample answer
-              </button>
-              {showSample[p.id] && (
-                <div
-                  style={{
-                    marginTop: 6,
-                    padding: '10px 12px',
-                    background: '#f0fdf4',
-                    border: '1px solid #bbf7d0',
-                    borderRadius: 6,
-                    fontSize: 13,
-                    color: '#166534',
-                    lineHeight: 1.5,
-                  }}
+      <div className="tpl-case-study__prompts">
+        {prompts.map((p, idx) => (
+          <div key={p.id} className="tpl-case-study__prompt">
+            <h5 className="tpl-case-study__prompt-question">
+              {idx + 1}. {p.question}
+            </h5>
+            <textarea
+              value={answers[p.id] ?? ''}
+              onChange={(e) => setAnswers((a) => ({ ...a, [p.id]: e.target.value }))}
+              placeholder="Type your analysis here…"
+              rows={4}
+              disabled={submitted}
+              className={`tpl-case-study__prompt-input ${
+                submitted ? 'tpl-case-study__prompt-input--submitted' : ''
+              }`}
+            />
+            {submitted && p.sampleAnswer && (
+              <div className="tpl-case-study__sample-container">
+                <button
+                  onClick={() => setShowSample((s) => ({ ...s, [p.id]: !s[p.id] }))}
+                  className="tpl-case-study__sample-button"
                 >
-                  {p.sampleAnswer}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      ))}
+                  {showSample[p.id] ? 'Hide' : 'Show'} sample answer
+                </button>
+                {showSample[p.id] && (
+                  <div className="tpl-case-study__sample-answer">{p.sampleAnswer}</div>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
 
       {!submitted && (
         <button
           onClick={handleSubmit}
           disabled={!allAnswered}
-          style={{
-            width: '100%',
-            padding: 14,
-            background: allAnswered ? '#3b82f6' : '#cbd5e1',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 8,
-            fontWeight: 600,
-            fontSize: 15,
-            cursor: allAnswered ? 'pointer' : 'not-allowed',
-          }}
+          className={`tpl-case-study__button tpl-case-study__button--submit ${
+            !allAnswered ? 'tpl-case-study__button--disabled' : ''
+          }`}
         >
           Submit Analysis
         </button>
       )}
 
       {submitted && (
-        <div
-          style={{
-            textAlign: 'center',
-            marginTop: 12,
-            padding: 16,
-            background: '#f0fdf4',
-            borderRadius: 8,
-            color: '#166534',
-            fontWeight: 500,
-          }}
-        >
+        <div className="tpl-case-study__message tpl-case-study__message--success">
           ✓ Your analysis has been recorded. Review the sample answers above.
         </div>
       )}
@@ -201,23 +128,15 @@ export const CaseStudyEditor: React.FC<ComponentEditorProps> = ({ data, onChange
   };
 
   const field = (label: string, key: string, multi = false, placeholder = '') => (
-    <div style={{ marginBottom: 12 }}>
-      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>
-        {label}
-      </label>
+    <div className="tpl-case-study-editor__field">
+      <label className="tpl-case-study-editor__label">{label}</label>
       {multi ? (
         <textarea
           value={data?.[key] ?? ''}
           onChange={(e) => onChange({ data: { ...data, [key]: e.target.value } })}
           placeholder={placeholder}
           rows={5}
-          style={{
-            width: '100%',
-            padding: '6px 8px',
-            border: '1px solid #e2e8f0',
-            borderRadius: 4,
-            fontSize: 13,
-          }}
+          className="tpl-case-study-editor__textarea"
         />
       ) : (
         <input
@@ -225,100 +144,53 @@ export const CaseStudyEditor: React.FC<ComponentEditorProps> = ({ data, onChange
           value={data?.[key] ?? ''}
           onChange={(e) => onChange({ data: { ...data, [key]: e.target.value } })}
           placeholder={placeholder}
-          style={{
-            width: '100%',
-            padding: '6px 8px',
-            border: '1px solid #e2e8f0',
-            borderRadius: 4,
-            fontSize: 13,
-          }}
+          className="tpl-case-study-editor__input"
         />
       )}
     </div>
   );
 
   return (
-    <div>
+    <div className="tpl-case-study-editor" data-testid="case-study-editor">
       {field('Title', 'title', false, 'Case Study')}
       {field('Subtitle', 'subtitle', false, 'Analyze the following scenario')}
       {field('Context / Background', 'context', true, 'Describe the case background…')}
       {field('Image URL (optional)', 'imageUrl', false, 'https://…')}
 
-      <h5 style={{ margin: '16px 0 10px', fontSize: 13, fontWeight: 600 }}>
-        Analysis Prompts
-      </h5>
+      <h5 className="tpl-case-study-editor__prompts-title">Analysis Prompts</h5>
       {prompts.map((p, idx) => (
-        <div
-          key={p.id}
-          style={{
-            border: '1px solid #e2e8f0',
-            borderRadius: 6,
-            padding: 12,
-            marginBottom: 10,
-            background: '#f9fafb',
-          }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-            <span style={{ fontWeight: 600, fontSize: 13 }}>Prompt {idx + 1}</span>
-            <button
-              onClick={() => removePrompt(idx)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#ef4444',
-                fontSize: 18,
-                cursor: 'pointer',
-              }}
-            >
+        <div key={p.id} className="tpl-case-study-editor__prompt">
+          <div className="tpl-case-study-editor__prompt-header">
+            <span className="tpl-case-study-editor__prompt-name">Prompt {idx + 1}</span>
+            <button onClick={() => removePrompt(idx)} className="tpl-case-study-editor__remove">
               ×
             </button>
           </div>
-          <div style={{ marginBottom: 8 }}>
-            <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Question</label>
+          <div className="tpl-case-study-editor__field">
+            <label className="tpl-case-study-editor__tiny-label">Question</label>
             <input
               type="text"
               value={p.question}
               onChange={(e) => updatePrompt(idx, 'question', e.target.value)}
-              style={{
-                width: '100%',
-                padding: '6px 8px',
-                border: '1px solid #e2e8f0',
-                borderRadius: 4,
-                fontSize: 13,
-              }}
+              className="tpl-case-study-editor__input"
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>
+            <label className="tpl-case-study-editor__tiny-label">
               Sample Answer (shown after submission)
             </label>
             <textarea
               value={p.sampleAnswer ?? ''}
               onChange={(e) => updatePrompt(idx, 'sampleAnswer', e.target.value)}
               rows={2}
-              style={{
-                width: '100%',
-                padding: '6px 8px',
-                border: '1px solid #e2e8f0',
-                borderRadius: 4,
-                fontSize: 13,
-              }}
+              className="tpl-case-study-editor__textarea"
             />
           </div>
         </div>
       ))}
       <button
         onClick={addPrompt}
-        style={{
-          width: '100%',
-          padding: 10,
-          border: '2px dashed #cbd5e1',
-          borderRadius: 6,
-          background: 'transparent',
-          color: '#3b82f6',
-          fontWeight: 500,
-          cursor: 'pointer',
-        }}
+        className="tpl-case-study-editor__button tpl-case-study-editor__button--add"
       >
         + Add Analysis Prompt
       </button>

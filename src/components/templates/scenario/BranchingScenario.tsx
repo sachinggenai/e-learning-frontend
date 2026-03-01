@@ -9,6 +9,7 @@
 
 import React, { useState, useCallback } from 'react';
 import type { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
+import './BranchingScenario.css';
 
 interface ScenarioChoice {
   id: string;
@@ -78,111 +79,71 @@ export const BranchingScenarioPreview: React.FC<ComponentPreviewProps> = ({
 
   if (!currentNode) {
     return (
-      <div style={{ padding: 20, textAlign: 'center', color: '#94a3b8' }}>
+      <div className="tpl-branching-scenario__empty">
         No scenario nodes configured.
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: 600, margin: '0 auto' }}>
-      {data?.title && <h3 style={{ marginBottom: 16 }}>{data.title}</h3>}
+    <div className="tpl-branching-scenario" data-testid="branching-scenario-preview">
+      {data?.title && <h3 className="tpl-branching-scenario__main-title">{data.title}</h3>}
 
-      {/* Progress dots */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
+      <div className="tpl-branching-scenario__progress" data-testid="branching-scenario-progress">
         {path.map((_, i) => (
-          <div
+          <span
             key={i}
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: '50%',
-              background: i === path.length - 1 ? '#3b82f6' : '#93c5fd',
-            }}
+            className={`tpl-branching-scenario__progress-dot ${
+              i === path.length - 1 ? 'tpl-branching-scenario__progress-dot--active' : ''
+            }`}
           />
         ))}
       </div>
 
-      {/* Node card */}
-      <div
-        style={{
-          border: '1px solid #e2e8f0',
-          borderRadius: 12,
-          padding: 24,
-          background: '#fff',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-        }}
-      >
+      <div className="tpl-branching-scenario__node" data-testid="branching-scenario-node">
         {currentNode.imageUrl && (
           <img
             src={currentNode.imageUrl}
             alt=""
-            style={{ width: '100%', borderRadius: 8, marginBottom: 16 }}
+            className="tpl-branching-scenario__image"
           />
         )}
-        <h4 style={{ margin: '0 0 8px', fontSize: 18 }}>{currentNode.title}</h4>
-        <p style={{ margin: '0 0 20px', color: '#475569', lineHeight: 1.6 }}>
+        <h4 className="tpl-branching-scenario__node-title">{currentNode.title}</h4>
+        <p className="tpl-branching-scenario__narrative">
           {currentNode.narrative}
         </p>
 
         {feedback && (
-          <div
-            style={{
-              padding: '10px 14px',
-              background: '#f0f9ff',
-              border: '1px solid #bae6fd',
-              borderRadius: 8,
-              marginBottom: 16,
-              fontSize: 13,
-              color: '#0369a1',
-            }}
-          >
+          <div className="tpl-branching-scenario__feedback" data-testid="branching-scenario-feedback">
             {feedback}
           </div>
         )}
 
         {currentNode.isEnd ? (
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ fontSize: 15, fontWeight: 600, color: '#22c55e', marginBottom: 8 }}>
+          <div className="tpl-branching-scenario__end">
+            <p className="tpl-branching-scenario__end-message">
               {currentNode.endMessage || 'Scenario Complete!'}
             </p>
             {data?.showScore && (
-              <p style={{ fontSize: 14, color: '#475569' }}>Score: {totalPoints} points</p>
+              <p className="tpl-branching-scenario__score">Score: {totalPoints} points</p>
             )}
             <button
               onClick={handleRestart}
-              style={{
-                marginTop: 12,
-                padding: '10px 24px',
-                background: '#3b82f6',
-                color: '#fff',
-                border: 'none',
-                borderRadius: 8,
-                fontWeight: 500,
-                cursor: 'pointer',
-              }}
+              className="tpl-branching-scenario__button tpl-branching-scenario__button--primary tpl-branching-scenario__button--restart"
             >
               Try Again
             </button>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div className="tpl-branching-scenario__choices">
             {currentNode.choices.map((c) => (
               <button
                 key={c.id}
                 onClick={() => handleChoice(c)}
                 disabled={!!feedback}
-                style={{
-                  padding: '12px 16px',
-                  border: '2px solid #e2e8f0',
-                  borderRadius: 8,
-                  background: '#fafafa',
-                  textAlign: 'left',
-                  fontSize: 14,
-                  cursor: feedback ? 'not-allowed' : 'pointer',
-                  opacity: feedback ? 0.6 : 1,
-                  transition: 'border-color 0.2s',
-                }}
+                className={`tpl-branching-scenario__choice ${
+                  feedback ? 'tpl-branching-scenario__choice--disabled' : ''
+                }`}
               >
                 {c.text}
               </button>
@@ -270,42 +231,30 @@ export const BranchingScenarioEditor: React.FC<ComponentEditorProps> = ({
   };
 
   const inp = (label: string, value: string, cb: (v: string) => void, multi = false) => (
-    <div style={{ marginBottom: 8 }}>
-      <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>{label}</label>
+    <div className="tpl-branching-scenario__field">
+      <label className="tpl-branching-scenario__label">{label}</label>
       {multi ? (
         <textarea
           value={value}
           onChange={(e) => cb(e.target.value)}
           rows={3}
-          style={{
-            width: '100%',
-            padding: '6px 8px',
-            border: '1px solid #e2e8f0',
-            borderRadius: 4,
-            fontSize: 13,
-          }}
+          className="tpl-branching-scenario__textarea"
         />
       ) : (
         <input
           type="text"
           value={value}
           onChange={(e) => cb(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '6px 8px',
-            border: '1px solid #e2e8f0',
-            borderRadius: 4,
-            fontSize: 13,
-          }}
+          className="tpl-branching-scenario__input"
         />
       )}
     </div>
   );
 
   return (
-    <div>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>
+    <div className="tpl-branching-scenario-editor" data-testid="branching-scenario-editor">
+      <div className="tpl-branching-scenario-editor__section">
+        <label className="tpl-branching-scenario-editor__label">
           Scenario Title
         </label>
         <input
@@ -313,23 +262,17 @@ export const BranchingScenarioEditor: React.FC<ComponentEditorProps> = ({
           value={data?.title ?? ''}
           onChange={(e) => onChange({ data: { ...data, title: e.target.value } })}
           placeholder="Branching Scenario"
-          style={{
-            width: '100%',
-            padding: '6px 8px',
-            border: '1px solid #e2e8f0',
-            borderRadius: 4,
-            fontSize: 13,
-          }}
+          className="tpl-branching-scenario-editor__input"
         />
       </div>
 
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ fontSize: 12 }}>
+      <div className="tpl-branching-scenario-editor__section">
+        <label className="tpl-branching-scenario-editor__checkbox-label">
           <input
             type="checkbox"
             checked={data?.showScore ?? false}
             onChange={(e) => onChange({ data: { ...data, showScore: e.target.checked } })}
-            style={{ marginRight: 6 }}
+            className="tpl-branching-scenario-editor__checkbox"
           />
           Show score at end
         </label>
@@ -338,27 +281,17 @@ export const BranchingScenarioEditor: React.FC<ComponentEditorProps> = ({
       {nodes.map((node) => (
         <div
           key={node.id}
-          style={{
-            border: '1px solid #e2e8f0',
-            borderRadius: 8,
-            marginBottom: 10,
-            overflow: 'hidden',
-          }}
+          className="tpl-branching-scenario-editor__node"
         >
           <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '10px 14px',
-              background: expandedNode === node.id ? '#f0f9ff' : '#f9fafb',
-              cursor: 'pointer',
-            }}
+            className={`tpl-branching-scenario-editor__node-header ${
+              expandedNode === node.id ? 'tpl-branching-scenario-editor__node-header--expanded' : ''
+            }`}
             onClick={() =>
               setExpandedNode((prev) => (prev === node.id ? null : node.id))
             }
           >
-            <span style={{ fontWeight: 600, fontSize: 13 }}>
+            <span className="tpl-branching-scenario-editor__node-title">
               {node.title || 'Untitled Node'}
               {node.isEnd ? ' 🏁' : ''}
               {data?.startNodeId === node.id ? ' (Start)' : ''}
@@ -368,32 +301,26 @@ export const BranchingScenarioEditor: React.FC<ComponentEditorProps> = ({
                 e.stopPropagation();
                 removeNode(node.id);
               }}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#ef4444',
-                fontSize: 18,
-                cursor: 'pointer',
-              }}
+              className="tpl-branching-scenario-editor__remove"
             >
               ×
             </button>
           </div>
 
           {expandedNode === node.id && (
-            <div style={{ padding: 14 }}>
+            <div className="tpl-branching-scenario-editor__node-body">
               {inp('Title', node.title, (v) => updateNode(node.id, 'title', v))}
               {inp('Narrative', node.narrative, (v) => updateNode(node.id, 'narrative', v), true)}
               {inp('Image URL', node.imageUrl ?? '', (v) =>
                 updateNode(node.id, 'imageUrl', v),
               )}
-              <div style={{ marginBottom: 8 }}>
-                <label style={{ fontSize: 12 }}>
+              <div className="tpl-branching-scenario-editor__field">
+                <label className="tpl-branching-scenario-editor__checkbox-label">
                   <input
                     type="checkbox"
                     checked={node.isEnd ?? false}
                     onChange={(e) => updateNode(node.id, 'isEnd', e.target.checked)}
-                    style={{ marginRight: 6 }}
+                    className="tpl-branching-scenario-editor__checkbox"
                   />
                   End Node
                 </label>
@@ -405,36 +332,19 @@ export const BranchingScenarioEditor: React.FC<ComponentEditorProps> = ({
 
               {!node.isEnd && (
                 <>
-                  <h5 style={{ margin: '12px 0 8px', fontSize: 13 }}>Choices</h5>
+                  <h5 className="tpl-branching-scenario-editor__choices-title">Choices</h5>
                   {node.choices.map((c, ci) => (
                     <div
                       key={c.id}
-                      style={{
-                        border: '1px solid #e2e8f0',
-                        borderRadius: 6,
-                        padding: 10,
-                        marginBottom: 8,
-                        background: '#fefce8',
-                      }}
+                      className="tpl-branching-scenario-editor__choice"
                     >
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          marginBottom: 6,
-                        }}
-                      >
-                        <span style={{ fontSize: 12, fontWeight: 500 }}>
+                      <div className="tpl-branching-scenario-editor__choice-header">
+                        <span className="tpl-branching-scenario-editor__choice-title">
                           Choice {ci + 1}
                         </span>
                         <button
                           onClick={() => removeChoice(node.id, ci)}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            color: '#ef4444',
-                            cursor: 'pointer',
-                          }}
+                          className="tpl-branching-scenario-editor__remove"
                         >
                           ×
                         </button>
@@ -442,9 +352,9 @@ export const BranchingScenarioEditor: React.FC<ComponentEditorProps> = ({
                       {inp('Text', c.text, (v) =>
                         updateChoice(node.id, ci, 'text', v),
                       )}
-                      <div style={{ display: 'flex', gap: 8 }}>
-                        <div style={{ flex: 1 }}>
-                          <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>
+                      <div className="tpl-branching-scenario-editor__choice-row">
+                        <div className="tpl-branching-scenario-editor__choice-col-main">
+                          <label className="tpl-branching-scenario__label">
                             Next Node
                           </label>
                           <select
@@ -457,13 +367,7 @@ export const BranchingScenarioEditor: React.FC<ComponentEditorProps> = ({
                                 e.target.value || null,
                               )
                             }
-                            style={{
-                              width: '100%',
-                              padding: '6px 8px',
-                              border: '1px solid #e2e8f0',
-                              borderRadius: 4,
-                              fontSize: 13,
-                            }}
+                            className="tpl-branching-scenario__select"
                           >
                             <option value="">End (no next node)</option>
                             {nodes
@@ -475,8 +379,8 @@ export const BranchingScenarioEditor: React.FC<ComponentEditorProps> = ({
                               ))}
                           </select>
                         </div>
-                        <div style={{ width: 80 }}>
-                          <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>
+                        <div className="tpl-branching-scenario-editor__choice-col-points">
+                          <label className="tpl-branching-scenario__label">
                             Points
                           </label>
                           <input
@@ -485,13 +389,7 @@ export const BranchingScenarioEditor: React.FC<ComponentEditorProps> = ({
                             onChange={(e) =>
                               updateChoice(node.id, ci, 'points', Number(e.target.value))
                             }
-                            style={{
-                              width: '100%',
-                              padding: '6px 8px',
-                              border: '1px solid #e2e8f0',
-                              borderRadius: 4,
-                              fontSize: 13,
-                            }}
+                            className="tpl-branching-scenario__input"
                           />
                         </div>
                       </div>
@@ -502,15 +400,7 @@ export const BranchingScenarioEditor: React.FC<ComponentEditorProps> = ({
                   ))}
                   <button
                     onClick={() => addChoice(node.id)}
-                    style={{
-                      padding: '6px 12px',
-                      border: '1px dashed #cbd5e1',
-                      borderRadius: 4,
-                      background: 'transparent',
-                      color: '#3b82f6',
-                      fontSize: 12,
-                      cursor: 'pointer',
-                    }}
+                    className="tpl-branching-scenario-editor__button tpl-branching-scenario-editor__button--add-choice"
                   >
                     + Add Choice
                   </button>
@@ -523,16 +413,7 @@ export const BranchingScenarioEditor: React.FC<ComponentEditorProps> = ({
 
       <button
         onClick={addNode}
-        style={{
-          width: '100%',
-          padding: 10,
-          border: '2px dashed #cbd5e1',
-          borderRadius: 6,
-          background: 'transparent',
-          color: '#3b82f6',
-          fontWeight: 500,
-          cursor: 'pointer',
-        }}
+        className="tpl-branching-scenario-editor__button tpl-branching-scenario-editor__button--add-node"
       >
         + Add Node
       </button>

@@ -1,0 +1,226 @@
+.tpl-case-study {
+  max-width: 700px;
+  margin: 0 auto;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-case-study__title {
+  margin: 0 0 4px;
+}
+
+.tpl-case-study__subtitle {
+  color: var(--theme-text-secondary, #64748b);
+  font-size: 14px;
+  margin: 0 0 16px;
+}
+
+.tpl-case-study__background {
+  background: color-mix(in srgb, var(--theme-info, #3b82f6) 8%, white);
+  border: 1px solid color-mix(in srgb, var(--theme-info, #3b82f6) 30%, white);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.tpl-case-study__background-header {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+
+.tpl-case-study__background-text {
+  white-space: pre-wrap;
+  line-height: 1.7;
+  font-size: 14px;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-case-study__image {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.tpl-case-study__prompts {
+  margin-bottom: 14px;
+}
+
+.tpl-case-study__prompt {
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.tpl-case-study__prompt-question {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.tpl-case-study__prompt-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  font-size: 13px;
+  resize: vertical;
+  line-height: 1.5;
+  background: var(--theme-background, #ffffff);
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-case-study__prompt-input--submitted {
+  background: var(--theme-surface, #f8fafc);
+}
+
+.tpl-case-study__prompt-input:focus-visible {
+  outline: 2px solid var(--theme-primary, #2563eb);
+  outline-offset: 1px;
+}
+
+.tpl-case-study__sample-container {
+  margin-top: 8px;
+}
+
+.tpl-case-study__sample-button {
+  background: none;
+  border: none;
+  color: var(--theme-primary, #2563eb);
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.tpl-case-study__sample-answer {
+  margin-top: 6px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--theme-success, #22c55e) 8%, white);
+  border: 1px solid color-mix(in srgb, var(--theme-success, #22c55e) 30%, white);
+  border-radius: 6px;
+  font-size: 13px;
+  color: color-mix(in srgb, var(--theme-success, #22c55e) 60%, black);
+  line-height: 1.5;
+}
+
+.tpl-case-study__button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  color: #fff;
+}
+
+.tpl-case-study__button--submit {
+  background: var(--theme-primary, #2563eb);
+  cursor: pointer;
+}
+
+.tpl-case-study__button--disabled {
+  background: color-mix(in srgb, var(--theme-text-secondary, #64748b) 45%, white);
+  cursor: not-allowed;
+}
+
+.tpl-case-study__message {
+  text-align: center;
+  margin-top: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.tpl-case-study__message--success {
+  background: color-mix(in srgb, var(--theme-success, #22c55e) 8%, white);
+  color: color-mix(in srgb, var(--theme-success, #22c55e) 60%, black);
+}
+
+.tpl-case-study-editor {
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-case-study-editor__field {
+  margin-bottom: 12px;
+}
+
+.tpl-case-study-editor__label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.tpl-case-study-editor__tiny-label {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 3px;
+}
+
+.tpl-case-study-editor__input,
+.tpl-case-study-editor__textarea {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--theme-text, #1e293b);
+  background: var(--theme-background, #ffffff);
+}
+
+.tpl-case-study-editor__textarea {
+  resize: vertical;
+}
+
+.tpl-case-study-editor__prompts-title {
+  margin: 16px 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tpl-case-study-editor__prompt {
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: var(--theme-surface, #f8fafc);
+}
+
+.tpl-case-study-editor__prompt-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.tpl-case-study-editor__prompt-name {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.tpl-case-study-editor__remove {
+  background: none;
+  border: none;
+  color: var(--theme-error, #ef4444);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.tpl-case-study-editor__button--add {
+  width: 100%;
+  padding: 10px;
+  border: 2px dashed var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--theme-primary, #2563eb);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .tpl-case-study__background {
+    padding: 16px;
+  }
+
+  .tpl-case-study__prompt {
+    padding: 12px;
+  }
+}
