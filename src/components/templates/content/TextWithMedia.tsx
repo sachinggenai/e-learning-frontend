@@ -3,7 +3,7 @@ import type { ComponentEditorProps, ComponentPreviewProps } from '../../../types
 import './TextWithMedia.css';
 
 type MediaType = 'none' | 'image' | 'video';
-type MediaPosition = 'left' | 'right';
+type MediaPosition = 'left' | 'right' | 'top' | 'bottom';
 
 interface TextWithMediaData {
   title?: string;
@@ -11,6 +11,8 @@ interface TextWithMediaData {
   mediaUrl?: string;
   mediaType?: MediaType;
   mediaPosition?: MediaPosition;
+  mediaWidth?: string;  // e.g., '300px', '50%', 'auto'
+  mediaHeight?: string; // e.g., '200px', 'auto'
 }
 
 export const TextWithMediaPreview: React.FC<ComponentPreviewProps> = ({
@@ -29,6 +31,15 @@ export const TextWithMediaPreview: React.FC<ComponentPreviewProps> = ({
 
   const hasMedia = mediaType !== 'none' && Boolean(componentData.mediaUrl);
 
+  // Build custom media styles if dimensions are specified
+  const mediaStyle: React.CSSProperties = {};
+  if (componentData.mediaWidth) {
+    mediaStyle.width = componentData.mediaWidth;
+  }
+  if (componentData.mediaHeight) {
+    mediaStyle.height = componentData.mediaHeight;
+  }
+
   return (
     <article className={`tpl-text-media tpl-text-media--${mediaPosition}`}>
       <div className="tpl-text-media__text">
@@ -40,7 +51,11 @@ export const TextWithMediaPreview: React.FC<ComponentPreviewProps> = ({
       </div>
 
       {hasMedia && (
-        <div className="tpl-text-media__media" aria-label="Media section">
+        <div 
+          className="tpl-text-media__media" 
+          aria-label="Media section"
+          style={Object.keys(mediaStyle).length > 0 ? mediaStyle : undefined}
+        >
           {mediaType === 'image' ? (
             <img src={componentData.mediaUrl} alt="" className="tpl-text-media__image" />
           ) : (
@@ -127,6 +142,8 @@ export const TextWithMediaEditor: React.FC<ComponentEditorProps> = ({ data, onCh
           >
             <option value="left">Left</option>
             <option value="right">Right</option>
+            <option value="top">Top</option>
+            <option value="bottom">Bottom</option>
           </select>
         </div>
       </div>
@@ -144,6 +161,38 @@ export const TextWithMediaEditor: React.FC<ComponentEditorProps> = ({ data, onCh
           placeholder="https://..."
           disabled={readOnly}
         />
+      </div>
+
+      <div className="tpl-text-media-editor__grid">
+        <div className="tpl-text-media-editor__field">
+          <label className="tpl-text-media-editor__label" htmlFor="twm-media-width">
+            Media Width (optional)
+          </label>
+          <input
+            id="twm-media-width"
+            className="tpl-text-media-editor__input"
+            type="text"
+            value={componentData.mediaWidth ?? ''}
+            onChange={(event) => updateField('mediaWidth', event.target.value)}
+            placeholder="e.g., 400px, 50%, auto"
+            disabled={readOnly}
+          />
+        </div>
+
+        <div className="tpl-text-media-editor__field">
+          <label className="tpl-text-media-editor__label" htmlFor="twm-media-height">
+            Media Height (optional)
+          </label>
+          <input
+            id="twm-media-height"
+            className="tpl-text-media-editor__input"
+            type="text"
+            value={componentData.mediaHeight ?? ''}
+            onChange={(event) => updateField('mediaHeight', event.target.value)}
+            placeholder="e.g., 300px, auto"
+            disabled={readOnly}
+          />
+        </div>
       </div>
     </div>
   );

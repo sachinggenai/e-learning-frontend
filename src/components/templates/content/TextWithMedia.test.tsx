@@ -54,4 +54,60 @@ describe('TextWithMediaPreview', () => {
 
     expect(container.querySelector('video')).toBeInTheDocument();
   });
+
+  it('applies correct class for top placement', () => {
+    const { container } = render(
+      <TextWithMediaPreview
+        componentId="cmp-text-media"
+        componentType="text-with-media"
+        data={{
+          title: 'Top Placement',
+          body: '<p>Content</p>',
+          mediaType: 'image',
+          mediaUrl: 'https://example.com/media.jpg',
+          mediaPosition: 'top',
+        }}
+      />
+    );
+
+    expect(container.querySelector('.tpl-text-media--top')).toBeInTheDocument();
+  });
+
+  it('applies correct class for bottom placement', () => {
+    const { container } = render(
+      <TextWithMediaPreview
+        componentId="cmp-text-media"
+        componentType="text-with-media"
+        data={{
+          title: 'Bottom Placement',
+          body: '<p>Content</p>',
+          mediaType: 'image',
+          mediaUrl: 'https://example.com/media.jpg',
+          mediaPosition: 'bottom',
+        }}
+      />
+    );
+
+    expect(container.querySelector('.tpl-text-media--bottom')).toBeInTheDocument();
+  });
+
+  it('applies custom dimensions when specified', () => {
+    render(
+      <TextWithMediaPreview
+        componentId="cmp-text-media"
+        componentType="text-with-media"
+        data={{
+          title: 'Custom Size',
+          body: '<p>Content</p>',
+          mediaType: 'image',
+          mediaUrl: 'https://example.com/media.jpg',
+          mediaWidth: '500px',
+          mediaHeight: '300px',
+        }}
+      />
+    );
+
+    const mediaSection = screen.getByLabelText('Media section');
+    expect(mediaSection).toHaveStyle({ width: '500px', height: '300px' });
+  });
 });

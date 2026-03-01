@@ -196,10 +196,12 @@ export const ALL_COMPONENT_TYPES: ComponentTypeDetail[] = [
     { perComponent: true, perInteraction: false },
     {
       title: 'Text with Media',
-      body: '<p>Use this component to combine explanatory text with supporting visual or video media.</p>',
-      mediaUrl: '',
-      mediaType: 'none',
+      body: '<p>Use this component to combine explanatory text with supporting visual or video media. You can position the media on any side (left, right, top, or bottom) and customize its dimensions for the perfect layout.</p>',
+      mediaUrl: 'https://via.placeholder.com/400x300',
+      mediaType: 'image',
       mediaPosition: 'right',
+      mediaWidth: '',
+      mediaHeight: '',
     }, 6),
 
   // ── Process & Flow (5) ───────────────────────────────────────
