@@ -9,6 +9,7 @@
 
 import React, { useState, useCallback } from 'react';
 import type { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
+import './Timeline.css';
 
 interface TimelineEvent {
   id: string;
@@ -46,40 +47,16 @@ export const TimelinePreview: React.FC<ComponentPreviewProps> = ({
   }, [events.length, onInteraction, onComplete]);
 
   return (
-    <div style={{ padding: '16px 0' }}>
-      {data?.title && <h3 style={{ marginBottom: 24 }}>{data.title}</h3>}
-      <div style={{ position: 'relative', paddingLeft: 40 }}>
-        {/* Vertical line */}
-        <div
-          style={{
-            position: 'absolute',
-            left: 15,
-            top: 0,
-            bottom: 0,
-            width: 2,
-            background: '#e2e8f0',
-          }}
-        />
+    <div className="tpl-timeline">
+      {data?.title && <h3 className="tpl-timeline__title">{data.title}</h3>}
+      <div className="tpl-timeline__list-wrap">
+        <div className="tpl-timeline__axis" />
 
         {events.map((event, idx) => {
           const isOpen = expanded.has(event.id);
           return (
-            <div key={event.id} style={{ position: 'relative', marginBottom: 24 }}>
-              {/* Dot */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: -33,
-                  top: 4,
-                  width: 12,
-                  height: 12,
-                  borderRadius: '50%',
-                  background: isOpen ? '#3b82f6' : '#94a3b8',
-                  border: '2px solid #fff',
-                  boxShadow: '0 0 0 2px ' + (isOpen ? '#3b82f6' : '#e2e8f0'),
-                  transition: 'all 0.2s',
-                }}
-              />
+            <div key={event.id} className="tpl-timeline__item">
+              <div className={`tpl-timeline__dot ${isOpen ? 'tpl-timeline__dot--open' : ''}`} />
 
               <div
                 onClick={() => toggleEvent(event.id)}
@@ -89,32 +66,23 @@ export const TimelinePreview: React.FC<ComponentPreviewProps> = ({
                 tabIndex={0}
                 role="button"
                 aria-expanded={isOpen}
-                style={{
-                  border: `1px solid ${isOpen ? '#3b82f6' : '#e2e8f0'}`,
-                  borderRadius: 8,
-                  padding: 16,
-                  cursor: 'pointer',
-                  background: isOpen ? '#f8fafc' : '#fff',
-                  transition: 'all 0.2s',
-                }}
+                className={`tpl-timeline__card ${isOpen ? 'tpl-timeline__card--open' : ''}`}
               >
-                <div style={{ fontSize: 11, color: '#64748b', fontWeight: 500, marginBottom: 4 }}>
-                  {event.date}
-                </div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: '#1e293b' }}>
-                  {event.title}
-                  <span style={{ float: 'right', color: '#94a3b8' }}>{isOpen ? '▲' : '▼'}</span>
+                <div className="tpl-timeline__date">{event.date}</div>
+                <div className="tpl-timeline__card-header">
+                  <span className="tpl-timeline__event-title">{event.title}</span>
+                  <span className="tpl-timeline__toggle-icon">{isOpen ? '▲' : '▼'}</span>
                 </div>
                 {isOpen && (
-                  <div style={{ marginTop: 12 }}>
+                  <div className="tpl-timeline__details">
                     {event.imageUrl && (
                       <img
                         src={event.imageUrl}
                         alt=""
-                        style={{ width: '100%', borderRadius: 6, marginBottom: 8 }}
+                        className="tpl-timeline__image"
                       />
                     )}
-                    <p style={{ fontSize: 13, color: '#475569', lineHeight: 1.6, margin: 0 }}>
+                    <p className="tpl-timeline__description">
                       {event.description}
                     </p>
                   </div>
@@ -158,42 +126,75 @@ export const TimelineEditor: React.FC<ComponentEditorProps> = ({
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>Title</label>
+    <div className="tpl-timeline-editor">
+      <div className="tpl-timeline-editor__field">
+        <label className="tpl-timeline-editor__label">Title</label>
         <input
           type="text"
+          className="tpl-timeline-editor__input"
           value={data?.title ?? ''}
           onChange={(e) => onChange({ data: { ...data, title: e.target.value } })}
           placeholder="Timeline Title"
-          style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }}
         />
       </div>
 
       {events.map((event, idx) => (
-        <div key={event.id} style={{ border: '1px solid #e2e8f0', borderRadius: 6, padding: 12, marginBottom: 10, background: '#f9fafb' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-            <span style={{ fontWeight: 600, fontSize: 13 }}>Event {idx + 1}</span>
-            <button onClick={() => removeEvent(idx)} style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: 18, cursor: 'pointer' }}>×</button>
+        <div key={event.id} className="tpl-timeline-editor__event">
+          <div className="tpl-timeline-editor__event-header">
+            <span className="tpl-timeline-editor__event-title">Event {idx + 1}</span>
+            <button
+              onClick={() => removeEvent(idx)}
+              className="tpl-timeline-editor__delete"
+              aria-label={`Delete event ${idx + 1}`}
+            >
+              ×
+            </button>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 8, marginBottom: 8 }}>
-            <div>
-              <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Date</label>
-              <input type="text" value={event.date} onChange={(e) => updateEvent(idx, 'date', e.target.value)} placeholder="2024" style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+          <div className="tpl-timeline-editor__event-grid">
+            <div className="tpl-timeline-editor__field">
+              <label className="tpl-timeline-editor__label">Date</label>
+              <input
+                type="text"
+                className="tpl-timeline-editor__input"
+                value={event.date}
+                onChange={(e) => updateEvent(idx, 'date', e.target.value)}
+                placeholder="2024"
+              />
             </div>
-            <div>
-              <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Title</label>
-              <input type="text" value={event.title} onChange={(e) => updateEvent(idx, 'title', e.target.value)} placeholder="Event title" style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+            <div className="tpl-timeline-editor__field">
+              <label className="tpl-timeline-editor__label">Title</label>
+              <input
+                type="text"
+                className="tpl-timeline-editor__input"
+                value={event.title}
+                onChange={(e) => updateEvent(idx, 'title', e.target.value)}
+                placeholder="Event title"
+              />
             </div>
           </div>
-          <div>
-            <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Description</label>
-            <textarea value={event.description} onChange={(e) => updateEvent(idx, 'description', e.target.value)} rows={3} style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+          <div className="tpl-timeline-editor__field">
+            <label className="tpl-timeline-editor__label">Description</label>
+            <textarea
+              className="tpl-timeline-editor__textarea"
+              value={event.description}
+              onChange={(e) => updateEvent(idx, 'description', e.target.value)}
+              rows={3}
+            />
+          </div>
+          <div className="tpl-timeline-editor__field">
+            <label className="tpl-timeline-editor__label">Image URL (optional)</label>
+            <input
+              type="text"
+              className="tpl-timeline-editor__input"
+              value={event.imageUrl ?? ''}
+              onChange={(e) => updateEvent(idx, 'imageUrl', e.target.value)}
+              placeholder="https://example.com/image.jpg"
+            />
           </div>
         </div>
       ))}
 
-      <button onClick={addEvent} style={{ width: '100%', padding: 10, border: '2px dashed #cbd5e1', borderRadius: 6, background: 'transparent', color: '#3b82f6', fontWeight: 500, cursor: 'pointer' }}>
+      <button onClick={addEvent} className="tpl-timeline-editor__add-button">
         + Add Event
       </button>
     </div>

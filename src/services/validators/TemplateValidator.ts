@@ -85,6 +85,12 @@ export class TemplateValidator implements Validator {
         case "timeline":
           errors.push(...this.validateTimeline(page, index));
           break;
+        case "layered-content":
+          errors.push(...this.validateLayeredContent(page, index));
+          break;
+        case "text-with-media":
+          errors.push(...this.validateTextWithMedia(page, index));
+          break;
         case "carousel":
           errors.push(...this.validateCarousel(page, index));
           break;
@@ -500,6 +506,43 @@ export class TemplateValidator implements Validator {
         errors.push(this.makeWarning(index, `content.events[${e}]`, "Each event should include a title"));
       }
     });
+
+    return errors;
+  }
+
+  private validateLayeredContent(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.hasMinItems(content.layers, 1)) {
+      errors.push(this.makeError(index, "content.layers", "Layered content requires at least one layer"));
+      return errors;
+    }
+
+    content.layers.forEach((layer: any, layerIndex: number) => {
+      if (!this.isNonEmptyString(layer.label)) {
+        errors.push(this.makeWarning(index, `content.layers[${layerIndex}].label`, "Each layer should include a label"));
+      }
+      if (!this.isNonEmptyString(layer.content)) {
+        errors.push(this.makeWarning(index, `content.layers[${layerIndex}].content`, "Each layer should include content"));
+      }
+    });
+
+    return errors;
+  }
+
+  private validateTextWithMedia(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.isNonEmptyString(content.body)) {
+      errors.push(this.makeWarning(index, "content.body", "Text with media should include body text"));
+    }
+
+    const mediaType = typeof content.mediaType === "string" ? content.mediaType : "none";
+    if (mediaType !== "none" && !this.isNonEmptyString(content.mediaUrl)) {
+      errors.push(this.makeWarning(index, "content.mediaUrl", "Media URL is required when media type is image or video"));
+    }
 
     return errors;
   }

@@ -1,0 +1,203 @@
+.tpl-timeline {
+  padding: 16px 0;
+}
+
+.tpl-timeline__title {
+  margin: 0 0 20px;
+  color: var(--theme-text, #1e293b);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.tpl-timeline__list-wrap {
+  position: relative;
+  padding-left: 40px;
+}
+
+.tpl-timeline__axis {
+  position: absolute;
+  left: 15px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--theme-border, #e2e8f0);
+}
+
+.tpl-timeline__item {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.tpl-timeline__dot {
+  position: absolute;
+  left: -33px;
+  top: 10px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--theme-text-secondary, #94a3b8);
+  border: 2px solid var(--theme-background, #fff);
+  box-shadow: 0 0 0 2px var(--theme-border, #e2e8f0);
+  transition: all 0.18s ease;
+}
+
+.tpl-timeline__dot--open {
+  background: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px var(--theme-primary, #2563eb);
+}
+
+.tpl-timeline__card {
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 8px;
+  padding: 14px;
+  cursor: pointer;
+  background: var(--theme-background, #fff);
+  transition: border-color 0.2s ease, background 0.2s ease;
+  outline: none;
+}
+
+.tpl-timeline__card:hover {
+  border-color: var(--theme-primary, #2563eb);
+  background: var(--theme-surface, #f8fafc);
+}
+
+.tpl-timeline__card:focus-visible {
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.16);
+}
+
+.tpl-timeline__card--open {
+  border-color: var(--theme-primary, #2563eb);
+  background: var(--theme-surface, #f8fafc);
+}
+
+.tpl-timeline__date {
+  font-size: 11px;
+  color: var(--theme-text-secondary, #64748b);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.tpl-timeline__card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tpl-timeline__event-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-timeline__toggle-icon {
+  color: var(--theme-text-secondary, #94a3b8);
+  font-size: 12px;
+}
+
+.tpl-timeline__details {
+  margin-top: 12px;
+}
+
+.tpl-timeline__image {
+  width: 100%;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  display: block;
+  border: 1px solid var(--theme-border, #e2e8f0);
+}
+
+.tpl-timeline__description {
+  margin: 0;
+  font-size: 13px;
+  color: var(--theme-text-secondary, #475569);
+  line-height: 1.6;
+}
+
+.tpl-timeline-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tpl-timeline-editor__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tpl-timeline-editor__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-timeline-editor__input,
+.tpl-timeline-editor__textarea {
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--theme-text, #1e293b);
+  background: var(--theme-background, #fff);
+}
+
+.tpl-timeline-editor__input:focus,
+.tpl-timeline-editor__textarea:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.tpl-timeline-editor__event {
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 8px;
+  padding: 12px;
+  background: var(--theme-surface, #f8fafc);
+}
+
+.tpl-timeline-editor__event-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.tpl-timeline-editor__event-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-timeline-editor__delete {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.tpl-timeline-editor__event-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tpl-timeline-editor__add-button {
+  width: 100%;
+  padding: 10px;
+  border: 2px dashed var(--theme-border, #cbd5e1);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--theme-primary, #2563eb);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tpl-timeline-editor__add-button:hover {
+  border-color: var(--theme-primary, #2563eb);
+  background: var(--theme-surface, #f8fafc);
+}

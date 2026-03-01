@@ -1,0 +1,108 @@
+.tpl-text-media {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.tpl-text-media--left {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 320px);
+}
+
+.tpl-text-media--left .tpl-text-media__media {
+  order: 0;
+}
+
+.tpl-text-media--left .tpl-text-media__text {
+  order: 1;
+}
+
+.tpl-text-media--right {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 320px);
+}
+
+.tpl-text-media__title {
+  margin: 0 0 10px;
+  color: var(--theme-text, #1e293b);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.tpl-text-media__body {
+  color: var(--theme-text-secondary, #475569);
+  line-height: 1.65;
+}
+
+.tpl-text-media__body p {
+  margin: 0 0 10px;
+}
+
+.tpl-text-media__media {
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 8px;
+  background: var(--theme-background, #fff);
+  overflow: hidden;
+}
+
+.tpl-text-media__image,
+.tpl-text-media__video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 900px) {
+  .tpl-text-media--left,
+  .tpl-text-media--right {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tpl-text-media--left .tpl-text-media__media,
+  .tpl-text-media--left .tpl-text-media__text,
+  .tpl-text-media--right .tpl-text-media__media,
+  .tpl-text-media--right .tpl-text-media__text {
+    order: initial;
+  }
+}
+
+.tpl-text-media-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tpl-text-media-editor__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tpl-text-media-editor__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-text-media-editor__input,
+.tpl-text-media-editor__textarea {
+  width: 100%;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  background: var(--theme-background, #fff);
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-text-media-editor__input:focus,
+.tpl-text-media-editor__textarea:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.tpl-text-media-editor__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}

@@ -1,0 +1,192 @@
+.tpl-image-hotspots__title {
+  margin: 0 0 12px;
+  color: var(--theme-text, #1e293b);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.tpl-image-hotspots__instructions {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: var(--theme-text-secondary, #64748b);
+}
+
+.tpl-image-hotspots__stage {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--theme-surface, #f8fafc);
+}
+
+.tpl-image-hotspots__image {
+  width: 100%;
+  display: block;
+}
+
+.tpl-image-hotspots__placeholder {
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--theme-text-secondary, #94a3b8);
+  background: var(--theme-surface, #f1f5f9);
+}
+
+.tpl-image-hotspots__marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--theme-primary, #3b82f6);
+  color: #fff;
+  border: 2px solid var(--theme-background, #fff);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.tpl-image-hotspots__marker--viewed {
+  background: var(--theme-success, #22c55e);
+}
+
+.tpl-image-hotspots__marker--active {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.tpl-image-hotspots__marker:focus-visible {
+  outline: 2px solid var(--theme-primary, #2563eb);
+  outline-offset: 2px;
+}
+
+.tpl-image-hotspots__tooltip {
+  position: absolute;
+  transform: translate(-20%, 0);
+  background: var(--theme-background, #fff);
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 8px;
+  padding: 14px;
+  max-width: 250px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.14);
+  z-index: 20;
+}
+
+.tpl-image-hotspots__tooltip-title {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-image-hotspots__tooltip-content {
+  margin: 0;
+  font-size: 13px;
+  color: var(--theme-text-secondary, #475569);
+  line-height: 1.5;
+}
+
+.tpl-image-hotspots__progress {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--theme-text-secondary, #94a3b8);
+  text-align: center;
+}
+
+.tpl-image-hotspots__progress--complete {
+  color: var(--theme-success, #22c55e);
+}
+
+.tpl-image-hotspots-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tpl-image-hotspots-editor__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tpl-image-hotspots-editor__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-image-hotspots-editor__input,
+.tpl-image-hotspots-editor__textarea {
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--theme-text, #1e293b);
+  background: var(--theme-background, #fff);
+}
+
+.tpl-image-hotspots-editor__input:focus,
+.tpl-image-hotspots-editor__textarea:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.tpl-image-hotspots-editor__hotspot {
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 8px;
+  padding: 12px;
+  background: var(--theme-surface, #f8fafc);
+}
+
+.tpl-image-hotspots-editor__hotspot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.tpl-image-hotspots-editor__hotspot-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-image-hotspots-editor__delete {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.tpl-image-hotspots-editor__hotspot-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 72px 72px;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tpl-image-hotspots-editor__add-button {
+  width: 100%;
+  padding: 10px;
+  border: 2px dashed var(--theme-border, #cbd5e1);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--theme-primary, #2563eb);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tpl-image-hotspots-editor__add-button:hover {
+  border-color: var(--theme-primary, #2563eb);
+  background: var(--theme-surface, #f8fafc);
+}

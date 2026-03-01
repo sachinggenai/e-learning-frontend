@@ -28,6 +28,10 @@ const AccordionEditor = React.lazy(() => import('../templates/content/Accordion'
 const AccordionPreview = React.lazy(() => import('../templates/content/Accordion').then(m => ({ default: m.AccordionPreview })));
 const SummaryEditor = React.lazy(() => import('../templates/content/Summary').then(m => ({ default: m.SummaryEditor })));
 const SummaryPreview = React.lazy(() => import('../templates/content/Summary').then(m => ({ default: m.SummaryPreview })));
+const LayeredContentEditor = React.lazy(() => import('../templates/content/LayeredContent').then(m => ({ default: m.LayeredContentEditor })));
+const LayeredContentPreview = React.lazy(() => import('../templates/content/LayeredContent').then(m => ({ default: m.LayeredContentPreview })));
+const TextWithMediaEditor = React.lazy(() => import('../templates/content/TextWithMedia').then(m => ({ default: m.TextWithMediaEditor })));
+const TextWithMediaPreview = React.lazy(() => import('../templates/content/TextWithMedia').then(m => ({ default: m.TextWithMediaPreview })));
 
 // Assessment
 const MCQEditor = React.lazy(() => import('../templates/assessment/MCQ').then(m => ({ default: m.MCQEditor })));
@@ -163,6 +167,52 @@ r({
   sortOrder: 3,
   editorComponent: ContentVideoEditor,
   previewComponent: ContentVideoPreview,
+});
+
+r({
+  typeId: 'layered-content',
+  displayName: 'Layered Content',
+  description: 'Stacked content layers with toggle navigation',
+  category: 'content-presentation',
+  icon: 'layers',
+  tags: ['layered', 'stacked', 'toggle'],
+  completionCapabilities: ['view', 'interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: {
+    title: 'Layered Concepts',
+    layers: [
+      { id: 'layer-1', label: 'Overview', content: 'Start with the key concept summary.' },
+      { id: 'layer-2', label: 'Details', content: 'Dive deeper into process details and examples.' },
+      { id: 'layer-3', label: 'Practice', content: 'Apply the concept with practical checkpoints.' },
+    ],
+    defaultLayerId: 'layer-1',
+  },
+  sortOrder: 7,
+  editorComponent: LayeredContentEditor,
+  previewComponent: LayeredContentPreview,
+});
+
+r({
+  typeId: 'text-with-media',
+  displayName: 'Text with Media',
+  description: 'Rich text block with optional image or video',
+  category: 'content-presentation',
+  icon: 'file-text',
+  tags: ['text', 'media', 'content'],
+  completionCapabilities: ['view', 'audio'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: {
+    title: 'Text with Media',
+    body: '<p>Use this layout to pair explanatory text with supporting media.</p>',
+    mediaUrl: '',
+    mediaType: 'none',
+    mediaPosition: 'right',
+  },
+  sortOrder: 8,
+  editorComponent: TextWithMediaEditor,
+  previewComponent: TextWithMediaPreview,
 });
 
 r({
@@ -499,7 +549,29 @@ r({
   completionCapabilities: ['view', 'interact'],
   scoringEnabled: false,
   audioSupport: { perComponent: true, perInteraction: false },
-  defaultData: { title: '', events: [] },
+  defaultData: {
+    title: 'Project Milestones',
+    events: [
+      {
+        id: 'evt-1',
+        date: 'Jan 2026',
+        title: 'Discovery',
+        description: 'Requirements gathering and initial solution planning.',
+      },
+      {
+        id: 'evt-2',
+        date: 'Feb 2026',
+        title: 'Design',
+        description: 'UI and interaction design finalized and reviewed.',
+      },
+      {
+        id: 'evt-3',
+        date: 'Mar 2026',
+        title: 'Launch',
+        description: 'Product released to learners with onboarding support.',
+      },
+    ],
+  },
   sortOrder: 3,
   editorComponent: TimelineEditor,
   previewComponent: TimelinePreview,
@@ -583,7 +655,16 @@ r({
   completionCapabilities: ['interact'],
   scoringEnabled: false,
   audioSupport: { perComponent: true, perInteraction: false },
-  defaultData: { title: '', imageUrl: '', hotspots: [] },
+  defaultData: {
+    title: 'Explore the Workstation',
+    instructions: 'Click each hotspot to reveal details.',
+    imageUrl: '',
+    hotspots: [
+      { id: 'hs-1', label: 'Control Panel', content: 'Main controls for operations and monitoring.', x: 22, y: 28 },
+      { id: 'hs-2', label: 'Safety Guard', content: 'Protective cover to prevent accidental contact.', x: 66, y: 40 },
+      { id: 'hs-3', label: 'Emergency Stop', content: 'Use this immediately to halt the machine in emergencies.', x: 40, y: 72 },
+    ],
+  },
   sortOrder: 0,
   editorComponent: ImageHotspotsEditor,
   previewComponent: ImageHotspotsPreview,
@@ -727,7 +808,7 @@ export const LEGACY_TYPE_MAP: Record<string, string> = {
   'content_video': 'content-video',
   'content_image': 'content-image',
   'interactive': 'tabs', // Legacy "interactive" maps to tabs
-  'text-with-media': 'content-text',
+  'text_with_media': 'text-with-media',
 };
 
 /**

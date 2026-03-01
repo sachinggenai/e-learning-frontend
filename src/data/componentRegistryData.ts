@@ -158,19 +158,49 @@ export const ALL_COMPONENT_TYPES: ComponentTypeDetail[] = [
   ct('timeline', 'content-presentation', 'Timeline', 'Chronological event display with per-event audio', 'calendar-range',
     ['timeline', 'history', 'chronology'], ['view', 'interact', 'audio'], false,
     { perComponent: false, perInteraction: true, interactionPoints: ['per event'] },
-    { title: 'Timeline', events: [{ id: 'evt-1', date: '2025-01', title: 'Event 1', description: 'Description 1' }] }, 3),
+    {
+      title: 'Project Timeline',
+      events: [
+        { id: 'evt-1', date: 'Jan 2026', title: 'Discovery', description: 'Requirements and workflow mapping completed.' },
+        { id: 'evt-2', date: 'Feb 2026', title: 'Design', description: 'Wireframes, content structure, and interaction specs approved.' },
+        { id: 'evt-3', date: 'Mar 2026', title: 'Release', description: 'Final rollout completed with learner onboarding support.' },
+      ],
+    }, 3),
   ct('image-hotspots', 'content-presentation', 'Image Hotspots', 'Interactive image with clickable hotspot zones', 'map-pin',
     ['hotspots', 'image', 'interactive', 'explore'], ['view', 'interact', 'audio'], false,
     { perComponent: false, perInteraction: true, interactionPoints: ['per hotspot'] },
-    { title: '', imageUrl: '', hotspots: [{ id: 'hs-1', x: 25, y: 30, label: 'Hotspot 1', content: 'Details here' }] }, 4),
+    {
+      title: 'Explore the Equipment',
+      instructions: 'Click each hotspot to reveal details.',
+      imageUrl: '',
+      hotspots: [
+        { id: 'hs-1', x: 25, y: 30, label: 'Control Panel', content: 'Primary controls for operating the system.' },
+        { id: 'hs-2', x: 62, y: 46, label: 'Sensor Unit', content: 'Monitors temperature and performance in real time.' },
+        { id: 'hs-3', x: 40, y: 72, label: 'Safety Stop', content: 'Emergency stop switch for immediate shutdown.' },
+      ],
+    }, 4),
   ct('layered-content', 'content-presentation', 'Layered Content', 'Stacked content layers with toggle navigation', 'layers',
     ['layered', 'stacked', 'toggle'], ['view', 'interact'], false,
     { perComponent: true, perInteraction: false },
-    { title: '', layers: [{ id: 'layer-1', label: 'Layer 1', content: 'Layer 1 content' }] }, 5),
+    {
+      title: 'Layered Concepts',
+      layers: [
+        { id: 'layer-1', label: 'Overview', content: 'Start with the key concept summary and purpose.' },
+        { id: 'layer-2', label: 'Details', content: 'Explore deeper guidance, context, and examples.' },
+        { id: 'layer-3', label: 'Practice', content: 'Apply the concept with practical actions and checks.' },
+      ],
+      defaultLayerId: 'layer-1',
+    }, 5),
   ct('text-with-media', 'content-presentation', 'Text with Media', 'Rich text block with optional image or video', 'file-text',
     ['text', 'media', 'content'], ['view', 'audio'], false,
     { perComponent: true, perInteraction: false },
-    { title: '', body: '<p>Enter your content here...</p>', mediaUrl: '', mediaType: 'none' }, 6),
+    {
+      title: 'Text with Media',
+      body: '<p>Use this component to combine explanatory text with supporting visual or video media.</p>',
+      mediaUrl: '',
+      mediaType: 'none',
+      mediaPosition: 'right',
+    }, 6),
 
   // ── Process & Flow (5) ───────────────────────────────────────
   ct('step-by-step', 'process-flow', 'Step-by-Step Process', 'Numbered step-through guide with progress indicators', 'footprints',

@@ -9,6 +9,7 @@
 
 import React, { useState, useCallback } from 'react';
 import type { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
+import './ImageHotspots.css';
 
 interface Hotspot {
   id: string;
@@ -46,31 +47,20 @@ export const ImageHotspotsPreview: React.FC<ComponentPreviewProps> = ({
   }, [hotspots.length, onInteraction, onComplete]);
 
   return (
-    <div>
-      {data?.title && <h3 style={{ marginBottom: 16 }}>{data.title}</h3>}
+    <div className="tpl-image-hotspots">
+      {data?.title && <h3 className="tpl-image-hotspots__title">{data.title}</h3>}
       {data?.instructions && (
-        <p style={{ fontSize: 14, color: '#64748b', marginBottom: 12 }}>{data.instructions}</p>
+        <p className="tpl-image-hotspots__instructions">{data.instructions}</p>
       )}
-      <div style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
+      <div className="tpl-image-hotspots__stage">
         {imageUrl ? (
           <img
             src={imageUrl}
             alt={data?.title ?? 'Interactive image'}
-            style={{ width: '100%', borderRadius: 8, display: 'block' }}
+            className="tpl-image-hotspots__image"
           />
         ) : (
-          <div
-            style={{
-              width: '100%',
-              height: 300,
-              background: '#f1f5f9',
-              borderRadius: 8,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#94a3b8',
-            }}
-          >
+          <div className="tpl-image-hotspots__placeholder">
             No image set
           </div>
         )}
@@ -79,26 +69,8 @@ export const ImageHotspotsPreview: React.FC<ComponentPreviewProps> = ({
           <React.Fragment key={hs.id}>
             <button
               onClick={() => handleClick(hs.id)}
-              style={{
-                position: 'absolute',
-                left: `${hs.x}%`,
-                top: `${hs.y}%`,
-                transform: 'translate(-50%, -50%)',
-                width: 28,
-                height: 28,
-                borderRadius: '50%',
-                background: viewed.has(hs.id) ? '#22c55e' : '#3b82f6',
-                color: '#fff',
-                border: '3px solid #fff',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                cursor: 'pointer',
-                fontSize: 14,
-                fontWeight: 600,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 10,
-              }}
+              className={`tpl-image-hotspots__marker ${viewed.has(hs.id) ? 'tpl-image-hotspots__marker--viewed' : ''} ${activeId === hs.id ? 'tpl-image-hotspots__marker--active' : ''}`}
+              style={{ left: `${hs.x}%`, top: `${hs.y}%` }}
               aria-label={`Hotspot: ${hs.label}`}
             >
               +
@@ -106,21 +78,11 @@ export const ImageHotspotsPreview: React.FC<ComponentPreviewProps> = ({
 
             {activeId === hs.id && (
               <div
-                style={{
-                  position: 'absolute',
-                  left: `${Math.min(hs.x, 70)}%`,
-                  top: `${hs.y + 4}%`,
-                  background: '#fff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: 8,
-                  padding: 16,
-                  maxWidth: 250,
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
-                  zIndex: 20,
-                }}
+                className="tpl-image-hotspots__tooltip"
+                style={{ left: `${Math.min(hs.x, 70)}%`, top: `${Math.min(hs.y + 6, 90)}%` }}
               >
-                <h5 style={{ margin: '0 0 6px', fontSize: 14 }}>{hs.label}</h5>
-                <p style={{ margin: 0, fontSize: 13, color: '#475569', lineHeight: 1.5 }}>
+                <h5 className="tpl-image-hotspots__tooltip-title">{hs.label}</h5>
+                <p className="tpl-image-hotspots__tooltip-content">
                   {hs.content}
                 </p>
               </div>
@@ -128,7 +90,7 @@ export const ImageHotspotsPreview: React.FC<ComponentPreviewProps> = ({
           </React.Fragment>
         ))}
       </div>
-      <p style={{ marginTop: 8, fontSize: 12, color: '#94a3b8', textAlign: 'center' }}>
+      <p className={`tpl-image-hotspots__progress ${viewed.size === hotspots.length && hotspots.length > 0 ? 'tpl-image-hotspots__progress--complete' : ''}`}>
         {viewed.size} / {hotspots.length} hotspots explored
       </p>
     </div>
@@ -165,50 +127,98 @@ export const ImageHotspotsEditor: React.FC<ComponentEditorProps> = ({
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>Title</label>
-        <input type="text" value={data?.title ?? ''} onChange={(e) => onChange({ data: { ...data, title: e.target.value } })} placeholder="Image Hotspots" style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+    <div className="tpl-image-hotspots-editor">
+      <div className="tpl-image-hotspots-editor__field">
+        <label className="tpl-image-hotspots-editor__label">Title</label>
+        <input
+          type="text"
+          className="tpl-image-hotspots-editor__input"
+          value={data?.title ?? ''}
+          onChange={(e) => onChange({ data: { ...data, title: e.target.value } })}
+          placeholder="Image Hotspots"
+        />
       </div>
 
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>Image URL</label>
-        <input type="text" value={data?.imageUrl ?? ''} onChange={(e) => onChange({ data: { ...data, imageUrl: e.target.value } })} placeholder="https://..." style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+      <div className="tpl-image-hotspots-editor__field">
+        <label className="tpl-image-hotspots-editor__label">Image URL</label>
+        <input
+          type="text"
+          className="tpl-image-hotspots-editor__input"
+          value={data?.imageUrl ?? ''}
+          onChange={(e) => onChange({ data: { ...data, imageUrl: e.target.value } })}
+          placeholder="https://..."
+        />
       </div>
 
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>Instructions</label>
-        <input type="text" value={data?.instructions ?? ''} onChange={(e) => onChange({ data: { ...data, instructions: e.target.value } })} placeholder="Click the hotspots to learn more" style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+      <div className="tpl-image-hotspots-editor__field">
+        <label className="tpl-image-hotspots-editor__label">Instructions</label>
+        <input
+          type="text"
+          className="tpl-image-hotspots-editor__input"
+          value={data?.instructions ?? ''}
+          onChange={(e) => onChange({ data: { ...data, instructions: e.target.value } })}
+          placeholder="Click the hotspots to learn more"
+        />
       </div>
 
       {hotspots.map((hs, idx) => (
-        <div key={hs.id} style={{ border: '1px solid #e2e8f0', borderRadius: 6, padding: 12, marginBottom: 10, background: '#f9fafb' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-            <span style={{ fontWeight: 600, fontSize: 13 }}>Hotspot {idx + 1}</span>
-            <button onClick={() => removeHotspot(idx)} style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: 18, cursor: 'pointer' }}>×</button>
+        <div key={hs.id} className="tpl-image-hotspots-editor__hotspot">
+          <div className="tpl-image-hotspots-editor__hotspot-header">
+            <span className="tpl-image-hotspots-editor__hotspot-title">Hotspot {idx + 1}</span>
+            <button
+              onClick={() => removeHotspot(idx)}
+              className="tpl-image-hotspots-editor__delete"
+              aria-label={`Delete hotspot ${idx + 1}`}
+            >
+              ×
+            </button>
           </div>
-          <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-            <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Label</label>
-              <input type="text" value={hs.label} onChange={(e) => updateHotspot(idx, 'label', e.target.value)} style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+          <div className="tpl-image-hotspots-editor__hotspot-grid">
+            <div className="tpl-image-hotspots-editor__field">
+              <label className="tpl-image-hotspots-editor__label">Label</label>
+              <input
+                type="text"
+                className="tpl-image-hotspots-editor__input"
+                value={hs.label}
+                onChange={(e) => updateHotspot(idx, 'label', e.target.value)}
+              />
             </div>
-            <div style={{ width: 70 }}>
-              <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>X (%)</label>
-              <input type="number" min={0} max={100} value={hs.x} onChange={(e) => updateHotspot(idx, 'x', Number(e.target.value))} style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+            <div className="tpl-image-hotspots-editor__coords">
+              <label className="tpl-image-hotspots-editor__label">X (%)</label>
+              <input
+                type="number"
+                min={0}
+                max={100}
+                className="tpl-image-hotspots-editor__input"
+                value={hs.x}
+                onChange={(e) => updateHotspot(idx, 'x', Number(e.target.value))}
+              />
             </div>
-            <div style={{ width: 70 }}>
-              <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Y (%)</label>
-              <input type="number" min={0} max={100} value={hs.y} onChange={(e) => updateHotspot(idx, 'y', Number(e.target.value))} style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+            <div className="tpl-image-hotspots-editor__coords">
+              <label className="tpl-image-hotspots-editor__label">Y (%)</label>
+              <input
+                type="number"
+                min={0}
+                max={100}
+                className="tpl-image-hotspots-editor__input"
+                value={hs.y}
+                onChange={(e) => updateHotspot(idx, 'y', Number(e.target.value))}
+              />
             </div>
           </div>
-          <div>
-            <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Content</label>
-            <textarea value={hs.content} onChange={(e) => updateHotspot(idx, 'content', e.target.value)} rows={2} style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+          <div className="tpl-image-hotspots-editor__field">
+            <label className="tpl-image-hotspots-editor__label">Content</label>
+            <textarea
+              className="tpl-image-hotspots-editor__textarea"
+              value={hs.content}
+              onChange={(e) => updateHotspot(idx, 'content', e.target.value)}
+              rows={2}
+            />
           </div>
         </div>
       ))}
 
-      <button onClick={addHotspot} style={{ width: '100%', padding: 10, border: '2px dashed #cbd5e1', borderRadius: 6, background: 'transparent', color: '#3b82f6', fontWeight: 500, cursor: 'pointer' }}>
+      <button onClick={addHotspot} className="tpl-image-hotspots-editor__add-button">
         + Add Hotspot
       </button>
     </div>
