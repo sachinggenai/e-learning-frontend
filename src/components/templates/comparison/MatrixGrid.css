@@ -1,0 +1,285 @@
+/**
+ * MatrixGrid Template Styles
+ * BEM naming convention: .tpl-matrix-grid__element--modifier
+ * Theme tokens with fallback values for consistency
+ */
+
+/* ===== PREVIEW STYLES ===== */
+
+.tpl-matrix-grid {
+  width: 100%;
+}
+
+.tpl-matrix-grid__title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--theme-text, #1e293b);
+  text-align: center;
+  margin: 0 0 20px 0;
+}
+
+.tpl-matrix-grid__wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 8px;
+  background: var(--theme-background, #ffffff);
+}
+
+.tpl-matrix-grid__grid {
+  display: grid;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Header Cells */
+.tpl-matrix-grid__header-cell {
+  background: var(--theme-surface, #f8fafc);
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  font-size: 13px;
+  padding: 12px;
+  text-align: center;
+  border-right: 1px solid var(--theme-border, #e2e8f0);
+  border-bottom: 1px solid var(--theme-border, #e2e8f0);
+}
+
+.tpl-matrix-grid__header-cell:last-child {
+  border-right: none;
+}
+
+.tpl-matrix-grid__header-cell--corner {
+  background: var(--theme-background, #ffffff);
+}
+
+.tpl-matrix-grid__header-cell--row {
+  text-align: left;
+  font-weight: 600;
+}
+
+/* Data Cells */
+.tpl-matrix-grid__cell {
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--theme-text, #1e293b);
+  text-align: center;
+  border-right: 1px solid var(--theme-border, #e2e8f0);
+  border-bottom: 1px solid var(--theme-border, #e2e8f0);
+  transition: background-color 0.2s;
+}
+
+.tpl-matrix-grid__cell:last-child {
+  border-right: none;
+}
+
+.tpl-matrix-grid__cell:hover {
+  background: rgba(37, 99, 235, 0.04);
+}
+
+.tpl-matrix-grid__cell--row-header {
+  background: var(--theme-surface, #f8fafc);
+  font-weight: 600;
+  text-align: left;
+}
+
+/* Empty State */
+.tpl-matrix-grid__empty {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--theme-text-secondary, #64748b);
+  font-size: 14px;
+  font-style: italic;
+  border: 2px dashed var(--theme-border, #e2e8f0);
+  border-radius: 8px;
+  background: var(--theme-surface, #f8fafc);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .tpl-matrix-grid__title {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  .tpl-matrix-grid__wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tpl-matrix-grid__header-cell,
+  .tpl-matrix-grid__cell {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+}
+
+/* ===== EDITOR STYLES ===== */
+
+.tpl-matrix-grid-editor {
+  width: 100%;
+}
+
+.tpl-matrix-grid-editor__group {
+  margin-bottom: 16px;
+}
+
+.tpl-matrix-grid-editor__label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--theme-text, #1e293b);
+  margin-bottom: 4px;
+}
+
+.tpl-matrix-grid-editor__input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--theme-text, #1e293b);
+  background: var(--theme-background, #ffffff);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.tpl-matrix-grid-editor__input:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.tpl-matrix-grid-editor__input::placeholder {
+  color: var(--theme-text-secondary, #64748b);
+}
+
+/* Section Headers */
+.tpl-matrix-grid-editor__section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  margin: 0 0 8px 0;
+}
+
+/* Header Lists */
+.tpl-matrix-grid-editor__headers {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.tpl-matrix-grid-editor__header-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tpl-matrix-grid-editor__header-input {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--theme-text, #1e293b);
+  background: var(--theme-background, #ffffff);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.tpl-matrix-grid-editor__header-input:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.tpl-matrix-grid-editor__remove-btn {
+  background: none;
+  border: none;
+  color: var(--theme-error, #ef4444);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.tpl-matrix-grid-editor__remove-btn:hover {
+  color: #dc2626;
+  transform: scale(1.1);
+}
+
+.tpl-matrix-grid-editor__add-btn {
+  width: 100%;
+  padding: 6px 12px;
+  border: 1px dashed var(--theme-border, #cbd5e1);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--theme-info, #3b82f6);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+  margin-bottom: 16px;
+}
+
+.tpl-matrix-grid-editor__add-btn:hover {
+  background: rgba(59, 130, 246, 0.05);
+  border-color: var(--theme-info, #3b82f6);
+}
+
+/* Data Grid */
+.tpl-matrix-grid-editor__data-section {
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  padding: 12px;
+  background: var(--theme-surface, #f8fafc);
+}
+
+.tpl-matrix-grid-editor__data-grid {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.tpl-matrix-grid-editor__cell-input {
+  padding: 6px 8px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--theme-text, #1e293b);
+  background: var(--theme-background, #ffffff);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.tpl-matrix-grid-editor__cell-input:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.tpl-matrix-grid-editor__help-text {
+  font-size: 11px;
+  color: var(--theme-text-secondary, #64748b);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* Mobile Editor Responsive */
+@media (max-width: 768px) {
+  .tpl-matrix-grid-editor__group {
+    margin-bottom: 12px;
+  }
+
+  .tpl-matrix-grid-editor__data-grid {
+    gap: 4px;
+  }
+
+  .tpl-matrix-grid-editor__cell-input {
+    font-size: 11px;
+    padding: 5px 6px;
+  }
+}

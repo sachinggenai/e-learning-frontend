@@ -82,6 +82,8 @@ const ProsConsEditor = React.lazy(() => import('../templates/comparison/ProsCons
 const ProsConsPreview = React.lazy(() => import('../templates/comparison/ProsCons').then(m => ({ default: m.ProsConsPreview })));
 const BeforeAfterEditor = React.lazy(() => import('../templates/comparison/BeforeAfter').then(m => ({ default: m.BeforeAfterEditor })));
 const BeforeAfterPreview = React.lazy(() => import('../templates/comparison/BeforeAfter').then(m => ({ default: m.BeforeAfterPreview })));
+const MatrixGridEditor = React.lazy(() => import('../templates/comparison/MatrixGrid').then(m => ({ default: m.MatrixGridEditor })));
+const MatrixGridPreview = React.lazy(() => import('../templates/comparison/MatrixGrid').then(m => ({ default: m.MatrixGridPreview })));
 
 // Microlearning
 const FlashcardsEditor = React.lazy(() => import('../templates/microlearning/Flashcards').then(m => ({ default: m.FlashcardsEditor })));
@@ -743,6 +745,22 @@ r({
   sortOrder: 2,
   editorComponent: BeforeAfterEditor,
   previewComponent: BeforeAfterPreview,
+});
+
+r({
+  typeId: 'matrix-grid',
+  displayName: 'Matrix / Grid',
+  description: 'Flexible grid with row and column headers',
+  category: 'comparison',
+  icon: 'grid-3x3',
+  tags: ['comparison', 'matrix', 'grid', 'table', 'data'],
+  completionCapabilities: ['view'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: { title: '', rowHeaders: [], columnHeaders: [], cells: [] },
+  sortOrder: 3,
+  editorComponent: MatrixGridEditor,
+  previewComponent: MatrixGridPreview,
 });
 
 // ─── Microlearning ───────────────────────────────────────────────
