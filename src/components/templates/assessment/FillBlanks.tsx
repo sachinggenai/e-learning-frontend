@@ -3,6 +3,7 @@
  */
 
 import React, { useState, useCallback, useMemo } from 'react';
+import './FillBlanks.css';
 import { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
 
 interface BlankItem {
@@ -32,15 +33,24 @@ export const FillBlanksPreview: React.FC<ComponentPreviewProps> = ({
   }, [submitted, blanks, answers]);
 
   const handleSubmit = useCallback(() => {
+    // Calculate results inline before setting submitted
+    const calculatedResults: Record<string, boolean> = {};
+    blanks.forEach((blank) => {
+      const userAnswer = (answers[blank.id] || '').trim().toLowerCase();
+      const correct = blank.correctAnswer.trim().toLowerCase();
+      const alts = (blank.alternatives || []).map((a) => a.trim().toLowerCase());
+      calculatedResults[blank.id] = userAnswer === correct || alts.includes(userAnswer);
+    });
+    const correctCount = Object.values(calculatedResults).filter(Boolean).length;
+    
     setSubmitted(true);
-    const correctCount = Object.values(results).filter(Boolean).length;
     onInteraction?.({
       componentId, interactionType: 'submit', value: answers,
       score: correctCount, maxScore: blanks.length,
       isCorrect: correctCount === blanks.length, completed: true,
     });
     onComplete?.(componentId);
-  }, [results, answers, blanks.length, componentId, onInteraction, onComplete]);
+  }, [answers, blanks, componentId, onInteraction, onComplete]);
 
   // Parse template text with {{blank_id}} placeholders
   const renderedContent = useMemo(() => {

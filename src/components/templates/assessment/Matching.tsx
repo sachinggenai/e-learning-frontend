@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useCallback, useMemo } from 'react';
+import './Matching.css';
 import { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
 
 interface MatchPair {
