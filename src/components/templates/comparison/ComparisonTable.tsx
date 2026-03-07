@@ -9,6 +9,7 @@
 
 import React from 'react';
 import type { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
+import './ComparisonTable.css';
 
 interface ComparisonColumn {
   id: string;
@@ -28,51 +29,25 @@ export const ComparisonTablePreview: React.FC<ComponentPreviewProps> = ({ data }
   const rows: ComparisonRow[] = data?.rows ?? [];
 
   return (
-    <div>
-      {data?.title && <h3 style={{ marginBottom: 16 }}>{data.title}</h3>}
-      <div style={{ overflowX: 'auto' }}>
-        <table
-          style={{
-            width: '100%',
-            borderCollapse: 'collapse',
-            fontSize: 14,
-          }}
-        >
+    <div className="tpl-comparison-table">
+      {data?.title && <h3 className="tpl-comparison-table__title">{data.title}</h3>}
+      <div className="tpl-comparison-table__wrapper">
+        <table className="tpl-comparison-table__table">
           <thead>
-            <tr>
-              <th
-                style={{
-                  textAlign: 'left',
-                  padding: '12px 16px',
-                  borderBottom: '2px solid #e2e8f0',
-                  fontSize: 13,
-                  color: '#64748b',
-                }}
-              >
+            <tr className="tpl-comparison-table__header-row">
+              <th className="tpl-comparison-table__header-cell tpl-comparison-table__header-cell--feature">
                 Feature
               </th>
               {columns.map((col) => (
                 <th
                   key={col.id}
-                  style={{
-                    textAlign: 'center',
-                    padding: '12px 16px',
-                    borderBottom: '2px solid #e2e8f0',
-                    background: col.highlighted ? '#eff6ff' : 'transparent',
-                    color: col.highlighted ? '#1d4ed8' : '#1e293b',
-                    fontWeight: 600,
-                  }}
+                  className={`tpl-comparison-table__header-cell tpl-comparison-table__header-cell--column ${
+                    col.highlighted ? 'tpl-comparison-table__header-cell--highlighted' : ''
+                  }`}
                 >
                   {col.header}
                   {col.highlighted && (
-                    <span
-                      style={{
-                        display: 'block',
-                        fontSize: 10,
-                        fontWeight: 400,
-                        color: '#3b82f6',
-                      }}
-                    >
+                    <span className="tpl-comparison-table__recommended-badge">
                       Recommended
                     </span>
                   )}
@@ -82,32 +57,21 @@ export const ComparisonTablePreview: React.FC<ComponentPreviewProps> = ({ data }
           </thead>
           <tbody>
             {rows.map((row, idx) => (
-              <tr key={row.id}>
-                <td
-                  style={{
-                    padding: '10px 16px',
-                    borderBottom: '1px solid #f1f5f9',
-                    fontWeight: 500,
-                    background: idx % 2 === 0 ? '#fafafa' : '#fff',
-                  }}
-                >
+              <tr
+                key={row.id}
+                className={`tpl-comparison-table__row ${
+                  idx % 2 === 0 ? 'tpl-comparison-table__row--even' : 'tpl-comparison-table__row--odd'
+                }`}
+              >
+                <td className="tpl-comparison-table__cell tpl-comparison-table__cell--feature">
                   {row.feature}
                 </td>
                 {columns.map((col) => (
                   <td
                     key={col.id}
-                    style={{
-                      textAlign: 'center',
-                      padding: '10px 16px',
-                      borderBottom: '1px solid #f1f5f9',
-                      background: col.highlighted
-                        ? idx % 2 === 0
-                          ? '#eff6ff'
-                          : '#f0f7ff'
-                        : idx % 2 === 0
-                        ? '#fafafa'
-                        : '#fff',
-                    }}
+                    className={`tpl-comparison-table__cell tpl-comparison-table__cell--value ${
+                      col.highlighted ? 'tpl-comparison-table__cell--highlighted' : ''
+                    }`}
                   >
                     {row.values[col.id] ?? '—'}
                   </td>
@@ -177,76 +141,96 @@ export const ComparisonTableEditor: React.FC<ComponentEditorProps> = ({
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>Title</label>
+    <div className="tpl-comparison-table-editor">
+      <div className="tpl-comparison-table-editor__title-group">
+        <label className="tpl-comparison-table-editor__label">Title</label>
         <input
           type="text"
           value={data?.title ?? ''}
           onChange={(e) => onChange({ data: { ...data, title: e.target.value } })}
           placeholder="Comparison"
-          style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }}
+          className="tpl-comparison-table-editor__input"
         />
       </div>
 
-      <h5 style={{ fontSize: 13, marginBottom: 8 }}>Columns</h5>
-      {columns.map((col, idx) => (
-        <div key={col.id} style={{ display: 'flex', gap: 8, marginBottom: 6, alignItems: 'center' }}>
-          <input
-            type="text"
-            value={col.header}
-            onChange={(e) => updateColumn(idx, e.target.value)}
-            placeholder={`Column ${idx + 1}`}
-            style={{ flex: 1, padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }}
-          />
-          <label style={{ fontSize: 11, whiteSpace: 'nowrap' }}>
-            <input
-              type="checkbox"
-              checked={col.highlighted ?? false}
-              onChange={(e) => {
-                const updated = [...columns];
-                updated[idx] = { ...updated[idx], highlighted: e.target.checked };
-                onChange({ data: { ...data, columns: updated } });
-              }}
-            /> Highlight
-          </label>
-          <button onClick={() => removeColumn(idx)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>×</button>
-        </div>
-      ))}
-      <button onClick={addColumn} style={{ padding: '6px 12px', border: '1px dashed #cbd5e1', borderRadius: 4, background: 'transparent', color: '#3b82f6', fontSize: 12, cursor: 'pointer', marginBottom: 16 }}>
-        + Column
-      </button>
-
-      <h5 style={{ fontSize: 13, marginBottom: 8 }}>Rows</h5>
-      {rows.map((row, rIdx) => (
-        <div key={row.id} style={{ border: '1px solid #e2e8f0', borderRadius: 6, padding: 10, marginBottom: 8, background: '#f9fafb' }}>
-          <div style={{ display: 'flex', gap: 8, marginBottom: 6, alignItems: 'center' }}>
+      <h5 className="tpl-comparison-table-editor__section-title">Columns</h5>
+      <div className="tpl-comparison-table-editor__columns">
+        {columns.map((col, idx) => (
+          <div key={col.id} className="tpl-comparison-table-editor__column-item">
             <input
               type="text"
-              value={row.feature}
-              onChange={(e) => updateRowFeature(rIdx, e.target.value)}
-              placeholder="Feature name"
-              style={{ flex: 1, padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }}
+              value={col.header}
+              onChange={(e) => updateColumn(idx, e.target.value)}
+              placeholder={`Column ${idx + 1}`}
+              className="tpl-comparison-table-editor__column-input"
             />
-            <button onClick={() => removeRow(rIdx)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>×</button>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${columns.length}, 1fr)`, gap: 6 }}>
-            {columns.map((col) => (
+            <label className="tpl-comparison-table-editor__highlight-label">
               <input
-                key={col.id}
-                type="text"
-                value={row.values[col.id] ?? ''}
-                onChange={(e) => updateCell(rIdx, col.id, e.target.value)}
-                placeholder={col.header || `Col ${columns.indexOf(col) + 1}`}
-                style={{ padding: '4px 6px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 12 }}
-              />
-            ))}
+                type="checkbox"
+                checked={col.highlighted ?? false}
+                onChange={(e) => {
+                  const updated = [...columns];
+                  updated[idx] = { ...updated[idx], highlighted: e.target.checked };
+                  onChange({ data: { ...data, columns: updated } });
+                }}
+                className="tpl-comparison-table-editor__highlight-checkbox"
+              /> Highlight
+            </label>
+            <button
+              onClick={() => removeColumn(idx)}
+              className="tpl-comparison-table-editor__remove-btn"
+              aria-label="Remove column"
+            >
+              ×
+            </button>
           </div>
-        </div>
-      ))}
-      <button onClick={addRow} style={{ width: '100%', padding: 8, border: '2px dashed #cbd5e1', borderRadius: 6, background: 'transparent', color: '#3b82f6', fontWeight: 500, cursor: 'pointer' }}>
-        + Add Row
-      </button>
+        ))}
+        <button onClick={addColumn} className="tpl-comparison-table-editor__add-column-btn">
+          + Column
+        </button>
+      </div>
+
+      <h5 className="tpl-comparison-table-editor__section-title">Rows</h5>
+      <div className="tpl-comparison-table-editor__rows">
+        {rows.map((row, rIdx) => (
+          <div key={row.id} className="tpl-comparison-table-editor__row-item">
+            <div className="tpl-comparison-table-editor__row-header">
+              <input
+                type="text"
+                value={row.feature}
+                onChange={(e) => updateRowFeature(rIdx, e.target.value)}
+                placeholder="Feature name"
+                className="tpl-comparison-table-editor__row-feature-input"
+              />
+              <button
+                onClick={() => removeRow(rIdx)}
+                className="tpl-comparison-table-editor__remove-btn"
+                aria-label="Remove row"
+              >
+                ×
+              </button>
+            </div>
+            <div
+              className="tpl-comparison-table-editor__row-cells"
+              style={{ gridTemplateColumns: `repeat(${columns.length}, 1fr)` }}
+            >
+              {columns.map((col) => (
+                <input
+                  key={col.id}
+                  type="text"
+                  value={row.values[col.id] ?? ''}
+                  onChange={(e) => updateCell(rIdx, col.id, e.target.value)}
+                  placeholder={col.header || `Col ${columns.indexOf(col) + 1}`}
+                  className="tpl-comparison-table-editor__cell-input"
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+        <button onClick={addRow} className="tpl-comparison-table-editor__add-row-btn">
+          + Add Row
+        </button>
+      </div>
     </div>
   );
 };
