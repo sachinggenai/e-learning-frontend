@@ -80,6 +80,8 @@ const ComparisonTableEditor = React.lazy(() => import('../templates/comparison/C
 const ComparisonTablePreview = React.lazy(() => import('../templates/comparison/ComparisonTable').then(m => ({ default: m.ComparisonTablePreview })));
 const ProsConsEditor = React.lazy(() => import('../templates/comparison/ProsCons').then(m => ({ default: m.ProsConsEditor })));
 const ProsConsPreview = React.lazy(() => import('../templates/comparison/ProsCons').then(m => ({ default: m.ProsConsPreview })));
+const BeforeAfterEditor = React.lazy(() => import('../templates/comparison/BeforeAfter').then(m => ({ default: m.BeforeAfterEditor })));
+const BeforeAfterPreview = React.lazy(() => import('../templates/comparison/BeforeAfter').then(m => ({ default: m.BeforeAfterPreview })));
 
 // Microlearning
 const FlashcardsEditor = React.lazy(() => import('../templates/microlearning/Flashcards').then(m => ({ default: m.FlashcardsEditor })));
@@ -725,6 +727,22 @@ r({
   sortOrder: 1,
   editorComponent: ProsConsEditor,
   previewComponent: ProsConsPreview,
+});
+
+r({
+  typeId: 'before-after',
+  displayName: 'Before and After',
+  description: 'Side-by-side comparison showing change or improvement',
+  category: 'comparison',
+  icon: 'arrow-right-left',
+  tags: ['comparison', 'before', 'after', 'change', 'improvement', 'transformation'],
+  completionCapabilities: ['view'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: { title: '', beforeLabel: 'Before', afterLabel: 'After', beforeContent: '', afterContent: '' },
+  sortOrder: 2,
+  editorComponent: BeforeAfterEditor,
+  previewComponent: BeforeAfterPreview,
 });
 
 // ─── Microlearning ───────────────────────────────────────────────
