@@ -3,10 +3,20 @@
  * Comprehensive test coverage for Preview and Editor components
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BeforeAfterPreview, BeforeAfterEditor } from './BeforeAfter';
+
+// Test wrapper that properly manages state for controlled components
+const EditorTestWrapper = ({ initialData, onChangeSpy }: { initialData: any; onChangeSpy: jest.Mock }) => {
+  const [data, setData] = useState(initialData);
+  const handleChange = (payload: any) => {
+    onChangeSpy(payload);
+    setData(payload.data);
+  };
+  return <BeforeAfterEditor data={data} onChange={handleChange} />;
+};
 
 describe('BeforeAfterPreview', () => {
   const mockData = {
@@ -69,8 +79,10 @@ describe('BeforeAfterPreview', () => {
       afterContent: 'After',
     };
     render(<BeforeAfterPreview data={dataWithoutLabels} onInteraction={jest.fn()} />);
-    expect(screen.getByText('Before')).toBeInTheDocument();
-    expect(screen.getByText('After')).toBeInTheDocument();
+    const beforeLabel = screen.getByRole('heading', { level: 4, name: 'Before' });
+    const afterLabel = screen.getByRole('heading', { level: 4, name: 'After' });
+    expect(beforeLabel).toBeInTheDocument();
+    expect(afterLabel).toBeInTheDocument();
   });
 
   it('renders arrow divider when content exists', () => {
@@ -201,67 +213,67 @@ describe('BeforeAfterEditor', () => {
 
   it('updates title when changed', async () => {
     const user = userEvent.setup();
-    render(<BeforeAfterEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const titleInput = screen.getByPlaceholderText(/Process Improvement/);
     
     await user.clear(titleInput);
     await user.type(titleInput, 'New Title');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({ title: 'New Title' }),
-    });
+    const titleInputFinal = screen.getByPlaceholderText(/Process Improvement/) as HTMLInputElement;
+    expect(titleInputFinal.value).toBe('New Title');
   });
 
   it('updates before label when changed', async () => {
     const user = userEvent.setup();
-    render(<BeforeAfterEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const beforeLabelInput = screen.getByDisplayValue('Old Process');
     
     await user.clear(beforeLabelInput);
     await user.type(beforeLabelInput, 'Previous');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({ beforeLabel: 'Previous' }),
-    });
+    const beforeLabelInputFinal = screen.getByDisplayValue('Previous');
+    expect(beforeLabelInputFinal).toBeInTheDocument();
   });
 
   it('updates after label when changed', async () => {
     const user = userEvent.setup();
-    render(<BeforeAfterEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const afterLabelInput = screen.getByDisplayValue('New Process');
     
     await user.clear(afterLabelInput);
     await user.type(afterLabelInput, 'Current');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({ afterLabel: 'Current' }),
-    });
+    const afterLabelInputFinal = screen.getByDisplayValue('Current');
+    expect(afterLabelInputFinal).toBeInTheDocument();
   });
 
   it('updates before content when changed', async () => {
     const user = userEvent.setup();
-    render(<BeforeAfterEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const beforeTextarea = screen.getByDisplayValue('Manual data entry');
     
     await user.clear(beforeTextarea);
     await user.type(beforeTextarea, 'Updated content');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({ beforeContent: 'Updated content' }),
-    });
+    const beforeTextareafinal = screen.getByDisplayValue('Updated content');
+    expect(beforeTextareafinal).toBeInTheDocument();
   });
 
   it('updates after content when changed', async () => {
     const user = userEvent.setup();
-    render(<BeforeAfterEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const afterTextarea = screen.getByDisplayValue('Automated pipeline');
     
     await user.clear(afterTextarea);
     await user.type(afterTextarea, 'Updated content');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({ afterContent: 'Updated content' }),
-    });
+    const afterTextareafinal = screen.getByDisplayValue('Updated content');
+    expect(afterTextareafinal).toBeInTheDocument();
   });
 
   it('uses default values when data not provided', () => {

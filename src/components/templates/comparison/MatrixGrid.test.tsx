@@ -3,10 +3,20 @@
  * Comprehensive test coverage for Preview and Editor components
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MatrixGridPreview, MatrixGridEditor } from './MatrixGrid';
+
+// Test wrapper that properly manages state for controlled components
+const EditorTestWrapper = ({ initialData, onChangeSpy }: { initialData: any; onChangeSpy: jest.Mock }) => {
+  const [data, setData] = useState(initialData);
+  const handleChange = (payload: any) => {
+    onChangeSpy(payload);
+    setData(payload.data);
+  };
+  return <MatrixGridEditor data={data} onChange={handleChange} />;
+};
 
 describe('MatrixGridPreview', () => {
   const mockData = {
@@ -170,15 +180,15 @@ describe('MatrixGridEditor', () => {
 
   it('updates title when changed', async () => {
     const user = userEvent.setup();
-    render(<MatrixGridEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const titleInput = screen.getByPlaceholderText(/Skills Matrix/);
     
     await user.clear(titleInput);
     await user.type(titleInput, 'New Title');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({ title: 'New Title' }),
-    });
+    const titleInputFinal = screen.getByPlaceholderText(/Skills Matrix/) as HTMLInputElement;
+    expect(titleInputFinal.value).toBe('New Title');
   });
 
   it('renders section headers', () => {
@@ -202,32 +212,28 @@ describe('MatrixGridEditor', () => {
 
   it('updates column header when changed', async () => {
     const user = userEvent.setup();
-    render(<MatrixGridEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const columnInput = screen.getByDisplayValue('Beginner');
     
     await user.clear(columnInput);
     await user.type(columnInput, 'Novice');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        columnHeaders: ['Novice', 'Advanced'],
-      }),
-    });
+    const columnInputFinal = screen.getByDisplayValue('Novice');
+    expect(columnInputFinal).toBeInTheDocument();
   });
 
   it('updates row header when changed', async () => {
     const user = userEvent.setup();
-    render(<MatrixGridEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const rowInput = screen.getByDisplayValue('JavaScript');
     
     await user.clear(rowInput);
     await user.type(rowInput, 'TypeScript');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        rowHeaders: ['TypeScript', 'Python'],
-      }),
-    });
+    const rowInputFinal = screen.getByDisplayValue('TypeScript');
+    expect(rowInputFinal).toBeInTheDocument();
   });
 
   it('adds new column when add button clicked', async () => {
@@ -312,20 +318,15 @@ describe('MatrixGridEditor', () => {
 
   it('updates cell value when changed', async () => {
     const user = userEvent.setup();
-    render(<MatrixGridEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const cellInput = screen.getByDisplayValue('Variables');
     
     await user.clear(cellInput);
     await user.type(cellInput, 'Constants');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        cells: [
-          ['Constants', 'Closures'],
-          ['Lists', 'Decorators'],
-        ],
-      }),
-    });
+    const cellInputFinal = screen.getByDisplayValue('Constants');
+    expect(cellInputFinal).toBeInTheDocument();
   });
 
   it('does not render cell data section when no headers', () => {

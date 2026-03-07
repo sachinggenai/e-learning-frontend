@@ -3,10 +3,20 @@
  * Comprehensive test coverage for Preview and Editor components
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ComparisonTablePreview, ComparisonTableEditor } from './ComparisonTable';
+
+// Test wrapper that properly manages state for controlled components
+const EditorTestWrapper = ({ initialData, onChangeSpy }: { initialData: any; onChangeSpy: jest.Mock }) => {
+  const [data, setData] = useState(initialData);
+  const handleChange = (payload: any) => {
+    onChangeSpy(payload);
+    setData(payload.data);
+  };
+  return <ComparisonTableEditor data={data} onChange={handleChange} />;
+};
 
 describe('ComparisonTablePreview', () => {
   const mockData = {
@@ -86,7 +96,8 @@ describe('ComparisonTablePreview', () => {
     render(<ComparisonTablePreview data={mockData} onInteraction={jest.fn()} />);
     expect(screen.getByText('10GB')).toBeInTheDocument();
     expect(screen.getByText('100GB')).toBeInTheDocument();
-    expect(screen.getByText('Unlimited')).toBeInTheDocument();
+    const unlimitedElements = screen.getAllByText('Unlimited');
+    expect(unlimitedElements.length).toBeGreaterThan(0);
     expect(screen.getByText('Priority')).toBeInTheDocument();
     expect(screen.getByText('24/7')).toBeInTheDocument();
   });
@@ -166,15 +177,15 @@ describe('ComparisonTableEditor', () => {
 
   it('updates title when changed', async () => {
     const user = userEvent.setup();
-    render(<ComparisonTableEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const titleInput = screen.getByPlaceholderText('Comparison');
     
     await user.clear(titleInput);
     await user.type(titleInput, 'New Title');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({ title: 'New Title' }),
-    });
+    const titleInputFinal = screen.getByPlaceholderText('Comparison') as HTMLInputElement;
+    expect(titleInputFinal.value).toBe('New Title');
   });
 
   it('renders all column inputs', () => {
@@ -185,19 +196,15 @@ describe('ComparisonTableEditor', () => {
 
   it('updates column header when changed', async () => {
     const user = userEvent.setup();
-    render(<ComparisonTableEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const basicInput = screen.getByDisplayValue('Basic');
     
     await user.clear(basicInput);
     await user.type(basicInput, 'Starter');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        columns: expect.arrayContaining([
-          expect.objectContaining({ header: 'Starter' }),
-        ]),
-      }),
-    });
+    const basicInputFinal = screen.getByDisplayValue('Starter');
+    expect(basicInputFinal).toBeInTheDocument();
   });
 
   it('renders highlight checkbox for each column', () => {
@@ -268,19 +275,15 @@ describe('ComparisonTableEditor', () => {
 
   it('updates row feature when changed', async () => {
     const user = userEvent.setup();
-    render(<ComparisonTableEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const featureInput = screen.getByDisplayValue('Storage');
     
     await user.clear(featureInput);
     await user.type(featureInput, 'Disk Space');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        rows: expect.arrayContaining([
-          expect.objectContaining({ feature: 'Disk Space' }),
-        ]),
-      }),
-    });
+    const featureInputFinal = screen.getByDisplayValue('Disk Space');
+    expect(featureInputFinal).toBeInTheDocument();
   });
 
   it('renders cell inputs for each column in each row', () => {
@@ -291,21 +294,15 @@ describe('ComparisonTableEditor', () => {
 
   it('updates cell value when changed', async () => {
     const user = userEvent.setup();
-    render(<ComparisonTableEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const cellInput = screen.getByDisplayValue('10GB');
     
     await user.clear(cellInput);
     await user.type(cellInput, '20GB');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        rows: expect.arrayContaining([
-          expect.objectContaining({
-            values: expect.objectContaining({ col1: '20GB' }),
-          }),
-        ]),
-      }),
-    });
+    const cellInputFinal = screen.getByDisplayValue('20GB');
+    expect(cellInputFinal).toBeInTheDocument();
   });
 
   it('adds new row when add button clicked', async () => {

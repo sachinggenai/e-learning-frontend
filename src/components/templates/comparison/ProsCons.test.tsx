@@ -3,10 +3,20 @@
  * Comprehensive test coverage for Preview and Editor components
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ProsConsPreview, ProsConsEditor } from './ProsCons';
+
+// Test wrapper that properly manages state for controlled components
+const EditorTestWrapper = ({ initialData, onChangeSpy }: { initialData: any; onChangeSpy: jest.Mock }) => {
+  const [data, setData] = useState(initialData);
+  const handleChange = (payload: any) => {
+    onChangeSpy(payload);
+    setData(payload.data);
+  };
+  return <ProsConsEditor data={data} onChange={handleChange} />;
+};
 
 describe('ProsConsPreview', () => {
   const mockData = {
@@ -172,28 +182,29 @@ describe('ProsConsEditor', () => {
 
   it('updates title when changed', async () => {
     const user = userEvent.setup();
-    render(<ProsConsEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const titleInput = screen.getByPlaceholderText(/Should we adopt/);
     
     await user.clear(titleInput);
     await user.type(titleInput, 'New Title');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({ title: 'New Title' }),
-    });
+    // Check that the final value is correct
+    const titleInputFinal = screen.getByPlaceholderText(/Should we adopt/) as HTMLInputElement;
+    expect(titleInputFinal.value).toBe('New Title');
   });
 
   it('updates topic when changed', async () => {
     const user = userEvent.setup();
-    render(<ProsConsEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const topicInput = screen.getByPlaceholderText(/React vs Vue/);
     
     await user.clear(topicInput);
     await user.type(topicInput, 'New Topic');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({ topic: 'New Topic' }),
-    });
+    const topicInputFinal = screen.getByPlaceholderText(/React vs Vue/) as HTMLInputElement;
+    expect(topicInputFinal.value).toBe('New Topic');
   });
 
   it('renders Pros section header with icon', () => {
@@ -223,32 +234,28 @@ describe('ProsConsEditor', () => {
 
   it('updates pro item when changed', async () => {
     const user = userEvent.setup();
-    render(<ProsConsEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const proInput = screen.getByDisplayValue('Great ecosystem');
     
     await user.clear(proInput);
     await user.type(proInput, 'Updated pro');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        pros: ['Updated pro', 'Fast performance'],
-      }),
-    });
+    const proInputFinal = screen.getByDisplayValue('Updated pro');
+    expect(proInputFinal).toBeInTheDocument();
   });
 
   it('updates con item when changed', async () => {
     const user = userEvent.setup();
-    render(<ProsConsEditor data={mockData} onChange={mockOnChange} />);
+    const onChangeSpy = jest.fn();
+    render(<EditorTestWrapper initialData={mockData} onChangeSpy={onChangeSpy} />);
     const conInput = screen.getByDisplayValue('Complex setup');
     
     await user.clear(conInput);
     await user.type(conInput, 'Updated con');
     
-    expect(mockOnChange).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        cons: ['Updated con', 'Large bundle size'],
-      }),
-    });
+    const conInputFinal = screen.getByDisplayValue('Updated con');
+    expect(conInputFinal).toBeInTheDocument();
   });
 
   it('adds new pro when add button clicked', async () => {
