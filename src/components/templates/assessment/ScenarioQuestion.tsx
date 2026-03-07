@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useCallback } from 'react';
+import './ScenarioQuestion.css';
 import { Plus, Trash2 } from 'lucide-react';
 import { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
 

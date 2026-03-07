@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useCallback } from 'react';
+import './KnowledgeCheck.css';
 import { Plus, Trash2 } from 'lucide-react';
 import { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
 

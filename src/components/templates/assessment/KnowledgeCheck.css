@@ -1,0 +1,208 @@
+/**
+ * KnowledgeCheck - Assessment Template Styles
+ * BEM Convention: .tpl-knowledge-check / .tpl-knowledge-check-editor
+ */
+
+/* ═══════════════════════════════════════════════════════════════
+ * Preview Mode
+ * ═══════════════════════════════════════════════════════════════ */
+
+.knowledge-check {
+  width: 100%;
+  padding: 20px;
+  background: var(--theme-surface, #f8fafc);
+  border-radius: 8px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+}
+
+.knowledge-check__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--theme-border, #e2e8f0);
+}
+
+.knowledge-check__question {
+  margin-bottom: 24px;
+}
+
+.knowledge-check__question-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--theme-text, #1e293b);
+  margin: 0 0 12px 0;
+  line-height: 1.6;
+}
+
+.knowledge-check__options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.kc-option {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  background: var(--theme-background, #ffffff);
+  font-size: 14px;
+  color: var(--theme-text, #1e293b);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1.5;
+}
+
+.kc-option:hover:not(:disabled) {
+  border-color: var(--theme-primary, #2563eb);
+  background: rgba(37, 99, 235, 0.04);
+}
+
+.kc-option:focus {
+  outline: 2px solid var(--theme-primary, #2563eb);
+  outline-offset: 1px;
+}
+
+.kc-option--selected {
+  border-color: var(--theme-primary, #2563eb);
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.kc-option--correct {
+  border-color: var(--theme-success, #22c55e);
+  background: rgba(34, 197, 94, 0.1);
+  color: #166534;
+}
+
+.kc-option--incorrect {
+  border-color: var(--theme-error, #ef4444);
+  background: rgba(239, 68, 68, 0.1);
+  color: #991b1b;
+}
+
+.kc-option:disabled {
+  cursor: not-allowed;
+  opacity: 0.95;
+}
+
+.knowledge-check__explanation {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: rgba(59, 130, 246, 0.08);
+  border-left: 3px solid var(--theme-info, #3b82f6);
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--theme-text, #1e293b);
+}
+
+.knowledge-check__submit,
+.knowledge-check__retry {
+  padding: 10px 28px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 16px;
+}
+
+.knowledge-check__submit {
+  background: var(--theme-primary, #2563eb);
+  color: white;
+}
+
+.knowledge-check__submit:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.knowledge-check__submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.knowledge-check__retry {
+  background: var(--theme-text-secondary, #64748b);
+  color: white;
+}
+
+.knowledge-check__retry:hover {
+  background: #475569;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * Editor Mode
+ * ═══════════════════════════════════════════════════════════════ */
+
+.knowledge-check-editor {
+  width: 100%;
+}
+
+.kc-editor__question {
+  padding: 16px;
+  background: var(--theme-surface, #f8fafc);
+  border-radius: 6px;
+  margin-bottom: 16px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+}
+
+.kc-editor__question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.kc-editor__option-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.kc-editor__option-row input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.kc-editor__option-row input[type="text"] {
+  flex: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * Responsive Design
+ * ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .knowledge-check {
+    padding: 16px;
+  }
+
+  .knowledge-check__title {
+    font-size: 16px;
+  }
+
+  .knowledge-check__question-text {
+    font-size: 14px;
+  }
+
+  .kc-option {
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+
+  .knowledge-check__submit,
+  .knowledge-check__retry {
+    width: 100%;
+  }
+}

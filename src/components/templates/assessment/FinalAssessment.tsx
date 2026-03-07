@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useCallback } from 'react';
+import './FinalAssessment.css';
 import { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
 
 interface FAQuestion {
