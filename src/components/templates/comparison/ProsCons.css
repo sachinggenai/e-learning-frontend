@@ -1,0 +1,307 @@
+/**
+ * ProsCons Template Styles
+ * BEM naming convention: .tpl-pros-cons__element--modifier
+ * Theme tokens with fallback values for consistency
+ */
+
+/* ===== PREVIEW STYLES ===== */
+
+.tpl-pros-cons {
+  width: 100%;
+  background: var(--theme-background, #ffffff);
+}
+
+.tpl-pros-cons__title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--theme-text, #1e293b);
+  text-align: center;
+  margin: 0 0 8px 0;
+}
+
+.tpl-pros-cons__topic {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--theme-text-secondary, #64748b);
+  text-align: center;
+  margin: 0 0 24px 0;
+}
+
+.tpl-pros-cons__container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* Column Sections */
+.tpl-pros-cons__column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tpl-pros-cons__column-header {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0 0 8px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--theme-border, #e2e8f0);
+}
+
+.tpl-pros-cons__column-header--pro {
+  color: var(--theme-success, #22c55e);
+}
+
+.tpl-pros-cons__column-header--con {
+  color: var(--theme-error, #ef4444);
+}
+
+/* Items */
+.tpl-pros-cons__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  background: var(--theme-surface, #f8fafc);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.tpl-pros-cons__item--pro {
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.tpl-pros-cons__item--con {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.tpl-pros-cons__item-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+}
+
+.tpl-pros-cons__item-icon--pro {
+  color: var(--theme-success, #22c55e);
+}
+
+.tpl-pros-cons__item-icon--con {
+  color: var(--theme-error, #ef4444);
+}
+
+.tpl-pros-cons__item-text {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--theme-text, #1e293b);
+}
+
+/* Empty State */
+.tpl-pros-cons__empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--theme-text-secondary, #64748b);
+  font-size: 14px;
+  font-style: italic;
+  border: 2px dashed var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  background: var(--theme-surface, #f8fafc);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .tpl-pros-cons__container {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .tpl-pros-cons__title {
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+
+  .tpl-pros-cons__topic {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .tpl-pros-cons__column-header {
+    font-size: 15px;
+  }
+
+  .tpl-pros-cons__item {
+    padding: 10px;
+  }
+
+  .tpl-pros-cons__item-text {
+    font-size: 13px;
+  }
+}
+
+/* ===== EDITOR STYLES ===== */
+
+.tpl-pros-cons-editor {
+  width: 100%;
+}
+
+.tpl-pros-cons-editor__group {
+  margin-bottom: 16px;
+}
+
+.tpl-pros-cons-editor__label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--theme-text, #1e293b);
+  margin-bottom: 4px;
+}
+
+.tpl-pros-cons-editor__input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--theme-text, #1e293b);
+  background: var(--theme-background, #ffffff);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.tpl-pros-cons-editor__input:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.tpl-pros-cons-editor__input::placeholder {
+  color: var(--theme-text-secondary, #64748b);
+}
+
+/* Section Titles */
+.tpl-pros-cons-editor__section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tpl-pros-cons-editor__section-title--pro {
+  color: var(--theme-success, #22c55e);
+}
+
+.tpl-pros-cons-editor__section-title--con {
+  color: var(--theme-error, #ef4444);
+}
+
+.tpl-pros-cons-editor__section-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Item List */
+.tpl-pros-cons-editor__items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.tpl-pros-cons-editor__item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tpl-pros-cons-editor__item-input {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--theme-text, #1e293b);
+  background: var(--theme-background, #ffffff);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.tpl-pros-cons-editor__item-input:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.tpl-pros-cons-editor__remove-btn {
+  background: none;
+  border: none;
+  color: var(--theme-error, #ef4444);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.tpl-pros-cons-editor__remove-btn:hover {
+  color: #dc2626;
+  transform: scale(1.1);
+}
+
+/* Add Buttons */
+.tpl-pros-cons-editor__add-btn {
+  width: 100%;
+  padding: 6px 12px;
+  border: 1px dashed var(--theme-border, #cbd5e1);
+  border-radius: 4px;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+  margin-bottom: 16px;
+}
+
+.tpl-pros-cons-editor__add-btn--pro {
+  color: var(--theme-success, #22c55e);
+}
+
+.tpl-pros-cons-editor__add-btn--pro:hover {
+  background: rgba(34, 197, 94, 0.05);
+  border-color: var(--theme-success, #22c55e);
+}
+
+.tpl-pros-cons-editor__add-btn--con {
+  color: var(--theme-error, #ef4444);
+}
+
+.tpl-pros-cons-editor__add-btn--con:hover {
+  background: rgba(239, 68, 68, 0.05);
+  border-color: var(--theme-error, #ef4444);
+}
+
+/* Mobile Editor Responsive */
+@media (max-width: 768px) {
+  .tpl-pros-cons-editor__group {
+    margin-bottom: 12px;
+  }
+
+  .tpl-pros-cons-editor__section-title {
+    font-size: 12px;
+  }
+
+  .tpl-pros-cons-editor__item-input {
+    font-size: 12px;
+  }
+}

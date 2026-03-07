@@ -78,6 +78,8 @@ const DecisionTreePreview = React.lazy(() => import('../templates/process/Decisi
 // Comparison
 const ComparisonTableEditor = React.lazy(() => import('../templates/comparison/ComparisonTable').then(m => ({ default: m.ComparisonTableEditor })));
 const ComparisonTablePreview = React.lazy(() => import('../templates/comparison/ComparisonTable').then(m => ({ default: m.ComparisonTablePreview })));
+const ProsConsEditor = React.lazy(() => import('../templates/comparison/ProsCons').then(m => ({ default: m.ProsConsEditor })));
+const ProsConsPreview = React.lazy(() => import('../templates/comparison/ProsCons').then(m => ({ default: m.ProsConsPreview })));
 
 // Microlearning
 const FlashcardsEditor = React.lazy(() => import('../templates/microlearning/Flashcards').then(m => ({ default: m.FlashcardsEditor })));
@@ -707,6 +709,22 @@ r({
   sortOrder: 0,
   editorComponent: ComparisonTableEditor,
   previewComponent: ComparisonTablePreview,
+});
+
+r({
+  typeId: 'pros-cons',
+  displayName: 'Pros and Cons',
+  description: 'Two-column comparison of advantages and disadvantages',
+  category: 'comparison',
+  icon: 'columns',
+  tags: ['comparison', 'pros', 'cons', 'advantages', 'disadvantages', 'decision'],
+  completionCapabilities: ['view'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: { title: '', topic: '', pros: [], cons: [] },
+  sortOrder: 1,
+  editorComponent: ProsConsEditor,
+  previewComponent: ProsConsPreview,
 });
 
 // ─── Microlearning ───────────────────────────────────────────────
