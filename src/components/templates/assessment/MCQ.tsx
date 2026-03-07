@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useCallback } from 'react';
+import './MCQ.css';
 import { CheckCircle, XCircle, Plus, Trash2 } from 'lucide-react';
 import { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
 

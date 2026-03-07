@@ -3,6 +3,7 @@
  */
 
 import React, { useState, useCallback } from 'react';
+import './TrueFalse.css';
 import { CheckCircle, XCircle } from 'lucide-react';
 import { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
 
