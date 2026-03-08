@@ -1,0 +1,428 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e4]:
+  - link "Skip to content" [ref=e5] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=e6]:
+    - generic [ref=e7]:
+      - img "eLearning Logo" [ref=e8]
+      - heading "eLearning Authoring Tool" [level=1] [ref=e9]
+    - button "File" [ref=e11] [cursor=pointer]
+    - button "Edit" [ref=e13] [cursor=pointer]
+    - button "Insert" [ref=e15] [cursor=pointer]
+    - button "Tools" [ref=e17] [cursor=pointer]
+    - button "View" [ref=e19] [cursor=pointer]
+    - button "Help" [ref=e21] [cursor=pointer]
+  - banner [ref=e23]:
+    - generic [ref=e25]:
+      - generic [ref=e26]: Sample eLearning Course
+      - generic [ref=e27]: by eLearning Team • v1.0.0
+    - generic [ref=e28]:
+      - navigation [ref=e29]:
+        - button "Editor" [ref=e30] [cursor=pointer]:
+          - img [ref=e31]
+          - text: Editor
+        - button "Preview" [ref=e33] [cursor=pointer]:
+          - img [ref=e34]
+          - text: Preview
+        - button "Create new template" [ref=e37] [cursor=pointer]:
+          - img [ref=e38]
+          - text: Create new template
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - button "Save" [disabled] [ref=e43]:
+            - img [ref=e44]
+            - text: Save
+          - button "Validate" [ref=e48] [cursor=pointer]:
+            - img [ref=e49]
+            - text: Validate
+          - button "Export" [ref=e52] [cursor=pointer]:
+            - img [ref=e53]
+            - text: Export
+          - button "Reset" [ref=e56] [cursor=pointer]:
+            - img [ref=e57]
+            - text: Reset
+        - generic [ref=e62]: API Connected
+  - main [ref=e63]:
+    - generic [ref=e65]:
+      - generic [ref=e67]:
+        - generic [ref=e68]:
+          - heading "Course Pages" [level=3] [ref=e69]
+          - button "+ Add Page" [ref=e70] [cursor=pointer]:
+            - generic [ref=e71]: +
+            - text: Add Page
+        - generic [ref=e73]:
+          - generic [ref=e74]:
+            - generic [ref=e75]:
+              - generic [ref=e76]:
+                - img "Text" [ref=e78]
+                - generic [ref=e81]: component-page
+              - button "Delete Welcome Page" [ref=e83] [cursor=pointer]:
+                - img "Delete" [ref=e84]
+            - generic [ref=e87]:
+              - generic "Page order 1" [ref=e88]: "1"
+              - generic [ref=e89]:
+                - generic "Double-click to edit" [ref=e90]: Welcome Page
+                - generic "Valid" [ref=e92]:
+                  - img "Valid" [ref=e93]
+          - generic [ref=e95]:
+            - generic [ref=e96]:
+              - generic [ref=e97]:
+                - img "Text" [ref=e99]
+                - generic [ref=e102]: component-page
+              - button "Delete Introduction Page" [ref=e104] [cursor=pointer]:
+                - img "Delete" [ref=e105]
+            - generic [ref=e108]:
+              - generic "Page order 2" [ref=e109]: "2"
+              - generic [ref=e110]:
+                - generic "Double-click to edit" [ref=e111]: Introduction Page
+                - generic "Valid" [ref=e113]:
+                  - img "Valid" [ref=e114]
+        - generic [ref=e116]:
+          - generic [ref=e117]: 2 pages
+          - generic [ref=e118]:
+            - text: "Course:"
+            - strong [ref=e119]: Sample eLearning Course
+      - generic [ref=e121]:
+        - generic [ref=e123]:
+          - generic [ref=e124]: Welcome Page
+          - button "Edit title" [ref=e125] [cursor=pointer]:
+            - img [ref=e126]
+        - alert [ref=e128]:
+          - generic [ref=e129]: ⚠
+          - generic [ref=e130]: Page 'welcome_1772984896488' not found in course 'example_course_1772984896488'
+        - generic [ref=e131]:
+          - generic [ref=e132]:
+            - paragraph [ref=e133]: No components on this page yet.
+            - button "+ Add First Component" [ref=e134] [cursor=pointer]
+          - button "Add component" [ref=e135] [cursor=pointer]: + Add Component
+          - dialog "Add Component" [ref=e136]:
+            - generic [ref=e137]:
+              - heading "Add Component" [level=2] [ref=e138]
+              - button "Close component picker" [ref=e139] [cursor=pointer]:
+                - img [ref=e140]
+            - generic [ref=e143]:
+              - img
+              - textbox "Search components" [active] [ref=e144]:
+                - /placeholder: Search components...
+            - generic [ref=e145]:
+              - navigation "Component categories" [ref=e146]:
+                - button "All (41)" [ref=e147] [cursor=pointer]
+                - button "Content Presentation 9" [ref=e148] [cursor=pointer]:
+                  - generic [ref=e149]: Content Presentation
+                  - generic [ref=e150]: "9"
+                - button "Process & Flow 5" [ref=e151] [cursor=pointer]:
+                  - generic [ref=e152]: Process & Flow
+                  - generic [ref=e153]: "5"
+                - button "Interaction 5" [ref=e154] [cursor=pointer]:
+                  - generic [ref=e155]: Interaction
+                  - generic [ref=e156]: "5"
+                - button "Scenario-Based 2" [ref=e157] [cursor=pointer]:
+                  - generic [ref=e158]: Scenario-Based
+                  - generic [ref=e159]: "2"
+                - button "Assessment 8" [ref=e160] [cursor=pointer]:
+                  - generic [ref=e161]: Assessment
+                  - generic [ref=e162]: "8"
+                - button "Comparison & Analysis 4" [ref=e163] [cursor=pointer]:
+                  - generic [ref=e164]: Comparison & Analysis
+                  - generic [ref=e165]: "4"
+                - button "Media-Rich 3" [ref=e166] [cursor=pointer]:
+                  - generic [ref=e167]: Media-Rich
+                  - generic [ref=e168]: "3"
+                - button "Microlearning 1" [ref=e169] [cursor=pointer]:
+                  - generic [ref=e170]: Microlearning
+                  - generic [ref=e171]: "1"
+                - button "Navigation & Structural 2" [ref=e172] [cursor=pointer]:
+                  - generic [ref=e173]: Navigation & Structural
+                  - generic [ref=e174]: "2"
+                - button "Gamification 2" [ref=e175] [cursor=pointer]:
+                  - generic [ref=e176]: Gamification
+                  - generic [ref=e177]: "2"
+              - list [ref=e178]:
+                - generic [ref=e179]:
+                  - heading "Content Presentation" [level=3] [ref=e180]
+                  - generic [ref=e181]:
+                    - 'listitem "Add Welcome: Course welcome page with title, subtitle, and description" [ref=e182] [cursor=pointer]':
+                      - generic [ref=e183]:
+                        - generic [ref=e184]: 📄
+                        - generic [ref=e185]: Welcome
+                      - paragraph [ref=e186]: Course welcome page with title, subtitle, and description
+                    - 'listitem "Add Text Content: Rich text content with optional title" [ref=e187] [cursor=pointer]':
+                      - generic [ref=e188]:
+                        - generic [ref=e189]: 📄
+                        - generic [ref=e190]: Text Content
+                      - paragraph [ref=e191]: Rich text content with optional title
+                    - 'listitem "Add Image Content: Image with caption and description" [ref=e192] [cursor=pointer]':
+                      - generic [ref=e193]:
+                        - generic [ref=e194]: 📄
+                        - generic [ref=e195]: Image Content
+                      - paragraph [ref=e196]: Image with caption and description
+                    - 'listitem "Add Video Content: Video player with optional description" [ref=e197] [cursor=pointer]':
+                      - generic [ref=e198]:
+                        - generic [ref=e199]: 📄
+                        - generic [ref=e200]: Video Content
+                      - paragraph [ref=e201]: Video player with optional description
+                      - generic [ref=e203]: Audio
+                    - 'listitem "Add Tabs: Tabbed content panels with per-tab audio" [ref=e204] [cursor=pointer]':
+                      - generic [ref=e205]:
+                        - generic [ref=e206]: 📄
+                        - generic [ref=e207]: Tabs
+                      - paragraph [ref=e208]: Tabbed content panels with per-tab audio
+                      - generic [ref=e209]:
+                        - generic [ref=e210]: Audio
+                        - generic [ref=e211]: Interactive
+                    - 'listitem "Add Accordion: Expandable/collapsible panels with per-panel audio" [ref=e212] [cursor=pointer]':
+                      - generic [ref=e213]:
+                        - generic [ref=e214]: 📄
+                        - generic [ref=e215]: Accordion
+                      - paragraph [ref=e216]: Expandable/collapsible panels with per-panel audio
+                      - generic [ref=e217]:
+                        - generic [ref=e218]: Audio
+                        - generic [ref=e219]: Interactive
+                    - 'listitem "Add Summary: Key takeaways and summary points" [ref=e220] [cursor=pointer]':
+                      - generic [ref=e221]:
+                        - generic [ref=e222]: 📄
+                        - generic [ref=e223]: Summary
+                      - paragraph [ref=e224]: Key takeaways and summary points
+                    - 'listitem "Add Layered Content: Stacked content layers with toggle navigation" [ref=e225] [cursor=pointer]':
+                      - generic [ref=e226]:
+                        - generic [ref=e227]: 📄
+                        - generic [ref=e228]: Layered Content
+                      - paragraph [ref=e229]: Stacked content layers with toggle navigation
+                      - generic [ref=e231]: Interactive
+                    - 'listitem "Add Text with Media: Rich text block with optional image or video" [ref=e232] [cursor=pointer]':
+                      - generic [ref=e233]:
+                        - generic [ref=e234]: 📄
+                        - generic [ref=e235]: Text with Media
+                      - paragraph [ref=e236]: Rich text block with optional image or video
+                      - generic [ref=e238]: Audio
+                - generic [ref=e239]:
+                  - heading "Process & Flow" [level=3] [ref=e240]
+                  - generic [ref=e241]:
+                    - 'listitem "Add Step by Step: Numbered step-through guide with progress indicators" [ref=e242] [cursor=pointer]':
+                      - generic [ref=e243]:
+                        - generic [ref=e244]: 🔀
+                        - generic [ref=e245]: Step by Step
+                      - paragraph [ref=e246]: Numbered step-through guide with progress indicators
+                      - generic [ref=e248]: Interactive
+                    - 'listitem "Add Cycle Diagram: Circular process diagram showing repeating stages" [ref=e249] [cursor=pointer]':
+                      - generic [ref=e250]:
+                        - generic [ref=e251]: 🔀
+                        - generic [ref=e252]: Cycle Diagram
+                      - paragraph [ref=e253]: Circular process diagram showing repeating stages
+                    - 'listitem "Add Flowchart: Visual flowchart diagram with different node types and connections" [ref=e254] [cursor=pointer]':
+                      - generic [ref=e255]:
+                        - generic [ref=e256]: 🔀
+                        - generic [ref=e257]: Flowchart
+                      - paragraph [ref=e258]: Visual flowchart diagram with different node types and connections
+                    - 'listitem "Add Process Map: Swimlane-based process diagram showing parallel workflows" [ref=e259] [cursor=pointer]':
+                      - generic [ref=e260]:
+                        - generic [ref=e261]: 🔀
+                        - generic [ref=e262]: Process Map
+                      - paragraph [ref=e263]: Swimlane-based process diagram showing parallel workflows
+                    - 'listitem "Add Decision Tree: Interactive branching decision tree with configurable outcomes" [ref=e264] [cursor=pointer]':
+                      - generic [ref=e265]:
+                        - generic [ref=e266]: 🔀
+                        - generic [ref=e267]: Decision Tree
+                      - paragraph [ref=e268]: Interactive branching decision tree with configurable outcomes
+                - generic [ref=e269]:
+                  - heading "Interaction" [level=3] [ref=e270]
+                  - generic [ref=e271]:
+                    - 'listitem "Add Flip Cards: Grid of cards that flip to reveal content on click" [ref=e272] [cursor=pointer]':
+                      - generic [ref=e273]:
+                        - generic [ref=e274]: 🖱️
+                        - generic [ref=e275]: Flip Cards
+                      - paragraph [ref=e276]: Grid of cards that flip to reveal content on click
+                      - generic [ref=e278]: Interactive
+                    - 'listitem "Add Click & Reveal: Grid of items that reveal content when clicked" [ref=e279] [cursor=pointer]':
+                      - generic [ref=e280]:
+                        - generic [ref=e281]: 🖱️
+                        - generic [ref=e282]: Click & Reveal
+                      - paragraph [ref=e283]: Grid of items that reveal content when clicked
+                      - generic [ref=e285]: Interactive
+                    - 'listitem "Add Drag & Drop Sort: Arrange items in the correct order by dragging" [ref=e286] [cursor=pointer]':
+                      - generic [ref=e287]:
+                        - generic [ref=e288]: 🖱️
+                        - generic [ref=e289]: Drag & Drop Sort
+                      - paragraph [ref=e290]: Arrange items in the correct order by dragging
+                      - generic [ref=e291]:
+                        - generic [ref=e292]: Scored
+                        - generic [ref=e293]: Interactive
+                    - 'listitem "Add Timeline: Vertical timeline of events or milestones" [ref=e294] [cursor=pointer]':
+                      - generic [ref=e295]:
+                        - generic [ref=e296]: 🖱️
+                        - generic [ref=e297]: Timeline
+                      - paragraph [ref=e298]: Vertical timeline of events or milestones
+                      - generic [ref=e300]: Interactive
+                    - 'listitem "Add Carousel: Slide carousel for sequenced content" [ref=e301] [cursor=pointer]':
+                      - generic [ref=e302]:
+                        - generic [ref=e303]: 🖱️
+                        - generic [ref=e304]: Carousel
+                      - paragraph [ref=e305]: Slide carousel for sequenced content
+                      - generic [ref=e307]: Interactive
+                - generic [ref=e308]:
+                  - heading "Scenario-Based" [level=3] [ref=e309]
+                  - generic [ref=e310]:
+                    - 'listitem "Add Branching Scenario: Multi-path decision tree scenario with scoring" [ref=e311] [cursor=pointer]':
+                      - generic [ref=e312]:
+                        - generic [ref=e313]: 🎭
+                        - generic [ref=e314]: Branching Scenario
+                      - paragraph [ref=e315]: Multi-path decision tree scenario with scoring
+                      - generic [ref=e316]:
+                        - generic [ref=e317]: Scored
+                        - generic [ref=e318]: Interactive
+                    - 'listitem "Add Case Study: Extended scenario with analysis prompts and reflection" [ref=e319] [cursor=pointer]':
+                      - generic [ref=e320]:
+                        - generic [ref=e321]: 🎭
+                        - generic [ref=e322]: Case Study
+                      - paragraph [ref=e323]: Extended scenario with analysis prompts and reflection
+                      - generic [ref=e325]: Interactive
+                - generic [ref=e326]:
+                  - heading "Assessment" [level=3] [ref=e327]
+                  - generic [ref=e328]:
+                    - 'listitem "Add Multiple Choice: Single-answer multiple choice question with feedback" [ref=e329] [cursor=pointer]':
+                      - generic [ref=e330]:
+                        - generic [ref=e331]: ✅
+                        - generic [ref=e332]: Multiple Choice
+                      - paragraph [ref=e333]: Single-answer multiple choice question with feedback
+                      - generic [ref=e334]:
+                        - generic [ref=e335]: Scored
+                        - generic [ref=e336]: Interactive
+                    - 'listitem "Add True / False: True or false statement question" [ref=e337] [cursor=pointer]':
+                      - generic [ref=e338]:
+                        - generic [ref=e339]: ✅
+                        - generic [ref=e340]: True / False
+                      - paragraph [ref=e341]: True or false statement question
+                      - generic [ref=e342]:
+                        - generic [ref=e343]: Scored
+                        - generic [ref=e344]: Interactive
+                    - 'listitem "Add Fill in the Blanks: Complete sentences by filling in missing words" [ref=e345] [cursor=pointer]':
+                      - generic [ref=e346]:
+                        - generic [ref=e347]: ✅
+                        - generic [ref=e348]: Fill in the Blanks
+                      - paragraph [ref=e349]: Complete sentences by filling in missing words
+                      - generic [ref=e350]:
+                        - generic [ref=e351]: Scored
+                        - generic [ref=e352]: Interactive
+                    - 'listitem "Add Matching: Match items from two columns" [ref=e353] [cursor=pointer]':
+                      - generic [ref=e354]:
+                        - generic [ref=e355]: ✅
+                        - generic [ref=e356]: Matching
+                      - paragraph [ref=e357]: Match items from two columns
+                      - generic [ref=e358]:
+                        - generic [ref=e359]: Scored
+                        - generic [ref=e360]: Interactive
+                    - 'listitem "Add Multiple Select: Select all correct answers from a list of options" [ref=e361] [cursor=pointer]':
+                      - generic [ref=e362]:
+                        - generic [ref=e363]: ✅
+                        - generic [ref=e364]: Multiple Select
+                      - paragraph [ref=e365]: Select all correct answers from a list of options
+                      - generic [ref=e366]:
+                        - generic [ref=e367]: Scored
+                        - generic [ref=e368]: Interactive
+                    - 'listitem "Add Scenario Question: Scenario-based question with context and weighted options" [ref=e369] [cursor=pointer]':
+                      - generic [ref=e370]:
+                        - generic [ref=e371]: ✅
+                        - generic [ref=e372]: Scenario Question
+                      - paragraph [ref=e373]: Scenario-based question with context and weighted options
+                      - generic [ref=e374]:
+                        - generic [ref=e375]: Scored
+                        - generic [ref=e376]: Interactive
+                    - 'listitem "Add Knowledge Check: Quick inline quiz with 1-3 questions" [ref=e377] [cursor=pointer]':
+                      - generic [ref=e378]:
+                        - generic [ref=e379]: ✅
+                        - generic [ref=e380]: Knowledge Check
+                      - paragraph [ref=e381]: Quick inline quiz with 1-3 questions
+                      - generic [ref=e382]:
+                        - generic [ref=e383]: Scored
+                        - generic [ref=e384]: Interactive
+                    - 'listitem "Add Final Assessment: Comprehensive end-of-course assessment with mixed question types" [ref=e385] [cursor=pointer]':
+                      - generic [ref=e386]:
+                        - generic [ref=e387]: ✅
+                        - generic [ref=e388]: Final Assessment
+                      - paragraph [ref=e389]: Comprehensive end-of-course assessment with mixed question types
+                      - generic [ref=e390]:
+                        - generic [ref=e391]: Scored
+                        - generic [ref=e392]: Interactive
+                - generic [ref=e393]:
+                  - heading "Comparison & Analysis" [level=3] [ref=e394]
+                  - generic [ref=e395]:
+                    - 'listitem "Add Comparison Table: Side-by-side comparison table with highlighting" [ref=e396] [cursor=pointer]':
+                      - generic [ref=e397]:
+                        - generic [ref=e398]: ⚖️
+                        - generic [ref=e399]: Comparison Table
+                      - paragraph [ref=e400]: Side-by-side comparison table with highlighting
+                    - 'listitem "Add Pros and Cons: Two-column comparison of advantages and disadvantages" [ref=e401] [cursor=pointer]':
+                      - generic [ref=e402]:
+                        - generic [ref=e403]: ⚖️
+                        - generic [ref=e404]: Pros and Cons
+                      - paragraph [ref=e405]: Two-column comparison of advantages and disadvantages
+                    - 'listitem "Add Before and After: Side-by-side comparison showing change or improvement" [ref=e406] [cursor=pointer]':
+                      - generic [ref=e407]:
+                        - generic [ref=e408]: ⚖️
+                        - generic [ref=e409]: Before and After
+                      - paragraph [ref=e410]: Side-by-side comparison showing change or improvement
+                    - 'listitem "Add Matrix / Grid: Flexible grid with row and column headers" [ref=e411] [cursor=pointer]':
+                      - generic [ref=e412]:
+                        - generic [ref=e413]: ⚖️
+                        - generic [ref=e414]: Matrix / Grid
+                      - paragraph [ref=e415]: Flexible grid with row and column headers
+                - generic [ref=e416]:
+                  - heading "Media-Rich" [level=3] [ref=e417]
+                  - generic [ref=e418]:
+                    - 'listitem "Add Image Hotspots: Interactive image with clickable hotspot markers" [ref=e419] [cursor=pointer]':
+                      - generic [ref=e420]:
+                        - generic [ref=e421]: 🎬
+                        - generic [ref=e422]: Image Hotspots
+                      - paragraph [ref=e423]: Interactive image with clickable hotspot markers
+                      - generic [ref=e425]: Interactive
+                    - 'listitem "Add Video Slide: Video-based content slide with overlay text" [ref=e426] [cursor=pointer]':
+                      - generic [ref=e427]:
+                        - generic [ref=e428]: 🎬
+                        - generic [ref=e429]: Video Slide
+                      - paragraph [ref=e430]: Video-based content slide with overlay text
+                      - generic [ref=e432]: Audio
+                    - 'listitem "Add Infographic: Visual data presentation with sections and stats" [ref=e433] [cursor=pointer]':
+                      - generic [ref=e434]:
+                        - generic [ref=e435]: 🎬
+                        - generic [ref=e436]: Infographic
+                      - paragraph [ref=e437]: Visual data presentation with sections and stats
+                - generic [ref=e438]:
+                  - heading "Microlearning" [level=3] [ref=e439]
+                  - 'listitem "Add Flashcards: Study flashcard deck with flip animation" [ref=e441] [cursor=pointer]':
+                    - generic [ref=e442]:
+                      - generic [ref=e443]: ⚡
+                      - generic [ref=e444]: Flashcards
+                    - paragraph [ref=e445]: Study flashcard deck with flip animation
+                    - generic [ref=e447]: Interactive
+                - generic [ref=e448]:
+                  - heading "Navigation & Structural" [level=3] [ref=e449]
+                  - generic [ref=e450]:
+                    - 'listitem "Add Course Menu: Navigation menu showing course structure" [ref=e451] [cursor=pointer]':
+                      - generic [ref=e452]:
+                        - generic [ref=e453]: 🗺️
+                        - generic [ref=e454]: Course Menu
+                      - paragraph [ref=e455]: Navigation menu showing course structure
+                    - 'listitem "Add Resources & Downloads: Downloadable resources and supplementary links" [ref=e456] [cursor=pointer]':
+                      - generic [ref=e457]:
+                        - generic [ref=e458]: 🗺️
+                        - generic [ref=e459]: Resources & Downloads
+                      - paragraph [ref=e460]: Downloadable resources and supplementary links
+                - generic [ref=e461]:
+                  - heading "Gamification" [level=3] [ref=e462]
+                  - generic [ref=e463]:
+                    - 'listitem "Add Progress Tracker: Visual course progress tracker with milestones" [ref=e464] [cursor=pointer]':
+                      - generic [ref=e465]:
+                        - generic [ref=e466]: 🏆
+                        - generic [ref=e467]: Progress Tracker
+                      - paragraph [ref=e468]: Visual course progress tracker with milestones
+                    - 'listitem "Add Quiz Game: Gamified quiz with timer, lives, and score" [ref=e469] [cursor=pointer]':
+                      - generic [ref=e470]:
+                        - generic [ref=e471]: 🏆
+                        - generic [ref=e472]: Quiz Game
+                      - paragraph [ref=e473]: Gamified quiz with timer, lives, and score
+                      - generic [ref=e474]:
+                        - generic [ref=e475]: Scored
+                        - generic [ref=e476]: Interactive
+```

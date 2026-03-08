@@ -1,0 +1,317 @@
+/**
+ * Infographic — Visual data presentation with sections.
+ * BEM Convention: .tpl-infographic
+ * Category: media-rich
+ */
+
+/* ─── Preview Container ─────────────────────────────────────── */
+.tpl-infographic {
+  width: 100%;
+}
+
+.tpl-infographic__title {
+  text-align: center;
+  margin: 0 0 8px 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  line-height: 1.4;
+}
+
+.tpl-infographic__subtitle {
+  text-align: center;
+  color: var(--theme-text-secondary, #64748b);
+  font-size: 14px;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.tpl-infographic__sections {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tpl-infographic__sections--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.tpl-infographic__section {
+  background: var(--theme-background, #ffffff);
+  border: 2px solid var(--theme-border, #e2e8f0);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.tpl-infographic__section:hover {
+  transform: translateY(-2px);
+  border-color: var(--theme-primary, #2563eb);
+}
+
+.tpl-infographic__section:focus-visible {
+  outline: 2px solid var(--theme-primary, #2563eb);
+  outline-offset: 2px;
+}
+
+.tpl-infographic__icon {
+  font-size: 36px;
+  margin-bottom: 8px;
+}
+
+.tpl-infographic__stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--theme-primary, #2563eb);
+  line-height: 1.2;
+}
+
+.tpl-infographic__stat-label {
+  font-size: 12px;
+  color: var(--theme-text-secondary, #64748b);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 8px 0;
+}
+
+.tpl-infographic__heading {
+  margin: 8px 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-infographic__body {
+  margin: 0;
+  font-size: 13px;
+  color: var(--theme-text-secondary, #64748b);
+  line-height: 1.6;
+}
+
+/* ─── Editor Container ─────────────────────────────────────── */
+.tpl-infographic-editor {
+  width: 100%;
+}
+
+.tpl-infographic-editor__field {
+  margin-bottom: 12px;
+}
+
+.tpl-infographic-editor__label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-infographic-editor__input,
+.tpl-infographic-editor__select {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--theme-text, #1e293b);
+  background: var(--theme-background, #ffffff);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.tpl-infographic-editor__input::placeholder {
+  color: var(--theme-text-secondary, #64748b);
+}
+
+.tpl-infographic-editor__input:hover,
+.tpl-infographic-editor__select:hover {
+  border-color: var(--theme-primary, #2563eb);
+}
+
+.tpl-infographic-editor__input:focus,
+.tpl-infographic-editor__select:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.tpl-infographic-editor__textarea {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--theme-text, #1e293b);
+  background: var(--theme-background, #ffffff);
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.tpl-infographic-editor__textarea:hover {
+  border-color: var(--theme-primary, #2563eb);
+}
+
+.tpl-infographic-editor__textarea:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.tpl-infographic-editor__section-card {
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: var(--theme-surface, #f8fafc);
+}
+
+.tpl-infographic-editor__section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.tpl-infographic-editor__section-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-infographic-editor__remove-btn {
+  background: none;
+  border: none;
+  color: var(--theme-error, #ef4444);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.tpl-infographic-editor__remove-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.tpl-infographic-editor__remove-btn:focus-visible {
+  outline: 2px solid var(--theme-error, #ef4444);
+  outline-offset: 2px;
+}
+
+.tpl-infographic-editor__row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tpl-infographic-editor__row--icon {
+  width: 60px;
+}
+
+.tpl-infographic-editor__row--color {
+  width: 80px;
+}
+
+.tpl-infographic-editor__row--flex {
+  flex: 1;
+}
+
+.tpl-infographic-editor__color-input {
+  width: 100%;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.tpl-infographic-editor__add-btn {
+  width: 100%;
+  padding: 10px;
+  border: 2px dashed var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--theme-primary, #2563eb);
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.tpl-infographic-editor__add-btn:hover {
+  border-color: var(--theme-primary, #2563eb);
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.tpl-infographic-editor__add-btn:focus-visible {
+  outline: 2px solid var(--theme-primary, #2563eb);
+  outline-offset: 2px;
+}
+
+.tpl-infographic-editor__small-label {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 3px;
+  color: var(--theme-text, #1e293b);
+}
+
+/* ─── Responsive Design ────────────────────────────────────── */
+@media (max-width: 768px) {
+  .tpl-infographic__sections--grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tpl-infographic__title {
+    font-size: 1.125rem;
+  }
+
+  .tpl-infographic__subtitle {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  .tpl-infographic__section {
+    padding: 16px;
+  }
+
+  .tpl-infographic__stat-value {
+    font-size: 28px;
+  }
+
+  .tpl-infographic__icon {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 375px) {
+  .tpl-infographic__title {
+    font-size: 1rem;
+  }
+
+  .tpl-infographic__section {
+    padding: 14px;
+  }
+
+  .tpl-infographic__stat-value {
+    font-size: 24px;
+  }
+
+  .tpl-infographic__icon {
+    font-size: 28px;
+  }
+
+  .tpl-infographic-editor__row {
+    flex-direction: column;
+  }
+
+  .tpl-infographic-editor__row--icon,
+  .tpl-infographic-editor__row--color {
+    width: 100%;
+  }
+}

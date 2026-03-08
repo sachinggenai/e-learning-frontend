@@ -6,6 +6,7 @@
 
 import React, { useRef, useState, useCallback } from 'react';
 import type { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
+import './VideoSlide.css';
 
 // ─── Preview ──────────────────────────────────────────────────────
 export const VideoSlidePreview: React.FC<ComponentPreviewProps> = ({
@@ -33,8 +34,8 @@ export const VideoSlidePreview: React.FC<ComponentPreviewProps> = ({
   }, [hasEnded, watchThreshold, onInteraction, onComplete]);
 
   return (
-    <div style={{ position: 'relative' }}>
-      {data?.title && <h3 style={{ marginBottom: 12 }}>{data.title}</h3>}
+    <div className="tpl-video-slide" role="region" aria-label="Video content slide">
+      {data?.title && <h3 className="tpl-video-slide__title">{data.title}</h3>}
       {data?.videoUrl ? (
         <video
           ref={videoRef}
@@ -42,45 +43,21 @@ export const VideoSlidePreview: React.FC<ComponentPreviewProps> = ({
           poster={data.posterUrl}
           controls
           onTimeUpdate={handleTimeUpdate}
-          style={{ width: '100%', borderRadius: 8 }}
+          className="tpl-video-slide__player"
+          aria-label={data?.title ? `Video: ${data.title}` : 'Video player'}
         />
       ) : (
-        <div
-          style={{
-            width: '100%',
-            height: 300,
-            background: '#f1f5f9',
-            borderRadius: 8,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#94a3b8',
-            fontSize: 14,
-          }}
-        >
+        <div className="tpl-video-slide__placeholder" role="status" aria-label="No video source">
           No video source set
         </div>
       )}
       {data?.overlayText && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 60,
-            left: 16,
-            right: 16,
-            background: 'rgba(0,0,0,0.65)',
-            color: '#fff',
-            padding: '10px 16px',
-            borderRadius: 8,
-            fontSize: 14,
-            lineHeight: 1.5,
-          }}
-        >
+        <div className="tpl-video-slide__overlay" aria-live="polite">
           {data.overlayText}
         </div>
       )}
       {data?.caption && (
-        <p style={{ marginTop: 8, fontSize: 13, color: '#64748b', textAlign: 'center' }}>
+        <p className="tpl-video-slide__caption">
           {data.caption}
         </p>
       )}
@@ -91,11 +68,12 @@ export const VideoSlidePreview: React.FC<ComponentPreviewProps> = ({
 // ─── Editor ───────────────────────────────────────────────────────
 export const VideoSlideEditor: React.FC<ComponentEditorProps> = ({ data, onChange }) => {
   const field = (label: string, key: string, type = 'text', placeholder = '') => (
-    <div style={{ marginBottom: 12 }}>
-      <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>
+    <div className="tpl-video-slide-editor__field">
+      <label className="tpl-video-slide-editor__label" htmlFor={`video-slide-${key}`}>
         {label}
       </label>
       <input
+        id={`video-slide-${key}`}
         type={type}
         value={data?.[key] ?? ''}
         onChange={(e) =>
@@ -107,19 +85,14 @@ export const VideoSlideEditor: React.FC<ComponentEditorProps> = ({ data, onChang
           })
         }
         placeholder={placeholder}
-        style={{
-          width: '100%',
-          padding: '6px 8px',
-          border: '1px solid #e2e8f0',
-          borderRadius: 4,
-          fontSize: 13,
-        }}
+        className="tpl-video-slide-editor__input"
+        aria-label={label}
       />
     </div>
   );
 
   return (
-    <div>
+    <div className="tpl-video-slide-editor">
       {field('Title', 'title', 'text', 'Video Slide')}
       {field('Video URL', 'videoUrl', 'text', 'https://…/video.mp4')}
       {field('Poster Image URL', 'posterUrl', 'text', 'https://…/poster.jpg')}

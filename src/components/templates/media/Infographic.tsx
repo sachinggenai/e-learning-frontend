@@ -6,6 +6,7 @@
 
 import React, { useState } from 'react';
 import type { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
+import './Infographic.css';
 
 interface Section {
   id: string;
@@ -23,49 +24,47 @@ export const InfographicPreview: React.FC<ComponentPreviewProps> = ({ data }) =>
   const layout = data?.layout ?? 'vertical'; // vertical | grid
 
   return (
-    <div>
+    <div className="tpl-infographic" role="region" aria-label="Infographic content">
       {data?.title && (
-        <h3 style={{ textAlign: 'center', marginBottom: 8 }}>{data.title}</h3>
+        <h3 className="tpl-infographic__title">{data.title}</h3>
       )}
       {data?.subtitle && (
-        <p style={{ textAlign: 'center', color: '#64748b', fontSize: 14, marginBottom: 24 }}>
+        <p className="tpl-infographic__subtitle">
           {data.subtitle}
         </p>
       )}
 
       <div
-        style={{
-          display: layout === 'grid' ? 'grid' : 'flex',
-          gridTemplateColumns: layout === 'grid' ? 'repeat(auto-fit, minmax(200px, 1fr))' : undefined,
-          flexDirection: layout === 'vertical' ? 'column' : undefined,
-          gap: 20,
-        }}
+        className={`tpl-infographic__sections ${layout === 'grid' ? 'tpl-infographic__sections--grid' : ''}`}
+        role="list"
       >
         {sections.map((s, idx) => (
           <div
             key={s.id}
+            className="tpl-infographic__section"
+            role="listitem"
+            tabIndex={0}
+            aria-label={`Section ${idx + 1}: ${s.heading}`}
             style={{
-              background: '#fff',
-              border: `2px solid ${s.color || '#e2e8f0'}`,
-              borderRadius: 12,
-              padding: 20,
-              textAlign: 'center',
-              transition: 'transform 0.2s',
+              borderColor: s.color || undefined,
             }}
           >
-            {s.icon && <div style={{ fontSize: 36, marginBottom: 8 }}>{s.icon}</div>}
+            {s.icon && <div className="tpl-infographic__icon" aria-hidden="true">{s.icon}</div>}
             {s.statValue && (
-              <div style={{ fontSize: 32, fontWeight: 700, color: s.color || '#3b82f6' }}>
+              <div 
+                className="tpl-infographic__stat-value"
+                style={{ color: s.color || undefined }}
+              >
                 {s.statValue}
               </div>
             )}
             {s.statLabel && (
-              <div style={{ fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>
+              <div className="tpl-infographic__stat-label">
                 {s.statLabel}
               </div>
             )}
-            <h4 style={{ margin: '8px 0 4px', fontSize: 16 }}>{s.heading}</h4>
-            <p style={{ margin: 0, fontSize: 13, color: '#475569', lineHeight: 1.6 }}>
+            <h4 className="tpl-infographic__heading">{s.heading}</h4>
+            <p className="tpl-infographic__body">
               {s.body}
             </p>
           </div>
@@ -102,61 +101,156 @@ export const InfographicEditor: React.FC<ComponentEditorProps> = ({ data, onChan
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>Title</label>
-        <input type="text" value={data?.title ?? ''} onChange={(e) => onChange({ data: { ...data, title: e.target.value } })} placeholder="Infographic Title" style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+    <div className="tpl-infographic-editor">
+      <div className="tpl-infographic-editor__field">
+        <label htmlFor="infographic-title" className="tpl-infographic-editor__label">
+          Title
+        </label>
+        <input
+          id="infographic-title"
+          type="text"
+          value={data?.title ?? ''}
+          onChange={(e) => onChange({ data: { ...data, title: e.target.value } })}
+          placeholder="Infographic Title"
+          className="tpl-infographic-editor__input"
+          aria-label="Title"
+        />
       </div>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>Subtitle</label>
-        <input type="text" value={data?.subtitle ?? ''} onChange={(e) => onChange({ data: { ...data, subtitle: e.target.value } })} placeholder="A brief subtitle" style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+
+      <div className="tpl-infographic-editor__field">
+        <label htmlFor="infographic-subtitle" className="tpl-infographic-editor__label">
+          Subtitle
+        </label>
+        <input
+          id="infographic-subtitle"
+          type="text"
+          value={data?.subtitle ?? ''}
+          onChange={(e) => onChange({ data: { ...data, subtitle: e.target.value } })}
+          placeholder="A brief subtitle"
+          className="tpl-infographic-editor__input"
+          aria-label="Subtitle"
+        />
       </div>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>Layout</label>
-        <select value={data?.layout ?? 'vertical'} onChange={(e) => onChange({ data: { ...data, layout: e.target.value } })} style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }}>
+
+      <div className="tpl-infographic-editor__field">
+        <label htmlFor="infographic-layout" className="tpl-infographic-editor__label">
+          Layout
+        </label>
+        <select
+          id="infographic-layout"
+          value={data?.layout ?? 'vertical'}
+          onChange={(e) => onChange({ data: { ...data, layout: e.target.value } })}
+          className="tpl-infographic-editor__select"
+          aria-label="Layout"
+        >
           <option value="vertical">Vertical</option>
           <option value="grid">Grid</option>
         </select>
       </div>
 
       {sections.map((s, idx) => (
-        <div key={s.id} style={{ border: '1px solid #e2e8f0', borderRadius: 6, padding: 12, marginBottom: 10, background: '#f9fafb' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-            <span style={{ fontWeight: 600, fontSize: 13 }}>Section {idx + 1}</span>
-            <button onClick={() => removeSection(idx)} style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: 18, cursor: 'pointer' }}>×</button>
+        <div key={s.id} className="tpl-infographic-editor__section-card">
+          <div className="tpl-infographic-editor__section-header">
+            <span className="tpl-infographic-editor__section-title">Section {idx + 1}</span>
+            <button
+              onClick={() => removeSection(idx)}
+              className="tpl-infographic-editor__remove-btn"
+              aria-label={`Remove section ${idx + 1}`}
+              type="button"
+            >
+              ×
+            </button>
           </div>
-          <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-            <div style={{ width: 60 }}>
-              <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Icon</label>
-              <input type="text" value={s.icon} onChange={(e) => updateSection(idx, 'icon', e.target.value)} style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+
+          <div className="tpl-infographic-editor__row">
+            <div className="tpl-infographic-editor__row--icon">
+              <label htmlFor={`section-${idx}-icon`} className="tpl-infographic-editor__small-label">
+                Icon
+              </label>
+              <input
+                id={`section-${idx}-icon`}
+                type="text"
+                value={s.icon}
+                onChange={(e) => updateSection(idx, 'icon', e.target.value)}
+                className="tpl-infographic-editor__input"
+              />
             </div>
-            <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Heading</label>
-              <input type="text" value={s.heading} onChange={(e) => updateSection(idx, 'heading', e.target.value)} style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+            <div className="tpl-infographic-editor__row--flex">
+              <label htmlFor={`section-${idx}-heading`} className="tpl-infographic-editor__small-label">
+                Heading
+              </label>
+              <input
+                id={`section-${idx}-heading`}
+                type="text"
+                value={s.heading}
+                onChange={(e) => updateSection(idx, 'heading', e.target.value)}
+                className="tpl-infographic-editor__input"
+              />
             </div>
-            <div style={{ width: 80 }}>
-              <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Color</label>
-              <input type="color" value={s.color || '#3b82f6'} onChange={(e) => updateSection(idx, 'color', e.target.value)} style={{ width: '100%', height: 30, padding: 0, border: '1px solid #e2e8f0', borderRadius: 4 }} />
+            <div className="tpl-infographic-editor__row--color">
+              <label htmlFor={`section-${idx}-color`} className="tpl-infographic-editor__small-label">
+                Color
+              </label>
+              <input
+                id={`section-${idx}-color`}
+                type="color"
+                value={s.color || '#3b82f6'}
+                onChange={(e) => updateSection(idx, 'color', e.target.value)}
+                className="tpl-infographic-editor__color-input"
+              />
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-            <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Stat Value</label>
-              <input type="text" value={s.statValue ?? ''} onChange={(e) => updateSection(idx, 'statValue', e.target.value)} placeholder="42%" style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+
+          <div className="tpl-infographic-editor__row">
+            <div className="tpl-infographic-editor__row--flex">
+              <label htmlFor={`section-${idx}-stat-value`} className="tpl-infographic-editor__small-label">
+                Stat Value
+              </label>
+              <input
+                id={`section-${idx}-stat-value`}
+                type="text"
+                value={s.statValue ?? ''}
+                onChange={(e) => updateSection(idx, 'statValue', e.target.value)}
+                placeholder="42%"
+                className="tpl-infographic-editor__input"
+              />
             </div>
-            <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Stat Label</label>
-              <input type="text" value={s.statLabel ?? ''} onChange={(e) => updateSection(idx, 'statLabel', e.target.value)} placeholder="Increase" style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+            <div className="tpl-infographic-editor__row--flex">
+              <label htmlFor={`section-${idx}-stat-label`} className="tpl-infographic-editor__small-label">
+                Stat Label
+              </label>
+              <input
+                id={`section-${idx}-stat-label`}
+                type="text"
+                value={s.statLabel ?? ''}
+                onChange={(e) => updateSection(idx, 'statLabel', e.target.value)}
+                placeholder="Increase"
+                className="tpl-infographic-editor__input"
+              />
             </div>
           </div>
+
           <div>
-            <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Body</label>
-            <textarea value={s.body} onChange={(e) => updateSection(idx, 'body', e.target.value)} rows={2} style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
+            <label htmlFor={`section-${idx}-body`} className="tpl-infographic-editor__small-label">
+              Body
+            </label>
+            <textarea
+              id={`section-${idx}-body`}
+              value={s.body}
+              onChange={(e) => updateSection(idx, 'body', e.target.value)}
+              rows={2}
+              className="tpl-infographic-editor__textarea"
+            />
           </div>
         </div>
       ))}
 
-      <button onClick={addSection} style={{ width: '100%', padding: 10, border: '2px dashed #cbd5e1', borderRadius: 6, background: 'transparent', color: '#3b82f6', fontWeight: 500, cursor: 'pointer' }}>
+      <button
+        onClick={addSection}
+        className="tpl-infographic-editor__add-btn"
+        aria-label="Add new section"
+        type="button"
+      >
         + Add Section
       </button>
     </div>
