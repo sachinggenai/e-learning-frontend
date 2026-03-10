@@ -128,6 +128,19 @@ const ActionPlanningEditor = React.lazy(() => import('../templates/feedback/Acti
 const ActionPlanningPreview = React.lazy(() => import('../templates/feedback/ActionPlanning').then(m => ({ default: m.ActionPlanningPreview })));
 
 // Gamification
+// Diagnostic
+const PreAssessmentEditor = React.lazy(() => import('../templates/diagnostic/PreAssessment').then(m => ({ default: m.PreAssessmentEditor })));
+const PreAssessmentPreview = React.lazy(() => import('../templates/diagnostic/PreAssessment').then(m => ({ default: m.PreAssessmentPreview })));
+const DiagnosticQuizEditor = React.lazy(() => import('../templates/diagnostic/DiagnosticQuiz').then(m => ({ default: m.DiagnosticQuizEditor })));
+const DiagnosticQuizPreview = React.lazy(() => import('../templates/diagnostic/DiagnosticQuiz').then(m => ({ default: m.DiagnosticQuizPreview })));
+const SkillGapAnalysisEditor = React.lazy(() => import('../templates/diagnostic/SkillGapAnalysis').then(m => ({ default: m.SkillGapAnalysisEditor })));
+const SkillGapAnalysisPreview = React.lazy(() => import('../templates/diagnostic/SkillGapAnalysis').then(m => ({ default: m.SkillGapAnalysisPreview })));
+const AdaptiveLearningPathEditor = React.lazy(() => import('../templates/diagnostic/AdaptiveLearningPath').then(m => ({ default: m.AdaptiveLearningPathEditor })));
+const AdaptiveLearningPathPreview = React.lazy(() => import('../templates/diagnostic/AdaptiveLearningPath').then(m => ({ default: m.AdaptiveLearningPathPreview })));
+const RecommendationCardEditor = React.lazy(() => import('../templates/diagnostic/RecommendationCard').then(m => ({ default: m.RecommendationCardEditor })));
+const RecommendationCardPreview = React.lazy(() => import('../templates/diagnostic/RecommendationCard').then(m => ({ default: m.RecommendationCardPreview })));
+
+// Gamification
 const ProgressTrackerEditor = React.lazy(() => import('../templates/gamification/ProgressTracker').then(m => ({ default: m.ProgressTrackerEditor })));
 const ProgressTrackerPreview = React.lazy(() => import('../templates/gamification/ProgressTracker').then(m => ({ default: m.ProgressTrackerPreview })));
 const QuizGameEditor = React.lazy(() => import('../templates/gamification/QuizGame').then(m => ({ default: m.QuizGameEditor })));
@@ -1139,6 +1152,160 @@ r({
   sortOrder: 4,
   editorComponent: ActionPlanningEditor,
   previewComponent: ActionPlanningPreview,
+});
+
+// ─── Gamification ────────────────────────────────────────────────
+// ─── Diagnostic ──────────────────────────────────────────────────
+r({
+  typeId: 'pre-assessment',
+  displayName: 'Pre-Assessment',
+  description: 'Diagnostic test taken before course to gauge baseline knowledge',
+  category: 'diagnostic',
+  icon: 'clipboard',
+  tags: ['pre-test', 'diagnostic', 'baseline', 'assessment'],
+  completionCapabilities: ['interact', 'score'],
+  scoringEnabled: true,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Pre-Assessment',
+    instructions: 'Answer the following questions to the best of your ability.',
+    passThreshold: 70,
+    timed: false,
+    questions: [
+      {
+        id: 'q-1',
+        type: 'mcq',
+        prompt: 'Which of the following best describes a variable?',
+        options: ['A fixed value', 'A named storage location', 'A function call', 'A loop'],
+        correctAnswer: 'A named storage location',
+        weight: 1,
+      },
+    ],
+  },
+  sortOrder: 0,
+  editorComponent: PreAssessmentEditor,
+  previewComponent: PreAssessmentPreview,
+});
+
+r({
+  typeId: 'diagnostic-quiz',
+  displayName: 'Diagnostic Quiz',
+  description: 'Short quiz to identify knowledge gaps by topic',
+  category: 'diagnostic',
+  icon: 'search',
+  tags: ['diagnostic', 'quiz', 'gap', 'identify'],
+  completionCapabilities: ['interact', 'score'],
+  scoringEnabled: true,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Diagnostic Quiz',
+    topics: ['Fundamentals', 'Application'],
+    questions: [
+      {
+        id: 'dq-1',
+        type: 'mcq',
+        topic: 'Fundamentals',
+        prompt: 'What does HTML stand for?',
+        options: ['HyperText Markup Language', 'High-Tech Modern Language', 'HyperText Modern Links'],
+        correctAnswer: 'HyperText Markup Language',
+        difficulty: 'easy',
+      },
+    ],
+    proficiencyBands: [
+      { label: 'Beginner', min: 0, max: 49 },
+      { label: 'Intermediate', min: 50, max: 79 },
+      { label: 'Advanced', min: 80, max: 100 },
+    ],
+    allowRetry: false,
+  },
+  sortOrder: 1,
+  editorComponent: DiagnosticQuizEditor,
+  previewComponent: DiagnosticQuizPreview,
+});
+
+r({
+  typeId: 'skill-gap-analysis',
+  displayName: 'Skill Gap Analysis',
+  description: 'Visual skill assessment with current vs target gap identification',
+  category: 'diagnostic',
+  icon: 'target',
+  tags: ['skills', 'gap', 'analysis', 'competency'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: {
+    title: 'Skill Gap Analysis',
+    highGapThreshold: 30,
+    showRecommendations: true,
+    items: [
+      { id: 'sg-1', skill: 'Communication', currentLevel: 45, targetLevel: 80, remediationLink: '' },
+      { id: 'sg-2', skill: 'Problem Solving', currentLevel: 70, targetLevel: 85, remediationLink: '' },
+    ],
+  },
+  sortOrder: 2,
+  editorComponent: SkillGapAnalysisEditor,
+  previewComponent: SkillGapAnalysisPreview,
+});
+
+r({
+  typeId: 'adaptive-learning-path',
+  displayName: 'Adaptive Learning Path',
+  description: 'Dynamic content path that adapts to learner diagnostic performance',
+  category: 'diagnostic',
+  icon: 'route',
+  tags: ['adaptive', 'path', 'learning', 'route'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Your Learning Path',
+    currentNodeId: 'alp-2',
+    nodes: [
+      { id: 'alp-1', title: 'Foundation Module', required: true, estimatedMins: 15 },
+      { id: 'alp-2', title: 'Core Skills', required: true, estimatedMins: 30 },
+      { id: 'alp-3', title: 'Advanced Practice', required: false, estimatedMins: 45 },
+    ],
+  },
+  sortOrder: 3,
+  editorComponent: AdaptiveLearningPathEditor,
+  previewComponent: AdaptiveLearningPathPreview,
+});
+
+r({
+  typeId: 'recommendation-card',
+  displayName: 'Recommendation Card',
+  description: 'Personalized content recommendations based on learner diagnostic profile',
+  category: 'diagnostic',
+  icon: 'sparkles',
+  tags: ['recommendation', 'personalized', 'adaptive', 'suggestion'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Recommended for You',
+    maxVisible: 3,
+    recommendations: [
+      {
+        id: 'rc-1',
+        title: 'Complete Module 2',
+        reason: 'Your diagnostic shows a gap in core concepts covered in Module 2.',
+        priority: 'high',
+        ctaLabel: 'Start Module 2',
+        ctaTarget: '',
+      },
+      {
+        id: 'rc-2',
+        title: 'Practice Quiz: Fundamentals',
+        reason: 'Score an extra 20% by reviewing the fundamentals.',
+        priority: 'medium',
+        ctaLabel: 'Take Quiz',
+        ctaTarget: '',
+      },
+    ],
+  },
+  sortOrder: 4,
+  editorComponent: RecommendationCardEditor,
+  previewComponent: RecommendationCardPreview,
 });
 
 // ─── Gamification ────────────────────────────────────────────────

@@ -72,20 +72,20 @@
   },
   "suites": [
     {
-      "title": "feedback-templates.spec.ts",
-      "file": "feedback-templates.spec.ts",
+      "title": "diagnostic-templates.spec.ts",
+      "file": "diagnostic-templates.spec.ts",
       "column": 0,
       "line": 0,
       "specs": [],
       "suites": [
         {
-          "title": "Feedback Templates E2E Tests",
-          "file": "feedback-templates.spec.ts",
-          "line": 39,
+          "title": "Diagnostic Templates E2E Tests",
+          "file": "diagnostic-templates.spec.ts",
+          "line": 46,
           "column": 6,
           "specs": [
             {
-              "title": "FEEDBACK-01: Create and edit Reflective Question template",
+              "title": "DIAGNOSTIC-01: Create and edit Pre-Assessment template",
               "ok": true,
               "tags": [],
               "tests": [
@@ -100,22 +100,22 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 10847,
+                      "duration": 10845,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "  ✅ Reflective Question template created and edited\n"
+                          "text": "  ✅ Pre-Assessment template created and edited\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-10T12:40:13.234Z",
+                      "startTime": "2026-03-10T13:27:44.529Z",
                       "annotations": [],
                       "attachments": [
                         {
                           "name": "screenshot",
                           "contentType": "image/png",
-                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\feedback-templates-Feedbac-c3e1c-eflective-Question-template-chromium\\test-finished-1.png"
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\diagnostic-templates-Diagn-b6841-dit-Pre-Assessment-template-chromium\\test-finished-1.png"
                         }
                       ]
                     }
@@ -123,13 +123,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "771920e33662839a3860-f91a3a3443adec711381",
-              "file": "feedback-templates.spec.ts",
-              "line": 41,
+              "id": "cbceba34506c0fcccda6-4e37c21f3d0444f6586a",
+              "file": "diagnostic-templates.spec.ts",
+              "line": 48,
               "column": 7
             },
             {
-              "title": "FEEDBACK-02: Create and edit Learner Journal template",
+              "title": "DIAGNOSTIC-02: Create and edit Diagnostic Quiz template",
               "ok": true,
               "tags": [],
               "tests": [
@@ -144,22 +144,22 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 7963,
+                      "duration": 7998,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "  ✅ Learner Journal template created and edited\n"
+                          "text": "  ✅ Diagnostic Quiz template created and edited\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-10T12:40:24.262Z",
+                      "startTime": "2026-03-10T13:27:55.538Z",
                       "annotations": [],
                       "attachments": [
                         {
                           "name": "screenshot",
                           "contentType": "image/png",
-                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\feedback-templates-Feedbac-d1261-it-Learner-Journal-template-chromium\\test-finished-1.png"
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\diagnostic-templates-Diagn-329c6-it-Diagnostic-Quiz-template-chromium\\test-finished-1.png"
                         }
                       ]
                     }
@@ -167,13 +167,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "771920e33662839a3860-4c078471befad87f8f39",
-              "file": "feedback-templates.spec.ts",
-              "line": 80,
+              "id": "cbceba34506c0fcccda6-e3198e93bef2941bccf1",
+              "file": "diagnostic-templates.spec.ts",
+              "line": 77,
               "column": 7
             },
             {
-              "title": "FEEDBACK-03: Create and edit Self-Assessment template",
+              "title": "DIAGNOSTIC-03: Create and edit Skill Gap Analysis template",
               "ok": true,
               "tags": [],
               "tests": [
@@ -188,22 +188,22 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 7900,
+                      "duration": 7895,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "  ✅ Self-Assessment template created\n"
+                          "text": "  ✅ Skill Gap Analysis template created and edited\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-10T12:40:32.239Z",
+                      "startTime": "2026-03-10T13:28:03.551Z",
                       "annotations": [],
                       "attachments": [
                         {
                           "name": "screenshot",
                           "contentType": "image/png",
-                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\feedback-templates-Feedbac-0189e-it-Self-Assessment-template-chromium\\test-finished-1.png"
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\diagnostic-templates-Diagn-46eef-Skill-Gap-Analysis-template-chromium\\test-finished-1.png"
                         }
                       ]
                     }
@@ -211,13 +211,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "771920e33662839a3860-441293fff99fea1c355d",
-              "file": "feedback-templates.spec.ts",
-              "line": 114,
+              "id": "cbceba34506c0fcccda6-48389e427c9400a487c6",
+              "file": "diagnostic-templates.spec.ts",
+              "line": 106,
               "column": 7
             },
             {
-              "title": "FEEDBACK-04: Create and edit Confidence Rating template",
+              "title": "DIAGNOSTIC-04: Create and edit Adaptive Learning Path template",
               "ok": true,
               "tags": [],
               "tests": [
@@ -232,22 +232,22 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 7841,
+                      "duration": 8003,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "  ✅ Confidence Rating template created\n"
+                          "text": "  ✅ Adaptive Learning Path template created and edited\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-10T12:40:40.149Z",
+                      "startTime": "2026-03-10T13:28:11.459Z",
                       "annotations": [],
                       "attachments": [
                         {
                           "name": "screenshot",
                           "contentType": "image/png",
-                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\feedback-templates-Feedbac-1d643--Confidence-Rating-template-chromium\\test-finished-1.png"
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\diagnostic-templates-Diagn-5214a-tive-Learning-Path-template-chromium\\test-finished-1.png"
                         }
                       ]
                     }
@@ -255,13 +255,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "771920e33662839a3860-58702b8b3a9b43c57742",
-              "file": "feedback-templates.spec.ts",
-              "line": 142,
+              "id": "cbceba34506c0fcccda6-bde5c63c1e7e52b4ff9e",
+              "file": "diagnostic-templates.spec.ts",
+              "line": 135,
               "column": 7
             },
             {
-              "title": "FEEDBACK-05: Create and edit Action Planning template",
+              "title": "DIAGNOSTIC-05: Create and edit Recommendation Card template",
               "ok": true,
               "tags": [],
               "tests": [
@@ -276,22 +276,22 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 7870,
+                      "duration": 8041,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "  ✅ Action Planning template created\n"
+                          "text": "  ✅ Recommendation Card template created and edited\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-10T12:40:48.001Z",
+                      "startTime": "2026-03-10T13:28:19.474Z",
                       "annotations": [],
                       "attachments": [
                         {
                           "name": "screenshot",
                           "contentType": "image/png",
-                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\feedback-templates-Feedbac-eccc9-it-Action-Planning-template-chromium\\test-finished-1.png"
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\diagnostic-templates-Diagn-44948-ecommendation-Card-template-chromium\\test-finished-1.png"
                         }
                       ]
                     }
@@ -299,13 +299,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "771920e33662839a3860-137b9097287dd54548b7",
-              "file": "feedback-templates.spec.ts",
-              "line": 170,
+              "id": "cbceba34506c0fcccda6-c9035adcef3d66087186",
+              "file": "diagnostic-templates.spec.ts",
+              "line": 164,
               "column": 7
             },
             {
-              "title": "FEEDBACK-06: All feedback templates appear in component picker",
+              "title": "DIAGNOSTIC-06: All diagnostic templates visible in component picker",
               "ok": true,
               "tags": [],
               "tests": [
@@ -320,22 +320,37 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 7285,
+                      "duration": 8141,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "  ✅ All 5 feedback templates visible in component picker\n"
+                          "text": "  ✅ Found: pre-assessment\n"
+                        },
+                        {
+                          "text": "  ✅ Found: diagnostic quiz\n"
+                        },
+                        {
+                          "text": "  ✅ Found: skill gap analysis\n"
+                        },
+                        {
+                          "text": "  ✅ Found: adaptive learning path\n"
+                        },
+                        {
+                          "text": "  ✅ Found: recommendation card\n"
+                        },
+                        {
+                          "text": "  ✅ Component picker screenshot taken for diagnostic templates\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-10T12:40:55.881Z",
+                      "startTime": "2026-03-10T13:28:27.525Z",
                       "annotations": [],
                       "attachments": [
                         {
                           "name": "screenshot",
                           "contentType": "image/png",
-                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\feedback-templates-Feedbac-817e5--appear-in-component-picker-chromium\\test-finished-1.png"
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\diagnostic-templates-Diagn-699ae-visible-in-component-picker-chromium\\test-finished-1.png"
                         }
                       ]
                     }
@@ -343,13 +358,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "771920e33662839a3860-e44dbd739b292b0bf746",
-              "file": "feedback-templates.spec.ts",
-              "line": 198,
+              "id": "cbceba34506c0fcccda6-5a8d470bcc233d09f907",
+              "file": "diagnostic-templates.spec.ts",
+              "line": 193,
               "column": 7
             },
             {
-              "title": "FEEDBACK-07: Reflective Question preview renders correctly",
+              "title": "DIAGNOSTIC-07: Pre-Assessment preview renders with default data",
               "ok": true,
               "tags": [],
               "tests": [
@@ -364,18 +379,22 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 7810,
+                      "duration": 7931,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "  ✅ Pre-Assessment preview rendered\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-10T12:41:03.176Z",
+                      "startTime": "2026-03-10T13:28:35.678Z",
                       "annotations": [],
                       "attachments": [
                         {
                           "name": "screenshot",
                           "contentType": "image/png",
-                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\feedback-templates-Feedbac-1e717-n-preview-renders-correctly-chromium\\test-finished-1.png"
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\diagnostic-templates-Diagn-126c5-w-renders-with-default-data-chromium\\test-finished-1.png"
                         }
                       ]
                     }
@@ -383,9 +402,9 @@
                   "status": "expected"
                 }
               ],
-              "id": "771920e33662839a3860-6d4ff1b9d11962fb70ed",
-              "file": "feedback-templates.spec.ts",
-              "line": 230,
+              "id": "cbceba34506c0fcccda6-863df4ae69358dd2e33c",
+              "file": "diagnostic-templates.spec.ts",
+              "line": 227,
               "column": 7
             }
           ]
@@ -395,8 +414,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-10T12:40:07.513Z",
-    "duration": 63789.756,
+    "startTime": "2026-03-10T13:27:38.641Z",
+    "duration": 65354.313,
     "expected": 7,
     "skipped": 0,
     "unexpected": 0,
