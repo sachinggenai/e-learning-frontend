@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Award, Download, Printer } from 'lucide-react';
 import type { ComponentEditorProps, ComponentPreviewProps } from '../../../types/registry';
 import './CompletionCertificate.css';
@@ -18,6 +18,16 @@ export interface CompletionCertificateData {
 export const CompletionCertificatePreview: React.FC<ComponentPreviewProps> = ({ data, componentId, onInteraction }) => {
   const d = data as CompletionCertificateData;
   const date = d.completionDate ? new Date(d.completionDate).toLocaleDateString() : 'N/A';
+
+  useEffect(() => {
+    onInteraction?.({
+      componentId,
+      interactionType: 'certificate_viewed',
+      interactionId: d.certificateId ?? 'certificate',
+      value: d.learnerName ?? 'learner',
+      completed: false,
+    });
+  }, [componentId, d.certificateId, d.learnerName, onInteraction]);
 
   return (
     <article className="tpl-completion-certificate">

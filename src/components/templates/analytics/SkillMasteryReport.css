@@ -49,6 +49,16 @@
   margin-bottom: 8px;
 }
 
+.tpl-skill-mastery-report__skill-btn {
+  border: none;
+  background: transparent;
+  color: var(--theme-text);
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+}
+
 .tpl-skill-mastery-report__track {
   height: 8px;
   border-radius: 999px;
@@ -59,6 +69,16 @@
 .tpl-skill-mastery-report__fill {
   height: 100%;
   background: var(--theme-primary);
+}
+
+.tpl-skill-mastery-report__gap-focus-btn {
+  margin-top: 8px;
+  border: 1px solid var(--theme-warning);
+  background: transparent;
+  color: var(--theme-warning);
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
 }
 
 .tpl-skill-mastery-report-editor {

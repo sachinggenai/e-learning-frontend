@@ -18,6 +18,37 @@
   color: var(--theme-text-secondary);
 }
 
+.tpl-manager-review-page__controls {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.tpl-manager-review-page__controls label {
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--theme-text-secondary);
+}
+
+.tpl-manager-review-page__controls select {
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font: inherit;
+}
+
+.tpl-manager-review-page__export {
+  border: 1px solid var(--theme-primary);
+  background: transparent;
+  color: var(--theme-primary);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
 .tpl-manager-review-page__table {
   width: 100%;
   border-collapse: collapse;

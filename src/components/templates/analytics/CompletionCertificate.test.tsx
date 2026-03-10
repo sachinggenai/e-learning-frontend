@@ -14,6 +14,12 @@ const mockData: CompletionCertificateData = {
 };
 
 describe('CompletionCertificatePreview', () => {
+  test('fires certificate_viewed on render', () => {
+    const onInteraction = jest.fn();
+    render(<CompletionCertificatePreview data={mockData} onInteraction={onInteraction} />);
+    expect(onInteraction).toHaveBeenCalledWith(expect.objectContaining({ interactionType: 'certificate_viewed' }));
+  });
+
   test('renders certificate fields', () => {
     render(<CompletionCertificatePreview data={mockData} />);
     expect(screen.getByText('John Doe')).toBeInTheDocument();

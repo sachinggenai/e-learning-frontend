@@ -12,6 +12,12 @@ const mockData: LearningProgressSummaryData = {
 };
 
 describe('LearningProgressSummaryPreview', () => {
+  test('emits progress_viewed on render', () => {
+    const onInteraction = jest.fn();
+    render(<LearningProgressSummaryPreview data={mockData} onInteraction={onInteraction} />);
+    expect(onInteraction).toHaveBeenCalledWith(expect.objectContaining({ interactionType: 'progress_viewed' }));
+  });
+
   test('renders progress headline and counts', () => {
     render(<LearningProgressSummaryPreview data={mockData} />);
     expect(screen.getByText('Progress Snapshot')).toBeInTheDocument();

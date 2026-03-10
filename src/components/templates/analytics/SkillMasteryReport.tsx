@@ -18,7 +18,7 @@ export interface SkillMasteryReportData {
   displayMode?: 'list' | 'radar';
 }
 
-export const SkillMasteryReportPreview: React.FC<ComponentPreviewProps> = ({ data }) => {
+export const SkillMasteryReportPreview: React.FC<ComponentPreviewProps> = ({ data, componentId, onInteraction }) => {
   const d = data as SkillMasteryReportData;
   const items = [...(d.items ?? [])].sort((a, b) => b.score - a.score);
   const low = d.lowThreshold ?? 50;
@@ -37,11 +37,38 @@ export const SkillMasteryReportPreview: React.FC<ComponentPreviewProps> = ({ dat
             return (
               <li key={i.id} className={`tpl-skill-mastery-report__item tpl-skill-mastery-report__item--${level}`}>
                 <div className="tpl-skill-mastery-report__head">
-                  <span>{i.skill}</span>
+                  <button
+                    type="button"
+                    className="tpl-skill-mastery-report__skill-btn"
+                    onClick={() => onInteraction?.({
+                      componentId,
+                      interactionType: 'skill_viewed',
+                      interactionId: i.id,
+                      value: i.skill,
+                      completed: false,
+                    })}
+                  >
+                    {i.skill}
+                  </button>
                   <strong>{i.score}%</strong>
                 </div>
                 <div className="tpl-skill-mastery-report__track"><div className="tpl-skill-mastery-report__fill" style={{ width: `${i.score}%` }} /></div>
                 {typeof i.evidenceCount === 'number' && <small>Evidence: {i.evidenceCount}</small>}
+                {level === 'low' && (
+                  <button
+                    type="button"
+                    className="tpl-skill-mastery-report__gap-focus-btn"
+                    onClick={() => onInteraction?.({
+                      componentId,
+                      interactionType: 'gap_focus_selected',
+                      interactionId: i.id,
+                      value: i.skill,
+                      completed: false,
+                    })}
+                  >
+                    Focus This Gap
+                  </button>
+                )}
               </li>
             );
           })}

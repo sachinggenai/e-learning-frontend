@@ -26,6 +26,15 @@ describe('SkillMasteryReportPreview', () => {
     render(<SkillMasteryReportPreview data={{ items: [] }} />);
     expect(screen.getByText('No skills configured yet.')).toBeInTheDocument();
   });
+
+  test('fires skill and gap focus events', () => {
+    const onInteraction = jest.fn();
+    render(<SkillMasteryReportPreview data={mockData} onInteraction={onInteraction} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Communication' }));
+    fireEvent.click(screen.getByRole('button', { name: /Focus This Gap/i }));
+    expect(onInteraction).toHaveBeenCalledWith(expect.objectContaining({ interactionType: 'skill_viewed' }));
+    expect(onInteraction).toHaveBeenCalledWith(expect.objectContaining({ interactionType: 'gap_focus_selected' }));
+  });
 });
 
 describe('SkillMasteryReportEditor', () => {

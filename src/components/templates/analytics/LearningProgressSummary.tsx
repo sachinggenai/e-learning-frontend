@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BarChart3, Clock3, Flag } from 'lucide-react';
 import type { ComponentEditorProps, ComponentPreviewProps } from '../../../types/registry';
 import './LearningProgressSummary.css';
@@ -26,6 +26,16 @@ export const LearningProgressSummaryPreview: React.FC<ComponentPreviewProps> = (
   const computedPct = totalUnits > 0 ? Math.round((completedUnits / totalUnits) * 100) : 0;
   const percentage = d.percentage ?? computedPct;
   const milestones = d.milestones ?? [];
+
+  useEffect(() => {
+    onInteraction?.({
+      componentId,
+      interactionType: 'progress_viewed',
+      interactionId: 'summary-opened',
+      value: { percentage, completedUnits, totalUnits },
+      completed: false,
+    });
+  }, [componentId, completedUnits, onInteraction, percentage, totalUnits]);
 
   return (
     <article className="tpl-learning-progress-summary">
