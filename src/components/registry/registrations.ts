@@ -169,6 +169,18 @@ const ProgressTrackerPreview = React.lazy(() => import('../templates/gamificatio
 const QuizGameEditor = React.lazy(() => import('../templates/gamification/QuizGame').then(m => ({ default: m.QuizGameEditor })));
 const QuizGamePreview = React.lazy(() => import('../templates/gamification/QuizGame').then(m => ({ default: m.QuizGamePreview })));
 
+// Accessibility
+const AccessibilityTipCardEditor = React.lazy(() => import('../templates/accessibility/AccessibilityTipCard').then(m => ({ default: m.AccessibilityTipCardEditor })));
+const AccessibilityTipCardPreview = React.lazy(() => import('../templates/accessibility/AccessibilityTipCard').then(m => ({ default: m.AccessibilityTipCardPreview })));
+const KeyboardNavigationGuideEditor = React.lazy(() => import('../templates/accessibility/KeyboardNavigationGuide').then(m => ({ default: m.KeyboardNavigationGuideEditor })));
+const KeyboardNavigationGuidePreview = React.lazy(() => import('../templates/accessibility/KeyboardNavigationGuide').then(m => ({ default: m.KeyboardNavigationGuidePreview })));
+const ScreenReaderGuideEditor = React.lazy(() => import('../templates/accessibility/ScreenReaderGuide').then(m => ({ default: m.ScreenReaderGuideEditor })));
+const ScreenReaderGuidePreview = React.lazy(() => import('../templates/accessibility/ScreenReaderGuide').then(m => ({ default: m.ScreenReaderGuidePreview })));
+const LanguageSelectorEditor = React.lazy(() => import('../templates/accessibility/LanguageSelector').then(m => ({ default: m.LanguageSelectorEditor })));
+const LanguageSelectorPreview = React.lazy(() => import('../templates/accessibility/LanguageSelector').then(m => ({ default: m.LanguageSelectorPreview })));
+const TranscriptCaptionPageEditor = React.lazy(() => import('../templates/accessibility/TranscriptCaptionPage').then(m => ({ default: m.TranscriptCaptionPageEditor })));
+const TranscriptCaptionPagePreview = React.lazy(() => import('../templates/accessibility/TranscriptCaptionPage').then(m => ({ default: m.TranscriptCaptionPagePreview })));
+
 // ─── Registration Helper ─────────────────────────────────────────
 function r(def: ComponentDefinition) { registry.register(def); }
 
@@ -1648,6 +1660,134 @@ r({
   sortOrder: 1,
   editorComponent: QuizGameEditor,
   previewComponent: QuizGamePreview,
+});
+
+// ─── Accessibility ───────────────────────────────────────────────
+r({
+  typeId: 'accessibility-tip-card',
+  displayName: 'Accessibility Tip Card',
+  description: 'Compact card surfacing an accessibility tip by category (vision, hearing, mobility, cognitive)',
+  category: 'accessibility',
+  icon: 'lightbulb',
+  tags: ['accessibility', 'tip', 'a11y', 'guidance', 'card'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Accessibility Tip',
+    tip: 'Use sufficient colour contrast (WCAG AA requires 4.5:1 for normal text).',
+    category: 'vision',
+    dismissible: true,
+    emphasis: false,
+  },
+  sortOrder: 0,
+  editorComponent: AccessibilityTipCardEditor,
+  previewComponent: AccessibilityTipCardPreview,
+});
+
+r({
+  typeId: 'keyboard-navigation-guide',
+  displayName: 'Keyboard Navigation Guide',
+  description: 'Interactive keyboard shortcut reference with optional practice mode',
+  category: 'accessibility',
+  icon: 'keyboard',
+  tags: ['accessibility', 'keyboard', 'shortcuts', 'navigation', 'a11y'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Keyboard Shortcuts',
+    intro: 'Use these shortcuts to navigate without a mouse.',
+    shortcuts: [
+      { id: 'k1', combo: 'Tab', action: 'Move focus forward', context: 'Global' },
+      { id: 'k2', combo: 'Shift+Tab', action: 'Move focus backward', context: 'Global' },
+      { id: 'k3', combo: 'Enter', action: 'Activate focused element', context: 'Global' },
+    ],
+    osMode: 'auto',
+    showPracticeMode: true,
+  },
+  sortOrder: 1,
+  editorComponent: KeyboardNavigationGuideEditor,
+  previewComponent: KeyboardNavigationGuidePreview,
+});
+
+r({
+  typeId: 'screen-reader-guide',
+  displayName: 'Screen Reader Guide',
+  description: 'Step-by-step guide for using screen readers with tool-specific notes',
+  category: 'accessibility',
+  icon: 'audio-lines',
+  tags: ['accessibility', 'screen-reader', 'nvda', 'jaws', 'voiceover', 'a11y'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Screen Reader Guide',
+    intro: 'Follow these steps to navigate this course using a screen reader.',
+    steps: [
+      { id: 'sr1', step: 'Activate your screen reader', expectedResult: 'Audio feedback begins', toolNotes: '' },
+      { id: 'sr2', step: 'Navigate to the main content area using the landmark shortcut', expectedResult: 'Focus moves to main content' },
+    ],
+    supportedTools: ['NVDA', 'JAWS', 'VoiceOver'],
+    activeTool: 'NVDA',
+    troubleshooting: [],
+  },
+  sortOrder: 2,
+  editorComponent: ScreenReaderGuideEditor,
+  previewComponent: ScreenReaderGuidePreview,
+});
+
+r({
+  typeId: 'language-selector',
+  displayName: 'Language Selector',
+  description: 'Language switcher with RTL support and optional preference persistence',
+  category: 'accessibility',
+  icon: 'languages',
+  tags: ['accessibility', 'language', 'i18n', 'l10n', 'rtl', 'a11y'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Select Your Language',
+    options: [
+      { code: 'en', label: 'English' },
+      { code: 'fr', label: 'Français' },
+      { code: 'es', label: 'Español' },
+    ],
+    defaultCode: 'en',
+    fallbackCode: 'en',
+    persistPreference: false,
+  },
+  sortOrder: 3,
+  editorComponent: LanguageSelectorEditor,
+  previewComponent: LanguageSelectorPreview,
+});
+
+r({
+  typeId: 'transcript-caption-page',
+  displayName: 'Transcript / Caption Page',
+  description: 'Searchable transcript with timestamp navigation and SRT/VTT/TXT export',
+  category: 'accessibility',
+  icon: 'captions',
+  tags: ['accessibility', 'transcript', 'captions', 'subtitles', 'srt', 'vtt', 'a11y'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Video Transcript',
+    mediaId: '',
+    languageCode: 'en',
+    segments: [
+      { id: 'seg1', startTime: 0, text: 'Welcome to this course.', speaker: 'Instructor' },
+      { id: 'seg2', startTime: 8, text: 'In this module we will cover the key concepts.', speaker: 'Instructor' },
+    ],
+    searchable: true,
+    seekOnClick: false,
+    downloadableFormats: ['txt', 'srt', 'vtt'],
+  },
+  sortOrder: 4,
+  editorComponent: TranscriptCaptionPageEditor,
+  previewComponent: TranscriptCaptionPagePreview,
 });
 
 // ─── Legacy Aliases ──────────────────────────────────────────────

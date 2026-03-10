@@ -1,0 +1,106 @@
+.tpl-tip-card {
+  border-radius: 12px;
+  border: 1.5px solid var(--theme-border, #e2e8f0);
+  background: var(--theme-surface, #fff);
+  padding: 1rem 1.25rem;
+  max-width: 640px;
+}
+
+.tpl-tip-card--vision  { border-left: 4px solid #6366f1; }
+.tpl-tip-card--hearing { border-left: 4px solid #0ea5e9; }
+.tpl-tip-card--mobility{ border-left: 4px solid #10b981; }
+.tpl-tip-card--cognitive{border-left: 4px solid #f59e0b; }
+.tpl-tip-card--general  { border-left: 4px solid var(--theme-primary, #6366f1); }
+.tpl-tip-card--emphasis { box-shadow: 0 0 0 3px var(--theme-primary, #6366f1); }
+
+.tpl-tip-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.tpl-tip-card__icon {
+  color: var(--theme-primary, #6366f1);
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.tpl-tip-card__titles {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.tpl-tip-card__badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--theme-text-secondary, #64748b);
+}
+
+.tpl-tip-card__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  margin: 0;
+}
+
+.tpl-tip-card__dismiss {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--theme-text-secondary, #64748b);
+  flex-shrink: 0;
+  padding: 4px;
+  border-radius: 4px;
+}
+.tpl-tip-card__dismiss:hover { background: var(--theme-border, #e2e8f0); }
+.tpl-tip-card__dismiss:focus-visible { outline: 2px solid var(--theme-primary, #6366f1); outline-offset: 2px; }
+
+.tpl-tip-card__body {
+  font-size: 0.9375rem;
+  color: var(--theme-text, #1e293b);
+  line-height: 1.6;
+  margin: 0 0 0.75rem;
+}
+
+.tpl-tip-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--theme-primary, #6366f1);
+  text-decoration: none;
+}
+.tpl-tip-card__link:hover { text-decoration: underline; }
+.tpl-tip-card__link:focus-visible { outline: 2px solid var(--theme-primary, #6366f1); outline-offset: 2px; border-radius: 2px; }
+
+/* Editor */
+.tpl-tip-card-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.tpl-tip-card-editor label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--theme-text, #1e293b);
+}
+.tpl-tip-card-editor input,
+.tpl-tip-card-editor select,
+.tpl-tip-card-editor textarea {
+  padding: 0.5rem;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background: var(--theme-surface, #fff);
+  color: var(--theme-text, #1e293b);
+}
+.tpl-tip-card-editor textarea { resize: vertical; }

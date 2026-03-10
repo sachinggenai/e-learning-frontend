@@ -1,0 +1,156 @@
+.tpl-keyboard-guide {
+  padding: 1.5rem;
+  background: var(--theme-surface, #fff);
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 12px;
+  max-width: 800px;
+}
+
+.tpl-keyboard-guide__title {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  margin: 0 0 1rem;
+}
+
+.tpl-keyboard-guide__intro {
+  color: var(--theme-text-secondary, #64748b);
+  margin: 0 0 1.25rem;
+  font-size: 0.9375rem;
+}
+
+.tpl-keyboard-guide__empty {
+  color: var(--theme-text-secondary, #64748b);
+  font-style: italic;
+}
+
+.tpl-keyboard-guide__group {
+  margin-bottom: 1.5rem;
+}
+
+.tpl-keyboard-guide__group-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--theme-text-secondary, #64748b);
+  margin: 0 0 0.5rem;
+}
+
+.tpl-keyboard-guide__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+.tpl-keyboard-guide__table th {
+  text-align: left;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--theme-text-secondary, #64748b);
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--theme-border, #e2e8f0);
+}
+.tpl-keyboard-guide__table td {
+  padding: 0.5rem 0.75rem;
+  color: var(--theme-text, #1e293b);
+  border-bottom: 1px solid var(--theme-border, #e2e8f0);
+  vertical-align: middle;
+}
+.tpl-keyboard-guide__table tr:last-child td { border-bottom: none; }
+
+.tpl-keyboard-guide__kbd {
+  display: inline-block;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-family: monospace;
+  font-size: 0.875rem;
+  color: var(--theme-text, #1e293b);
+  white-space: nowrap;
+}
+
+/* Practice mode */
+.tpl-keyboard-guide__practice {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--theme-border, #e2e8f0);
+}
+
+.tpl-keyboard-guide__practice-btn {
+  padding: 8px 20px;
+  background: var(--theme-primary, #6366f1);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tpl-keyboard-guide__practice-btn:hover { opacity: 0.9; }
+.tpl-keyboard-guide__practice-btn:focus-visible { outline: 2px solid var(--theme-primary, #6366f1); outline-offset: 2px; }
+
+.tpl-keyboard-guide__practice-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.tpl-keyboard-guide__practice-prompt { font-size: 1rem; color: var(--theme-text, #1e293b); margin: 0; }
+.tpl-keyboard-guide__practice-input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  font-size: 0.9375rem;
+  font-family: monospace;
+  background: var(--theme-surface, #fff);
+  max-width: 260px;
+}
+.tpl-keyboard-guide__practice-input:focus-visible { outline: 2px solid var(--theme-primary, #6366f1); }
+
+.tpl-keyboard-guide__practice-ok  { color: #10b981; font-weight: 600; }
+.tpl-keyboard-guide__practice-err { color: #ef4444; font-weight: 500; }
+.tpl-keyboard-guide__practice-progress { font-size: 0.8125rem; color: var(--theme-text-secondary, #64748b); }
+.tpl-keyboard-guide__practice-done { color: #10b981; font-weight: 600; }
+
+/* Editor */
+.tpl-keyboard-guide-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.tpl-keyboard-guide-editor label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--theme-text, #1e293b);
+}
+.tpl-keyboard-guide-editor input,
+.tpl-keyboard-guide-editor select,
+.tpl-keyboard-guide-editor textarea {
+  padding: 0.5rem;
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background: var(--theme-surface, #fff);
+  color: var(--theme-text, #1e293b);
+}
+.tpl-keyboard-guide-editor__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+.tpl-keyboard-guide-editor__head h3 { margin: 0; font-size: 0.9375rem; }
+.tpl-keyboard-guide-editor__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+.tpl-keyboard-guide-editor__row input { padding: 0.4rem 0.5rem; }

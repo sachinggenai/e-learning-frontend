@@ -1,0 +1,133 @@
+.tpl-language-selector {
+  padding: 1.5rem;
+  background: var(--theme-surface, #fff);
+  border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 12px;
+  max-width: 600px;
+}
+
+.tpl-language-selector__title {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+  margin: 0 0 1rem;
+}
+
+.tpl-language-selector__fallback {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  background: #fefce8;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  color: #92400e;
+  font-size: 0.875rem;
+  margin-bottom: 0.875rem;
+}
+
+.tpl-language-selector__options {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tpl-language-selector__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--theme-border, #e2e8f0);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  background: var(--theme-surface, #fff);
+}
+.tpl-language-selector__option:hover { border-color: var(--theme-primary, #6366f1); }
+.tpl-language-selector__option.is-selected {
+  border-color: var(--theme-primary, #6366f1);
+  background: #eef2ff;
+}
+.tpl-language-selector__option:focus-visible { outline: 2px solid var(--theme-primary, #6366f1); outline-offset: 2px; }
+
+.tpl-language-selector__option--rtl { direction: rtl; }
+
+.tpl-language-selector__option-left { display: flex; align-items: center; gap: 0.625rem; }
+
+.tpl-language-selector__code {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: var(--theme-border, #e2e8f0);
+  color: var(--theme-text, #1e293b);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: monospace;
+  letter-spacing: 0.03em;
+}
+
+.tpl-language-selector__label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--theme-text, #1e293b);
+}
+
+.tpl-language-selector__rtl-badge {
+  font-size: 0.75rem;
+  color: var(--theme-primary, #6366f1);
+  font-weight: 500;
+  font-style: italic;
+}
+
+.tpl-language-selector__persist-hint {
+  font-size: 0.8125rem;
+  color: var(--theme-text-secondary, #64748b);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: 0.5rem;
+}
+
+.tpl-language-selector__preview-rtl {
+  margin-top: 1rem;
+  padding: 0.875rem;
+  border: 1px dashed var(--theme-border, #e2e8f0);
+  border-radius: 8px;
+}
+.tpl-language-selector__preview-rtl p {
+  direction: rtl;
+  text-align: right;
+  font-size: 0.875rem;
+  color: var(--theme-text-secondary, #64748b);
+  margin: 0;
+}
+
+/* Editor */
+.tpl-language-selector-editor { display: flex; flex-direction: column; gap: 0.75rem; }
+.tpl-language-selector-editor label {
+  display: flex; flex-direction: column; gap: 0.25rem;
+  font-size: 0.875rem; font-weight: 500; color: var(--theme-text, #1e293b);
+}
+.tpl-language-selector-editor input {
+  padding: 0.5rem; border: 1px solid var(--theme-border, #e2e8f0);
+  border-radius: 6px; font-size: 0.875rem; background: var(--theme-surface, #fff);
+  color: var(--theme-text, #1e293b);
+}
+.tpl-language-selector-editor__head { display: flex; align-items: center; justify-content: space-between; margin-top: 0.5rem; }
+.tpl-language-selector-editor__head h3 { margin: 0; font-size: 0.9375rem; }
+.tpl-language-selector-editor__row { display: grid; grid-template-columns: 1fr 1fr auto auto; gap: 0.5rem; align-items: center; }
+.tpl-language-selector-editor__row label { flex-direction: row; align-items: center; gap: 0.25rem; font-weight: 400; }
+.tpl-language-selector-editor__add-btn,
+.tpl-language-selector-editor__del-btn {
+  padding: 6px 14px; border-radius: 6px; border: none; font-size: 0.8125rem;
+  font-weight: 600; cursor: pointer;
+}
+.tpl-language-selector-editor__add-btn { background: var(--theme-primary, #6366f1); color: #fff; }
+.tpl-language-selector-editor__del-btn { background: #fee2e2; color: #b91c1c; }
