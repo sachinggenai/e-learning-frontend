@@ -1,0 +1,79 @@
+.tpl-manager-review-page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 24px;
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  background: var(--theme-background);
+}
+
+.tpl-manager-review-page__title {
+  margin: 0 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tpl-manager-review-page__empty {
+  color: var(--theme-text-secondary);
+}
+
+.tpl-manager-review-page__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tpl-manager-review-page__table th,
+.tpl-manager-review-page__table td {
+  border-bottom: 1px solid var(--theme-border);
+  padding: 8px;
+  text-align: left;
+}
+
+.tpl-manager-review-page__status {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.tpl-manager-review-page__status--on-track {
+  background: color-mix(in srgb, var(--theme-success) 15%, transparent);
+  color: var(--theme-success);
+}
+
+.tpl-manager-review-page__status--at-risk {
+  background: color-mix(in srgb, var(--theme-error) 15%, transparent);
+  color: var(--theme-error);
+}
+
+.tpl-manager-review-page__status--completed {
+  background: color-mix(in srgb, var(--theme-primary) 15%, transparent);
+  color: var(--theme-primary);
+}
+
+.tpl-manager-review-page-editor {
+  display: grid;
+  gap: 10px;
+}
+
+.tpl-manager-review-page-editor input,
+.tpl-manager-review-page-editor select {
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font: inherit;
+}
+
+.tpl-manager-review-page-editor__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tpl-manager-review-page-editor__row {
+  display: grid;
+  grid-template-columns: 1fr 120px 150px auto;
+  gap: 8px;
+}

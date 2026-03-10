@@ -1,0 +1,93 @@
+.tpl-skill-mastery-report {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-background);
+}
+
+.tpl-skill-mastery-report__title {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tpl-skill-mastery-report__mode {
+  margin: 8px 0 12px;
+  color: var(--theme-text-secondary);
+}
+
+.tpl-skill-mastery-report__empty {
+  color: var(--theme-text-secondary);
+}
+
+.tpl-skill-mastery-report__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.tpl-skill-mastery-report__item {
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-surface);
+  padding: 10px;
+}
+
+.tpl-skill-mastery-report__item--high { border-left: 4px solid var(--theme-success); }
+.tpl-skill-mastery-report__item--medium { border-left: 4px solid var(--theme-warning); }
+.tpl-skill-mastery-report__item--low { border-left: 4px solid var(--theme-error); }
+
+.tpl-skill-mastery-report__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tpl-skill-mastery-report__track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--theme-border);
+  overflow: hidden;
+}
+
+.tpl-skill-mastery-report__fill {
+  height: 100%;
+  background: var(--theme-primary);
+}
+
+.tpl-skill-mastery-report-editor {
+  display: grid;
+  gap: 10px;
+}
+
+.tpl-skill-mastery-report-editor input,
+.tpl-skill-mastery-report-editor select {
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font: inherit;
+}
+
+.tpl-skill-mastery-report-editor__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tpl-skill-mastery-report-editor__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tpl-skill-mastery-report-editor__item {
+  display: grid;
+  grid-template-columns: 1fr 120px auto;
+  gap: 8px;
+}

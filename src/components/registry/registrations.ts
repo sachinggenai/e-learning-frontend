@@ -127,7 +127,6 @@ const ConfidenceRatingPreview = React.lazy(() => import('../templates/feedback/C
 const ActionPlanningEditor = React.lazy(() => import('../templates/feedback/ActionPlanning').then(m => ({ default: m.ActionPlanningEditor })));
 const ActionPlanningPreview = React.lazy(() => import('../templates/feedback/ActionPlanning').then(m => ({ default: m.ActionPlanningPreview })));
 
-// Gamification
 // Diagnostic
 const PreAssessmentEditor = React.lazy(() => import('../templates/diagnostic/PreAssessment').then(m => ({ default: m.PreAssessmentEditor })));
 const PreAssessmentPreview = React.lazy(() => import('../templates/diagnostic/PreAssessment').then(m => ({ default: m.PreAssessmentPreview })));
@@ -139,6 +138,18 @@ const AdaptiveLearningPathEditor = React.lazy(() => import('../templates/diagnos
 const AdaptiveLearningPathPreview = React.lazy(() => import('../templates/diagnostic/AdaptiveLearningPath').then(m => ({ default: m.AdaptiveLearningPathPreview })));
 const RecommendationCardEditor = React.lazy(() => import('../templates/diagnostic/RecommendationCard').then(m => ({ default: m.RecommendationCardEditor })));
 const RecommendationCardPreview = React.lazy(() => import('../templates/diagnostic/RecommendationCard').then(m => ({ default: m.RecommendationCardPreview })));
+
+// Analytics
+const LearningProgressSummaryEditor = React.lazy(() => import('../templates/analytics/LearningProgressSummary').then(m => ({ default: m.LearningProgressSummaryEditor })));
+const LearningProgressSummaryPreview = React.lazy(() => import('../templates/analytics/LearningProgressSummary').then(m => ({ default: m.LearningProgressSummaryPreview })));
+const PerformanceDashboardEditor = React.lazy(() => import('../templates/analytics/PerformanceDashboard').then(m => ({ default: m.PerformanceDashboardEditor })));
+const PerformanceDashboardPreview = React.lazy(() => import('../templates/analytics/PerformanceDashboard').then(m => ({ default: m.PerformanceDashboardPreview })));
+const SkillMasteryReportEditor = React.lazy(() => import('../templates/analytics/SkillMasteryReport').then(m => ({ default: m.SkillMasteryReportEditor })));
+const SkillMasteryReportPreview = React.lazy(() => import('../templates/analytics/SkillMasteryReport').then(m => ({ default: m.SkillMasteryReportPreview })));
+const CompletionCertificateEditor = React.lazy(() => import('../templates/analytics/CompletionCertificate').then(m => ({ default: m.CompletionCertificateEditor })));
+const CompletionCertificatePreview = React.lazy(() => import('../templates/analytics/CompletionCertificate').then(m => ({ default: m.CompletionCertificatePreview })));
+const ManagerReviewPageEditor = React.lazy(() => import('../templates/analytics/ManagerReviewPage').then(m => ({ default: m.ManagerReviewPageEditor })));
+const ManagerReviewPagePreview = React.lazy(() => import('../templates/analytics/ManagerReviewPage').then(m => ({ default: m.ManagerReviewPagePreview })));
 
 // Gamification
 const ProgressTrackerEditor = React.lazy(() => import('../templates/gamification/ProgressTracker').then(m => ({ default: m.ProgressTrackerEditor })));
@@ -1306,6 +1317,149 @@ r({
   sortOrder: 4,
   editorComponent: RecommendationCardEditor,
   previewComponent: RecommendationCardPreview,
+});
+
+// ─── Analytics ───────────────────────────────────────────────────
+r({
+  typeId: 'progress-summary',
+  displayName: 'Learning Progress Summary',
+  description: 'Concise overview of learner progress with milestones and completion stats',
+  category: 'analytics',
+  icon: 'chart-no-axes-column',
+  tags: ['progress', 'summary', 'analytics', 'milestones'],
+  completionCapabilities: ['view'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Learning Progress Summary',
+    totalUnits: 12,
+    completedUnits: 5,
+    milestones: [
+      { id: 'ms-1', label: 'Kickoff', threshold: 10, reached: true },
+      { id: 'ms-2', label: 'Midpoint', threshold: 50, reached: false },
+      { id: 'ms-3', label: 'Final Review', threshold: 90, reached: false },
+    ],
+    estimatedTimeRemainingMins: 45,
+  },
+  sortOrder: 0,
+  editorComponent: LearningProgressSummaryEditor,
+  previewComponent: LearningProgressSummaryPreview,
+});
+
+r({
+  typeId: 'performance-dashboard',
+  displayName: 'Performance Dashboard',
+  description: 'Dashboard of KPI cards, trends, and performance snapshots',
+  category: 'analytics',
+  icon: 'layout-dashboard',
+  tags: ['performance', 'kpi', 'dashboard', 'metrics'],
+  completionCapabilities: ['view'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Performance Dashboard',
+    kpis: [
+      { id: 'kpi-1', label: 'Avg Score', value: 82, unit: '%', trendPct: 4, target: 85 },
+      { id: 'kpi-2', label: 'Attempts', value: 3, trendPct: -1 },
+      { id: 'kpi-3', label: 'Time on Task', value: 126, unit: 'm', trendPct: 2 },
+    ],
+    chartSeries: [{ name: 'Score', points: [62, 71, 78, 82] }],
+    chartLabels: ['W1', 'W2', 'W3', 'W4'],
+    chartType: 'line',
+  },
+  sortOrder: 1,
+  editorComponent: PerformanceDashboardEditor,
+  previewComponent: PerformanceDashboardPreview,
+});
+
+r({
+  typeId: 'skill-mastery-report',
+  displayName: 'Skill Mastery Report',
+  description: 'Competency report with mastery bands and low-score gap highlights',
+  category: 'analytics',
+  icon: 'target',
+  tags: ['skills', 'mastery', 'competency', 'gaps'],
+  completionCapabilities: ['view'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Skill Mastery Report',
+    lowThreshold: 50,
+    highThreshold: 80,
+    displayMode: 'list',
+    items: [
+      { id: 'skill-1', skill: 'Communication', score: 84, evidenceCount: 5 },
+      { id: 'skill-2', skill: 'Critical Thinking', score: 67, evidenceCount: 3 },
+      { id: 'skill-3', skill: 'Documentation', score: 44, evidenceCount: 2 },
+    ],
+  },
+  sortOrder: 2,
+  editorComponent: SkillMasteryReportEditor,
+  previewComponent: SkillMasteryReportPreview,
+});
+
+r({
+  typeId: 'completion-certificate',
+  displayName: 'Completion Certificate',
+  description: 'Printable completion certificate with learner, course, and signatory details',
+  category: 'analytics',
+  icon: 'award',
+  tags: ['certificate', 'completion', 'credential', 'award'],
+  completionCapabilities: ['view'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Certificate of Completion',
+    learnerName: 'Learner Name',
+    courseName: 'Course Name',
+    completionDate: '2026-03-10',
+    certificateId: 'CERT-2026-0001',
+    issuerName: 'Learning Academy',
+    signatoryName: 'Program Director',
+    signatoryTitle: 'Director, Learning & Development',
+    badgeUrl: '',
+  },
+  sortOrder: 3,
+  editorComponent: CompletionCertificateEditor,
+  previewComponent: CompletionCertificatePreview,
+});
+
+r({
+  typeId: 'manager-review',
+  displayName: 'Manager Review Page',
+  description: 'Team-level learner review with statuses, risk signals, and quick actions',
+  category: 'analytics',
+  icon: 'users',
+  tags: ['manager', 'review', 'team', 'status'],
+  completionCapabilities: ['view'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Manager Review Page',
+    riskThresholdPct: 60,
+    showActions: true,
+    rows: [
+      {
+        learnerId: 'learner-1',
+        learnerName: 'Alex Parker',
+        progressPct: 92,
+        averageScore: 88,
+        status: 'on-track',
+        lastActiveAt: '2026-03-08',
+      },
+      {
+        learnerId: 'learner-2',
+        learnerName: 'Sam Rivera',
+        progressPct: 48,
+        averageScore: 54,
+        status: 'at-risk',
+        lastActiveAt: '2026-03-06',
+      },
+    ],
+  },
+  sortOrder: 4,
+  editorComponent: ManagerReviewPageEditor,
+  previewComponent: ManagerReviewPagePreview,
 });
 
 // ─── Gamification ────────────────────────────────────────────────

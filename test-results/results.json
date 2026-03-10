@@ -72,20 +72,20 @@
   },
   "suites": [
     {
-      "title": "diagnostic-templates.spec.ts",
-      "file": "diagnostic-templates.spec.ts",
+      "title": "analytics-templates.spec.ts",
+      "file": "analytics-templates.spec.ts",
       "column": 0,
       "line": 0,
       "specs": [],
       "suites": [
         {
-          "title": "Diagnostic Templates E2E Tests",
-          "file": "diagnostic-templates.spec.ts",
-          "line": 46,
+          "title": "Analytics Templates E2E Tests",
+          "file": "analytics-templates.spec.ts",
+          "line": 24,
           "column": 6,
           "specs": [
             {
-              "title": "DIAGNOSTIC-01: Create and edit Pre-Assessment template",
+              "title": "ANALYTICS-01 through ANALYTICS-05: create each analytics template",
               "ok": true,
               "tags": [],
               "tests": [
@@ -100,22 +100,18 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 10845,
+                      "duration": 13397,
                       "errors": [],
-                      "stdout": [
-                        {
-                          "text": "  ✅ Pre-Assessment template created and edited\n"
-                        }
-                      ],
+                      "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-10T13:27:44.529Z",
+                      "startTime": "2026-03-10T14:05:46.635Z",
                       "annotations": [],
                       "attachments": [
                         {
                           "name": "screenshot",
                           "contentType": "image/png",
-                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\diagnostic-templates-Diagn-b6841-dit-Pre-Assessment-template-chromium\\test-finished-1.png"
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\analytics-templates-Analyt-9198c-ate-each-analytics-template-chromium\\test-finished-1.png"
                         }
                       ]
                     }
@@ -123,13 +119,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "cbceba34506c0fcccda6-4e37c21f3d0444f6586a",
-              "file": "diagnostic-templates.spec.ts",
-              "line": 48,
+              "id": "fad7bd66f3411be8e65c-3734026379c83815530d",
+              "file": "analytics-templates.spec.ts",
+              "line": 25,
               "column": 7
             },
             {
-              "title": "DIAGNOSTIC-02: Create and edit Diagnostic Quiz template",
+              "title": "ANALYTICS-06: all analytics templates visible in component picker",
               "ok": true,
               "tags": [],
               "tests": [
@@ -144,22 +140,18 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 7998,
+                      "duration": 6496,
                       "errors": [],
-                      "stdout": [
-                        {
-                          "text": "  ✅ Diagnostic Quiz template created and edited\n"
-                        }
-                      ],
+                      "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-10T13:27:55.538Z",
+                      "startTime": "2026-03-10T14:06:00.256Z",
                       "annotations": [],
                       "attachments": [
                         {
                           "name": "screenshot",
                           "contentType": "image/png",
-                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\diagnostic-templates-Diagn-329c6-it-Diagnostic-Quiz-template-chromium\\test-finished-1.png"
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\analytics-templates-Analyt-7f58c-visible-in-component-picker-chromium\\test-finished-1.png"
                         }
                       ]
                     }
@@ -167,13 +159,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "cbceba34506c0fcccda6-e3198e93bef2941bccf1",
-              "file": "diagnostic-templates.spec.ts",
-              "line": 77,
+              "id": "fad7bd66f3411be8e65c-1c20c8bcb98f0cdcd7f5",
+              "file": "analytics-templates.spec.ts",
+              "line": 50,
               "column": 7
             },
             {
-              "title": "DIAGNOSTIC-03: Create and edit Skill Gap Analysis template",
+              "title": "ANALYTICS-07: learning progress summary renders after add",
               "ok": true,
               "tags": [],
               "tests": [
@@ -188,22 +180,18 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 7895,
+                      "duration": 7098,
                       "errors": [],
-                      "stdout": [
-                        {
-                          "text": "  ✅ Skill Gap Analysis template created and edited\n"
-                        }
-                      ],
+                      "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-10T13:28:03.551Z",
+                      "startTime": "2026-03-10T14:06:06.763Z",
                       "annotations": [],
                       "attachments": [
                         {
                           "name": "screenshot",
                           "contentType": "image/png",
-                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\diagnostic-templates-Diagn-46eef-Skill-Gap-Analysis-template-chromium\\test-finished-1.png"
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\analytics-templates-Analyt-77e8e-s-summary-renders-after-add-chromium\\test-finished-1.png"
                         }
                       ]
                     }
@@ -211,200 +199,9 @@
                   "status": "expected"
                 }
               ],
-              "id": "cbceba34506c0fcccda6-48389e427c9400a487c6",
-              "file": "diagnostic-templates.spec.ts",
-              "line": 106,
-              "column": 7
-            },
-            {
-              "title": "DIAGNOSTIC-04: Create and edit Adaptive Learning Path template",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 8003,
-                      "errors": [],
-                      "stdout": [
-                        {
-                          "text": "  ✅ Adaptive Learning Path template created and edited\n"
-                        }
-                      ],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-03-10T13:28:11.459Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\diagnostic-templates-Diagn-5214a-tive-Learning-Path-template-chromium\\test-finished-1.png"
-                        }
-                      ]
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "cbceba34506c0fcccda6-bde5c63c1e7e52b4ff9e",
-              "file": "diagnostic-templates.spec.ts",
-              "line": 135,
-              "column": 7
-            },
-            {
-              "title": "DIAGNOSTIC-05: Create and edit Recommendation Card template",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 8041,
-                      "errors": [],
-                      "stdout": [
-                        {
-                          "text": "  ✅ Recommendation Card template created and edited\n"
-                        }
-                      ],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-03-10T13:28:19.474Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\diagnostic-templates-Diagn-44948-ecommendation-Card-template-chromium\\test-finished-1.png"
-                        }
-                      ]
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "cbceba34506c0fcccda6-c9035adcef3d66087186",
-              "file": "diagnostic-templates.spec.ts",
-              "line": 164,
-              "column": 7
-            },
-            {
-              "title": "DIAGNOSTIC-06: All diagnostic templates visible in component picker",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 8141,
-                      "errors": [],
-                      "stdout": [
-                        {
-                          "text": "  ✅ Found: pre-assessment\n"
-                        },
-                        {
-                          "text": "  ✅ Found: diagnostic quiz\n"
-                        },
-                        {
-                          "text": "  ✅ Found: skill gap analysis\n"
-                        },
-                        {
-                          "text": "  ✅ Found: adaptive learning path\n"
-                        },
-                        {
-                          "text": "  ✅ Found: recommendation card\n"
-                        },
-                        {
-                          "text": "  ✅ Component picker screenshot taken for diagnostic templates\n"
-                        }
-                      ],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-03-10T13:28:27.525Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\diagnostic-templates-Diagn-699ae-visible-in-component-picker-chromium\\test-finished-1.png"
-                        }
-                      ]
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "cbceba34506c0fcccda6-5a8d470bcc233d09f907",
-              "file": "diagnostic-templates.spec.ts",
-              "line": 193,
-              "column": 7
-            },
-            {
-              "title": "DIAGNOSTIC-07: Pre-Assessment preview renders with default data",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 7931,
-                      "errors": [],
-                      "stdout": [
-                        {
-                          "text": "  ✅ Pre-Assessment preview rendered\n"
-                        }
-                      ],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-03-10T13:28:35.678Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\diagnostic-templates-Diagn-126c5-w-renders-with-default-data-chromium\\test-finished-1.png"
-                        }
-                      ]
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "cbceba34506c0fcccda6-863df4ae69358dd2e33c",
-              "file": "diagnostic-templates.spec.ts",
-              "line": 227,
+              "id": "fad7bd66f3411be8e65c-17f675c06667ceb55cbc",
+              "file": "analytics-templates.spec.ts",
+              "line": 64,
               "column": 7
             }
           ]
@@ -414,9 +211,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-10T13:27:38.641Z",
-    "duration": 65354.313,
-    "expected": 7,
+    "startTime": "2026-03-10T14:05:40.624Z",
+    "duration": 33534.297000000006,
+    "expected": 3,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0

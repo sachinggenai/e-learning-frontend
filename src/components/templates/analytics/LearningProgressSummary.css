@@ -1,0 +1,111 @@
+.tpl-learning-progress-summary {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-background);
+}
+
+.tpl-learning-progress-summary__title {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--theme-text);
+}
+
+.tpl-learning-progress-summary__headline {
+  margin: 8px 0 12px;
+  color: var(--theme-primary);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.tpl-learning-progress-summary__bar-track {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--theme-border);
+  overflow: hidden;
+}
+
+.tpl-learning-progress-summary__bar-fill {
+  height: 100%;
+  background: var(--theme-primary);
+}
+
+.tpl-learning-progress-summary__counts {
+  margin: 10px 0;
+  color: var(--theme-text-secondary);
+}
+
+.tpl-learning-progress-summary__eta {
+  margin: 8px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--theme-text-secondary);
+}
+
+.tpl-learning-progress-summary__milestones {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.tpl-learning-progress-summary__milestone-btn {
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  padding: 8px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.tpl-learning-progress-summary__milestone--reached .tpl-learning-progress-summary__milestone-btn {
+  border-color: var(--theme-success);
+  color: var(--theme-success);
+}
+
+.tpl-learning-progress-summary-editor {
+  display: grid;
+  gap: 12px;
+}
+
+.tpl-learning-progress-summary-editor__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tpl-learning-progress-summary-editor__field {
+  display: grid;
+  gap: 6px;
+}
+
+.tpl-learning-progress-summary-editor input {
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font: inherit;
+}
+
+.tpl-learning-progress-summary-editor__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tpl-learning-progress-summary-editor__milestone {
+  display: grid;
+  grid-template-columns: 1fr 110px auto;
+  gap: 8px;
+  align-items: center;
+}

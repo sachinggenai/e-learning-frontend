@@ -1,0 +1,70 @@
+.tpl-completion-certificate {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px;
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  background: var(--theme-background);
+}
+
+.tpl-completion-certificate__title {
+  margin: 0 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tpl-completion-certificate__paper {
+  border: 2px solid var(--theme-primary);
+  border-radius: 12px;
+  background: var(--theme-surface);
+  padding: 20px;
+  text-align: center;
+}
+
+.tpl-completion-certificate__paper h3,
+.tpl-completion-certificate__paper h4 {
+  margin: 8px 0;
+}
+
+.tpl-completion-certificate__signatory {
+  margin-top: 14px;
+  display: grid;
+  gap: 4px;
+}
+
+.tpl-completion-certificate__actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.tpl-completion-certificate__actions button {
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.tpl-completion-certificate-editor {
+  display: grid;
+  gap: 10px;
+}
+
+.tpl-completion-certificate-editor input {
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font: inherit;
+}
+
+.tpl-completion-certificate-editor label {
+  display: grid;
+  gap: 6px;
+}

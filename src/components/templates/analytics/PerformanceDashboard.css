@@ -1,0 +1,88 @@
+.tpl-performance-dashboard {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 24px;
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  background: var(--theme-background);
+}
+
+.tpl-performance-dashboard__title {
+  margin: 0 0 14px;
+  color: var(--theme-text);
+}
+
+.tpl-performance-dashboard__empty {
+  color: var(--theme-text-secondary);
+}
+
+.tpl-performance-dashboard__kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+}
+
+.tpl-performance-dashboard__kpi-card {
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  background: var(--theme-surface);
+  padding: 12px;
+}
+
+.tpl-performance-dashboard__kpi-label {
+  margin: 0;
+  color: var(--theme-text-secondary);
+  font-size: 13px;
+}
+
+.tpl-performance-dashboard__kpi-value {
+  margin: 4px 0;
+  color: var(--theme-text);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.tpl-performance-dashboard__kpi-trend {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--theme-info);
+}
+
+.tpl-performance-dashboard__kpi-target {
+  margin: 6px 0 0;
+  color: var(--theme-text-secondary);
+  font-size: 12px;
+}
+
+.tpl-performance-dashboard__chart {
+  margin-top: 14px;
+  border-top: 1px solid var(--theme-border);
+  padding-top: 10px;
+}
+
+.tpl-performance-dashboard-editor {
+  display: grid;
+  gap: 12px;
+}
+
+.tpl-performance-dashboard-editor input,
+.tpl-performance-dashboard-editor select {
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font: inherit;
+}
+
+.tpl-performance-dashboard-editor__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tpl-performance-dashboard-editor__kpi {
+  display: grid;
+  grid-template-columns: 1fr 120px auto;
+  gap: 8px;
+}
