@@ -159,10 +159,10 @@ test.describe('Smoke Flow: Full E2E Workflow with Screenshots', () => {
       // Wait for component cards to load
       await page.waitForTimeout(1000);
       
-      // Try to find welcome component, or fall back to first component
+      // Try to find welcome component card, or fall back to first component
       let componentToSelect;
       try {
-        componentToSelect = page.getByText(/welcome/i).first();
+        componentToSelect = page.locator('.component-card').filter({ hasText: /welcome/i }).first();
         await expect(componentToSelect).toBeVisible({ timeout: 3000 });
         console.log('Found welcome component');
       } catch (e) {
@@ -181,6 +181,13 @@ test.describe('Smoke Flow: Full E2E Workflow with Screenshots', () => {
 
     // STEP 6: Edit component title
     await test.step('Edit component title', async () => {
+      // Handle both direct input and edit button pattern
+      const titleEditButton = page.getByRole('button', { name: /edit title/i });
+      if (await titleEditButton.isVisible({ timeout: 1000 }).catch(() => false)) {
+        await titleEditButton.click();
+        await page.waitForTimeout(300);
+      }
+      
       const titleInput = page.getByLabel(/title/i).or(page.getByPlaceholder(/title/i)).first();
       
       if (await titleInput.isVisible()) {

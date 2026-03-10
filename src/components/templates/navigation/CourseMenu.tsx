@@ -6,6 +6,7 @@
 
 import React from 'react';
 import type { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
+import './CourseMenu.css';
 
 interface MenuItem {
   id: string;
@@ -15,151 +16,187 @@ interface MenuItem {
   children?: MenuItem[];
 }
 
-// ─── Preview ──────────────────────────────────────────────────────
-export const CourseMenuPreview: React.FC<ComponentPreviewProps> = ({ data }) => {
-  const items: MenuItem[] = data?.items ?? [];
-  const currentPageId: string | undefined = data?.currentPageId;
+interface CourseMenuData {
+  title?: string;
+  items?: MenuItem[];
+  currentPageId?: string;
+}
 
-  const renderItem = (item: MenuItem, depth: number) => {
+// ─── Preview ──────────────────────────────────────────────────────
+export const CourseMenuPreview: React.FC<ComponentPreviewProps> = ({ data, componentId, onInteraction }) => {
+  const menuData = data as CourseMenuData;
+  const items: MenuItem[] = menuData?.items ?? [];
+  const currentPageId: string | undefined = menuData?.currentPageId;
+
+  const handleItemClick = (item: MenuItem) => {
+    if (!item.pageId) {
+      return;
+    }
+
+    onInteraction?.({
+      componentId,
+      interactionType: 'click',
+      interactionId: item.id,
+      value: item.pageId,
+    });
+  };
+
+  const renderItem = (item: MenuItem, depth: number): React.ReactElement => {
     const isActive = item.pageId === currentPageId;
+    const hasChildren = (item.children?.length ?? 0) > 0;
+    const itemClassNames = [
+      'tpl-course-menu__item',
+      isActive ? 'tpl-course-menu__item--active' : '',
+      hasChildren ? 'tpl-course-menu__item--nested' : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
+
     return (
-      <React.Fragment key={item.id}>
-        <div
-          style={{
-            padding: '10px 14px',
-            paddingLeft: 14 + depth * 20,
-            borderRadius: 6,
-            background: isActive ? '#eff6ff' : 'transparent',
-            fontWeight: isActive ? 600 : 400,
-            color: isActive ? '#2563eb' : '#374151',
-            fontSize: 14,
-            cursor: item.pageId ? 'pointer' : 'default',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            borderLeft: isActive ? '3px solid #3b82f6' : '3px solid transparent',
-          }}
-        >
-          {item.icon && <span>{item.icon}</span>}
-          {item.label}
-        </div>
-        {item.children?.map((child) => renderItem(child, depth + 1))}
-      </React.Fragment>
+      <li key={item.id} className="tpl-course-menu__list-item">
+        {item.pageId ? (
+          <button
+            type="button"
+            className={itemClassNames}
+            style={{ '--depth': depth } as React.CSSProperties}
+            onClick={() => handleItemClick(item)}
+            aria-current={isActive ? 'page' : undefined}
+          >
+            <span className="tpl-course-menu__item-content">
+              {item.icon && <span className="tpl-course-menu__icon">{item.icon}</span>}
+              <span className="tpl-course-menu__label">{item.label}</span>
+            </span>
+          </button>
+        ) : (
+          <div
+            className={itemClassNames}
+            style={{ '--depth': depth } as React.CSSProperties}
+            role="heading"
+            aria-level={Math.min(6, depth + 2)}
+          >
+            <span className="tpl-course-menu__item-content">
+              {item.icon && <span className="tpl-course-menu__icon">{item.icon}</span>}
+              <span className="tpl-course-menu__label">{item.label}</span>
+            </span>
+          </div>
+        )}
+
+        {hasChildren ? (
+          <ul className="tpl-course-menu__list tpl-course-menu__list--nested">
+            {item.children?.map((child) => renderItem(child, depth + 1))}
+          </ul>
+        ) : null}
+      </li>
     );
   };
 
   return (
-    <div>
-      {data?.title && (
-        <h4
-          style={{
-            margin: '0 0 12px',
-            padding: '0 14px',
-            fontSize: 16,
-            color: '#1e293b',
-          }}
-        >
-          {data.title}
+    <section className="tpl-course-menu">
+      {menuData?.title && (
+        <h4 className="tpl-course-menu__title">
+          {menuData.title}
         </h4>
       )}
-      <nav style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {items.map((item) => renderItem(item, 0))}
+
+      <nav className="tpl-course-menu__nav" role="navigation" aria-label="Course menu">
+        {items.length > 0 ? (
+          <ul className="tpl-course-menu__list">
+            {items.map((item) => renderItem(item, 0))}
+          </ul>
+        ) : (
+          <p className="tpl-course-menu__empty">No menu items added yet.</p>
+        )}
       </nav>
-    </div>
+    </section>
   );
 };
 
 // ─── Editor ───────────────────────────────────────────────────────
 export const CourseMenuEditor: React.FC<ComponentEditorProps> = ({ data, onChange }) => {
-  const items: MenuItem[] = data?.items ?? [];
+  const menuData = data as CourseMenuData;
+  const items: MenuItem[] = menuData?.items ?? [];
 
   const updateItem = (idx: number, field: keyof MenuItem, value: string) => {
     const updated = [...items];
     updated[idx] = { ...updated[idx], [field]: value };
-    onChange({ data: { ...data, items: updated } });
+    onChange({ data: { ...menuData, items: updated } });
   };
 
   const addItem = () => {
     onChange({
       data: {
-        ...data,
-        items: [...items, { id: `mi-${Date.now()}`, label: '', icon: '📄' }],
+        ...menuData,
+        items: [...items, { id: `mi-${Date.now()}`, label: '', icon: '' }],
       },
     });
   };
 
   const removeItem = (idx: number) => {
-    onChange({ data: { ...data, items: items.filter((_, i) => i !== idx) } });
+    onChange({ data: { ...menuData, items: items.filter((_, i) => i !== idx) } });
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>
+    <section className="tpl-course-menu-editor">
+      <div className="tpl-course-menu-editor__header">
+        <label className="tpl-course-menu-editor__label" htmlFor="course-menu-title">
           Menu Title
         </label>
         <input
+          id="course-menu-title"
+          className="tpl-course-menu-editor__input"
           type="text"
-          value={data?.title ?? ''}
-          onChange={(e) => onChange({ data: { ...data, title: e.target.value } })}
+          value={menuData?.title ?? ''}
+          onChange={(e) => onChange({ data: { ...menuData, title: e.target.value } })}
           placeholder="Course Menu"
-          style={{
-            width: '100%',
-            padding: '6px 8px',
-            border: '1px solid #e2e8f0',
-            borderRadius: 4,
-            fontSize: 13,
-          }}
         />
       </div>
 
+      <div className="tpl-course-menu-editor__items">
       {items.map((item, idx) => (
-        <div
-          key={item.id}
-          style={{
-            display: 'flex',
-            gap: 8,
-            marginBottom: 8,
-            alignItems: 'center',
-          }}
-        >
+        <div key={item.id} className="tpl-course-menu-editor__item-row">
           <input
+            className="tpl-course-menu-editor__icon-input"
             type="text"
             value={item.icon ?? ''}
             onChange={(e) => updateItem(idx, 'icon', e.target.value)}
-            style={{ width: 40, padding: '6px 4px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 14, textAlign: 'center' }}
+            placeholder="📘"
+            aria-label={`Item ${idx + 1} icon`}
           />
           <input
+            className="tpl-course-menu-editor__label-input"
             type="text"
             value={item.label}
             onChange={(e) => updateItem(idx, 'label', e.target.value)}
             placeholder="Menu item label"
-            style={{ flex: 1, padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }}
+            aria-label={`Item ${idx + 1} label`}
+          />
+          <input
+            className="tpl-course-menu-editor__pageid-input"
+            type="text"
+            value={item.pageId ?? ''}
+            onChange={(e) => updateItem(idx, 'pageId', e.target.value)}
+            placeholder="page-id"
+            aria-label={`Item ${idx + 1} page id`}
           />
           <button
+            type="button"
+            className="tpl-course-menu-editor__remove-btn"
             onClick={() => removeItem(idx)}
-            style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: 18, cursor: 'pointer' }}
+            aria-label={`Remove item ${idx + 1}`}
           >
             ×
           </button>
         </div>
       ))}
+      </div>
 
       <button
+        type="button"
+        className="tpl-course-menu-editor__add-btn"
         onClick={addItem}
-        style={{
-          width: '100%',
-          padding: 10,
-          border: '2px dashed #cbd5e1',
-          borderRadius: 6,
-          background: 'transparent',
-          color: '#3b82f6',
-          fontWeight: 500,
-          cursor: 'pointer',
-        }}
       >
         + Add Menu Item
       </button>
-    </div>
+    </section>
   );
 };

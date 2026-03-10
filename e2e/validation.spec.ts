@@ -115,7 +115,13 @@ test.describe('Component Validation E2E Tests', () => {
       await componentToSelect.click();
       await page.waitForTimeout(1000);
 
-      // Fill in title
+      // Fill in title (handle both direct input and edit button pattern)
+      const titleEditButton = page.getByRole('button', { name: /edit title/i });
+      if (await titleEditButton.isVisible({ timeout: 1000 }).catch(() => false)) {
+        await titleEditButton.click();
+        await page.waitForTimeout(300);
+      }
+      
       const titleInput = page.getByLabel(/title/i).or(page.getByPlaceholder(/title/i)).first();
       if (await titleInput.isVisible()) {
         await titleInput.fill('Welcome to the Course');
@@ -172,8 +178,8 @@ test.describe('Component Validation E2E Tests', () => {
       ];
 
       for (const category of componentCategories) {
-        const categoryElement = page.getByText(new RegExp(category, 'i'));
-        if (await categoryElement.isVisible()) {
+        const categoryElement = page.getByText(new RegExp(category, 'i')).first();
+        if (await categoryElement.isVisible().catch(() => false)) {
           console.log(`  ✅ Category found: ${category}`);
         }
       }

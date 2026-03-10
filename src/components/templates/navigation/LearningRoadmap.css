@@ -1,0 +1,471 @@
+/* ============================================================
+   LEARNING ROADMAP TEMPLATE - BEM STYLES
+   ============================================================ */
+
+/* ============================================================
+   PREVIEW COMPONENT
+   ============================================================ */
+
+/* Root container */
+.tpl-learning-roadmap {
+  background-color: var(--theme-background);
+  padding: 24px;
+  width: 100%;
+}
+
+/* Empty state modifier */
+.tpl-learning-roadmap--empty {
+  min-height: 200px;
+}
+
+/* Header */
+.tpl-learning-roadmap__header {
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.tpl-learning-roadmap__title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--theme-text);
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+
+.tpl-learning-roadmap__description {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--theme-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Learning path container */
+.tpl-learning-roadmap__path {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+}
+
+/* Milestone wrapper (milestone + connector) */
+.tpl-learning-roadmap__milestone-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+/* Milestone card */
+.tpl-learning-roadmap__milestone {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  min-height: 120px;
+  padding: 20px;
+  background-color: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+/* Milestone status modifiers */
+.tpl-learning-roadmap__milestone--completed {
+  border-color: var(--theme-border);
+}
+
+.tpl-learning-roadmap__milestone--current {
+  border: 2px solid var(--theme-primary);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+}
+
+.tpl-learning-roadmap__milestone--locked {
+  opacity: 0.7;
+  border-color: var(--theme-border);
+}
+
+/* Clickable milestone hover state */
+.tpl-learning-roadmap__milestone--clickable {
+  cursor: pointer;
+}
+
+.tpl-learning-roadmap__milestone--clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tpl-learning-roadmap__milestone--clickable:hover .tpl-learning-roadmap__milestone-badge {
+  transform: scale(1.05);
+}
+
+.tpl-learning-roadmap__milestone--clickable:focus {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 2px;
+}
+
+.tpl-learning-roadmap__milestone--clickable:active {
+  transform: translateY(0);
+}
+
+/* Non-clickable milestone */
+.tpl-learning-roadmap__milestone--locked {
+  cursor: default;
+}
+
+/* Status badge */
+.tpl-learning-roadmap__milestone-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.tpl-learning-roadmap__milestone-badge--completed {
+  background-color: var(--theme-success);
+  color: white;
+}
+
+.tpl-learning-roadmap__milestone-badge--current {
+  background-color: var(--theme-primary);
+  color: white;
+}
+
+.tpl-learning-roadmap__milestone-badge--locked {
+  background-color: var(--theme-border);
+  color: var(--theme-text-secondary);
+}
+
+/* Badge icon */
+.tpl-learning-roadmap__icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Milestone content */
+.tpl-learning-roadmap__milestone-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tpl-learning-roadmap__milestone-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--theme-text);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.tpl-learning-roadmap__milestone--locked .tpl-learning-roadmap__milestone-title {
+  color: var(--theme-text-secondary);
+}
+
+.tpl-learning-roadmap__milestone-description {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--theme-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Duration badge */
+.tpl-learning-roadmap__milestone-duration {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background-color: var(--theme-info);
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 12px;
+  width: fit-content;
+}
+
+/* Connector line */
+.tpl-learning-roadmap__connector {
+  width: 3px;
+  height: 40px;
+  background-color: var(--theme-border);
+  margin: 0;
+  transition: background-color 0.3s ease;
+}
+
+.tpl-learning-roadmap__connector--completed {
+  background-color: var(--theme-success);
+}
+
+/* Empty state */
+.tpl-learning-roadmap__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 200px;
+  color: var(--theme-text-secondary);
+}
+
+.tpl-learning-roadmap__empty-icon {
+  width: 48px;
+  height: 48px;
+  opacity: 0.5;
+}
+
+.tpl-learning-roadmap__empty-text {
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0;
+}
+
+/* ============================================================
+   EDITOR COMPONENT
+   ============================================================ */
+
+.tpl-learning-roadmap-editor {
+  background-color: var(--theme-background);
+  padding: 24px;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Header settings */
+.tpl-learning-roadmap-editor__header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--theme-border);
+}
+
+/* Form field */
+.tpl-learning-roadmap-editor__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tpl-learning-roadmap-editor__field--half {
+  flex: 1;
+  min-width: 0;
+}
+
+.tpl-learning-roadmap-editor__field-row {
+  display: flex;
+  gap: 16px;
+}
+
+/* Labels */
+.tpl-learning-roadmap-editor__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--theme-text);
+}
+
+/* Form inputs */
+.tpl-learning-roadmap-editor__input,
+.tpl-learning-roadmap-editor__textarea,
+.tpl-learning-roadmap-editor__status-selector {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--theme-text);
+  background-color: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+}
+
+.tpl-learning-roadmap-editor__input:focus,
+.tpl-learning-roadmap-editor__textarea:focus,
+.tpl-learning-roadmap-editor__status-selector:focus {
+  outline: none;
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.tpl-learning-roadmap-editor__textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Checkbox field */
+.tpl-learning-roadmap-editor__checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--theme-text);
+  cursor: pointer;
+  user-select: none;
+}
+
+.tpl-learning-roadmap-editor__checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--theme-primary);
+}
+
+/* Milestones section */
+.tpl-learning-roadmap-editor__milestones {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tpl-learning-roadmap-editor__section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--theme-text);
+  margin: 0 0 8px 0;
+}
+
+/* Milestone card */
+.tpl-learning-roadmap-editor__milestone-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background-color: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+}
+
+.tpl-learning-roadmap-editor__milestone-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.tpl-learning-roadmap-editor__milestone-number {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--theme-text);
+}
+
+/* Milestone fields container */
+.tpl-learning-roadmap-editor__milestone-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Buttons */
+.tpl-learning-roadmap-editor__remove-btn {
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--theme-error);
+  background-color: transparent;
+  border: 1px solid var(--theme-error);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tpl-learning-roadmap-editor__remove-btn:hover {
+  background-color: var(--theme-error);
+  color: white;
+}
+
+.tpl-learning-roadmap-editor__remove-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.tpl-learning-roadmap-editor__add-btn {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  background-color: var(--theme-primary);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-self: flex-start;
+}
+
+.tpl-learning-roadmap-editor__add-btn:hover {
+  background-color: var(--theme-primary);
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
+}
+
+.tpl-learning-roadmap-editor__add-btn:active {
+  transform: translateY(0);
+}
+
+.tpl-learning-roadmap-editor__add-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .tpl-learning-roadmap {
+    padding: 16px;
+  }
+
+  .tpl-learning-roadmap__title {
+    font-size: 20px;
+  }
+
+  .tpl-learning-roadmap__milestone {
+    min-height: 100px;
+    padding: 16px;
+  }
+
+  .tpl-learning-roadmap__milestone-badge {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+
+  .tpl-learning-roadmap__icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .tpl-learning-roadmap__milestone-title {
+    font-size: 15px;
+  }
+
+  .tpl-learning-roadmap__milestone-description {
+    font-size: 13px;
+  }
+
+  .tpl-learning-roadmap-editor {
+    padding: 16px;
+  }
+
+  .tpl-learning-roadmap-editor__field-row {
+    flex-direction: column;
+  }
+
+  .tpl-learning-roadmap-editor__field--half {
+    width: 100%;
+  }
+}

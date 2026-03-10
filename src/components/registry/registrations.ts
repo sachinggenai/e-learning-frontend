@@ -106,6 +106,12 @@ const CaseStudyPreview = React.lazy(() => import('../templates/scenario/CaseStud
 // Navigation
 const CourseMenuEditor = React.lazy(() => import('../templates/navigation/CourseMenu').then(m => ({ default: m.CourseMenuEditor })));
 const CourseMenuPreview = React.lazy(() => import('../templates/navigation/CourseMenu').then(m => ({ default: m.CourseMenuPreview })));
+const ModuleOverviewEditor = React.lazy(() => import('../templates/navigation/ModuleOverview').then(m => ({ default: m.ModuleOverviewEditor })));
+const ModuleOverviewPreview = React.lazy(() => import('../templates/navigation/ModuleOverview').then(m => ({ default: m.ModuleOverviewPreview })));
+const LearningRoadmapEditor = React.lazy(() => import('../templates/navigation/LearningRoadmap').then(m => ({ default: m.LearningRoadmapEditor })));
+const LearningRoadmapPreview = React.lazy(() => import('../templates/navigation/LearningRoadmap').then(m => ({ default: m.LearningRoadmapPreview })));
+const SummaryTakeawaysEditor = React.lazy(() => import('../templates/navigation/SummaryTakeaways').then(m => ({ default: m.SummaryTakeawaysEditor })));
+const SummaryTakeawaysPreview = React.lazy(() => import('../templates/navigation/SummaryTakeaways').then(m => ({ default: m.SummaryTakeawaysPreview })));
 const ResourcesDownloadsEditor = React.lazy(() => import('../templates/navigation/ResourcesDownloads').then(m => ({ default: m.ResourcesDownloadsEditor })));
 const ResourcesDownloadsPreview = React.lazy(() => import('../templates/navigation/ResourcesDownloads').then(m => ({ default: m.ResourcesDownloadsPreview })));
 
@@ -889,6 +895,125 @@ r({
 });
 
 r({
+  typeId: 'module-overview',
+  displayName: 'Module Overview',
+  description: 'Overview page with module metadata and objectives',
+  category: 'navigation',
+  icon: 'book-open',
+  tags: ['module', 'overview', 'objectives', 'intro'],
+  completionCapabilities: ['view'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: {
+    title: 'Module Overview',
+    description: 'This module covers essential concepts and practical applications.',
+    estimatedDuration: 30,
+    difficultyLevel: 'beginner',
+    objectives: [
+      { id: 'obj-1', text: 'Understand the fundamental concepts' },
+      { id: 'obj-2', text: 'Apply concepts to practical scenarios' },
+    ],
+    showStartButton: false,
+  },
+  sortOrder: 1,
+  editorComponent: ModuleOverviewEditor,
+  previewComponent: ModuleOverviewPreview,
+});
+
+r({
+  typeId: 'learning-roadmap',
+  displayName: 'Learning Roadmap',
+  description: 'Visual learning path with milestone progression',
+  category: 'navigation',
+  icon: 'map',
+  tags: ['roadmap', 'path', 'milestones', 'progression'],
+  completionCapabilities: ['view'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: {
+    title: 'Learning Roadmap',
+    description: 'Track your progress through the course',
+    milestones: [
+      {
+        id: 'ms-1',
+        title: 'Getting Started',
+        description: 'Introduction to the course',
+        status: 'completed',
+        pageId: 'page-1',
+        estimatedDuration: 15,
+      },
+      {
+        id: 'ms-2',
+        title: 'Core Concepts',
+        description: 'Learn the fundamentals',
+        status: 'current',
+        pageId: 'page-2',
+        estimatedDuration: 30,
+      },
+      {
+        id: 'ms-3',
+        title: 'Advanced Topics',
+        description: 'Deep dive into advanced subjects',
+        status: 'locked',
+        pageId: 'page-3',
+        estimatedDuration: 45,
+      },
+    ],
+    showConnectors: true,
+    layout: 'vertical',
+  },
+  sortOrder: 2,
+  editorComponent: LearningRoadmapEditor,
+  previewComponent: LearningRoadmapPreview,
+});
+
+r({
+  typeId: 'summary-takeaways',
+  displayName: 'Summary & Takeaways',
+  description: 'Recap key learnings with actionable takeaways',
+  category: 'navigation',
+  icon: 'check-square',
+  tags: ['summary', 'takeaways', 'recap', 'review', 'closure'],
+  completionCapabilities: ['view'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: {
+    title: 'Key Takeaways',
+    introText: 'Here are the most important points from this module:',
+    keyPoints: [
+      {
+        id: 'kp-1',
+        text: 'Understanding the fundamentals is crucial for success',
+        icon: 'CheckCircle',
+        emphasis: 'high',
+      },
+      {
+        id: 'kp-2',
+        text: 'Practice regularly to reinforce your learning',
+        icon: 'CheckCircle',
+        emphasis: 'normal',
+      },
+      {
+        id: 'kp-3',
+        text: 'Apply concepts to real-world scenarios whenever possible',
+        icon: 'CheckCircle',
+        emphasis: 'normal',
+      },
+    ],
+    closingRemarks: 'Congratulations on completing this module! You have gained valuable insights and skills.',
+    nextSteps: 'Continue to the next module to explore advanced topics and build on what you have learned.',
+    showNextStepsSection: true,
+    displayStyle: 'cards',
+    showCompleteButton: true,
+    showContinueButton: true,
+    continueButtonText: 'Continue to Next Module',
+  },
+  sortOrder: 3,
+  editorComponent: SummaryTakeawaysEditor,
+  previewComponent: SummaryTakeawaysPreview,
+});
+
+r({
   typeId: 'resources-downloads',
   displayName: 'Resources & Downloads',
   description: 'Downloadable resources and supplementary links',
@@ -899,7 +1024,7 @@ r({
   scoringEnabled: false,
   audioSupport: { perComponent: false, perInteraction: false },
   defaultData: { title: 'Resources & Downloads', resources: [] },
-  sortOrder: 1,
+  sortOrder: 4,
   editorComponent: ResourcesDownloadsEditor,
   previewComponent: ResourcesDownloadsPreview,
 });

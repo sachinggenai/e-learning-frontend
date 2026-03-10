@@ -5,7 +5,9 @@
  */
 
 import React from 'react';
+import { FileText, Image, Link, Paperclip, Video } from 'lucide-react';
 import type { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
+import './ResourcesDownloads.css';
 
 interface Resource {
   id: string;
@@ -16,83 +18,95 @@ interface Resource {
   fileSize?: string;
 }
 
-const TYPE_ICONS: Record<string, string> = {
-  pdf: '📄',
-  doc: '📝',
-  link: '🔗',
-  video: '🎬',
-  image: '🖼️',
-  other: '📎',
+interface ResourcesDownloadsData {
+  title?: string;
+  description?: string;
+  resources?: Resource[];
+}
+
+const TYPE_ICONS = {
+  pdf: FileText,
+  doc: FileText,
+  link: Link,
+  video: Video,
+  image: Image,
+  other: Paperclip,
+} as const;
+
+const TYPE_VALUES: Array<Resource['type']> = ['pdf', 'doc', 'link', 'video', 'image', 'other'];
+
+const getResourceType = (type: string | undefined): Resource['type'] => {
+  if (!type || !TYPE_VALUES.includes(type as Resource['type'])) {
+    return 'other';
+  }
+
+  return type as Resource['type'];
 };
 
 // ─── Preview ──────────────────────────────────────────────────────
 export const ResourcesDownloadsPreview: React.FC<ComponentPreviewProps> = ({ data }) => {
-  const resources: Resource[] = data?.resources ?? [];
+  const resourcesData = data as ResourcesDownloadsData;
+  const resources: Resource[] = resourcesData?.resources ?? [];
 
   return (
-    <div>
-      {data?.title && <h3 style={{ marginBottom: 4 }}>{data.title}</h3>}
-      {data?.description && (
-        <p style={{ color: '#64748b', fontSize: 14, marginBottom: 16 }}>{data.description}</p>
-      )}
+    <section className="tpl-resources-downloads">
+      {(resourcesData?.title || resourcesData?.description) ? (
+        <header className="tpl-resources-downloads__header">
+          {resourcesData?.title && <h3 className="tpl-resources-downloads__title">{resourcesData.title}</h3>}
+          {resourcesData?.description && (
+            <p className="tpl-resources-downloads__description">{resourcesData.description}</p>
+          )}
+        </header>
+      ) : null}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div className="tpl-resources-downloads__list">
         {resources.map((r) => (
-          <a
-            key={r.id}
-            href={r.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 14,
-              padding: '14px 16px',
-              border: '1px solid #e2e8f0',
-              borderRadius: 10,
-              textDecoration: 'none',
-              color: '#1e293b',
-              transition: 'box-shadow 0.2s, border-color 0.2s',
-              background: '#fff',
-            }}
-          >
-            <span style={{ fontSize: 28 }}>{TYPE_ICONS[r.type] ?? '📎'}</span>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontWeight: 600, fontSize: 14 }}>{r.title}</div>
-              {r.description && (
-                <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>
-                  {r.description}
-                </div>
-              )}
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 2 }}>
-              <span
-                style={{
-                  fontSize: 11,
-                  padding: '2px 8px',
-                  borderRadius: 12,
-                  background: '#f1f5f9',
-                  color: '#475569',
-                  textTransform: 'uppercase',
-                  fontWeight: 500,
-                }}
+          (() => {
+            const safeType = getResourceType(r.type);
+            const Icon = TYPE_ICONS[safeType];
+
+            return (
+              <a
+                key={r.id}
+                href={r.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tpl-resources-downloads__resource"
+                aria-label={`Download ${r.title} (opens in new tab)`}
               >
-                {r.type}
-              </span>
-              {r.fileSize && (
-                <span style={{ fontSize: 11, color: '#94a3b8' }}>{r.fileSize}</span>
-              )}
-            </div>
-          </a>
+                <span className="tpl-resources-downloads__resource-icon" aria-hidden="true">
+                  <Icon size={28} />
+                </span>
+                <div className="tpl-resources-downloads__resource-content">
+                  <div className="tpl-resources-downloads__resource-title">{r.title}</div>
+                  {r.description ? (
+                    <div className="tpl-resources-downloads__resource-description">{r.description}</div>
+                  ) : null}
+                </div>
+
+                <div className="tpl-resources-downloads__resource-meta">
+                  <span
+                    className={`tpl-resources-downloads__type-badge tpl-resources-downloads__type-badge--${safeType}`}
+                    aria-label={`${safeType} file type`}
+                  >
+                    {safeType}
+                  </span>
+                  {r.fileSize ? (
+                    <span className="tpl-resources-downloads__file-size">{r.fileSize}</span>
+                  ) : null}
+                </div>
+              </a>
+            );
+          })()
         ))}
       </div>
 
-      {resources.length === 0 && (
-        <p style={{ textAlign: 'center', color: '#94a3b8', padding: 24 }}>
+      {resources.length === 0 ? (
+        <p className="tpl-resources-downloads__empty">
           No resources added yet.
         </p>
-      )}
-    </div>
+      ) : null}
+    </section>
   );
 };
 
@@ -101,18 +115,20 @@ export const ResourcesDownloadsEditor: React.FC<ComponentEditorProps> = ({
   data,
   onChange,
 }) => {
-  const resources: Resource[] = data?.resources ?? [];
+  const resourcesData = data as ResourcesDownloadsData;
+  const resources: Resource[] = resourcesData?.resources ?? [];
 
   const updateResource = (idx: number, field: keyof Resource, value: string) => {
     const updated = [...resources];
-    updated[idx] = { ...updated[idx], [field]: value } as Resource;
-    onChange({ data: { ...data, resources: updated } });
+    const nextValue = field === 'type' ? getResourceType(value) : value;
+    updated[idx] = { ...updated[idx], [field]: nextValue } as Resource;
+    onChange({ data: { ...resourcesData, resources: updated } });
   };
 
   const addResource = () => {
     onChange({
       data: {
-        ...data,
+        ...resourcesData,
         resources: [
           ...resources,
           {
@@ -127,63 +143,122 @@ export const ResourcesDownloadsEditor: React.FC<ComponentEditorProps> = ({
   };
 
   const removeResource = (idx: number) => {
-    onChange({ data: { ...data, resources: resources.filter((_, i) => i !== idx) } });
+    onChange({ data: { ...resourcesData, resources: resources.filter((_, i) => i !== idx) } });
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>Title</label>
-        <input type="text" value={data?.title ?? ''} onChange={(e) => onChange({ data: { ...data, title: e.target.value } })} placeholder="Resources & Downloads" style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
-      </div>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>Description</label>
-        <input type="text" value={data?.description ?? ''} onChange={(e) => onChange({ data: { ...data, description: e.target.value } })} placeholder="Supplementary materials" style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
-      </div>
-
-      {resources.map((r, idx) => (
-        <div key={r.id} style={{ border: '1px solid #e2e8f0', borderRadius: 6, padding: 12, marginBottom: 10, background: '#f9fafb' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-            <span style={{ fontWeight: 600, fontSize: 13 }}>Resource {idx + 1}</span>
-            <button onClick={() => removeResource(idx)} style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: 18, cursor: 'pointer' }}>×</button>
-          </div>
-          <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-            <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Title</label>
-              <input type="text" value={r.title} onChange={(e) => updateResource(idx, 'title', e.target.value)} style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
-            </div>
-            <div style={{ width: 100 }}>
-              <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Type</label>
-              <select value={r.type} onChange={(e) => updateResource(idx, 'type', e.target.value)} style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }}>
-                <option value="pdf">PDF</option>
-                <option value="doc">Doc</option>
-                <option value="link">Link</option>
-                <option value="video">Video</option>
-                <option value="image">Image</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-          </div>
-          <div style={{ marginBottom: 8 }}>
-            <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>URL</label>
-            <input type="text" value={r.url} onChange={(e) => updateResource(idx, 'url', e.target.value)} placeholder="https://…" style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
-          </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Description</label>
-              <input type="text" value={r.description ?? ''} onChange={(e) => updateResource(idx, 'description', e.target.value)} style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
-            </div>
-            <div style={{ width: 80 }}>
-              <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Size</label>
-              <input type="text" value={r.fileSize ?? ''} onChange={(e) => updateResource(idx, 'fileSize', e.target.value)} placeholder="2.4 MB" style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
-            </div>
-          </div>
+    <section className="tpl-resources-downloads-editor">
+      <div className="tpl-resources-downloads-editor__header">
+        <div className="tpl-resources-downloads-editor__field">
+          <label className="tpl-resources-downloads-editor__label" htmlFor="resources-title">Title</label>
+          <input
+            id="resources-title"
+            className="tpl-resources-downloads-editor__input"
+            type="text"
+            value={resourcesData?.title ?? ''}
+            onChange={(e) => onChange({ data: { ...resourcesData, title: e.target.value } })}
+            placeholder="Resources & Downloads"
+          />
         </div>
-      ))}
+        <div className="tpl-resources-downloads-editor__field">
+          <label className="tpl-resources-downloads-editor__label" htmlFor="resources-description">Description</label>
+          <input
+            id="resources-description"
+            className="tpl-resources-downloads-editor__input"
+            type="text"
+            value={resourcesData?.description ?? ''}
+            onChange={(e) => onChange({ data: { ...resourcesData, description: e.target.value } })}
+            placeholder="Supplementary materials"
+          />
+        </div>
+      </div>
 
-      <button onClick={addResource} style={{ width: '100%', padding: 10, border: '2px dashed #cbd5e1', borderRadius: 6, background: 'transparent', color: '#3b82f6', fontWeight: 500, cursor: 'pointer' }}>
+      <div className="tpl-resources-downloads-editor__resources">
+        {resources.map((r, idx) => (
+          <div key={r.id} className="tpl-resources-downloads-editor__resource-card">
+            <div className="tpl-resources-downloads-editor__resource-header">
+              <span className="tpl-resources-downloads-editor__resource-number">Resource {idx + 1}</span>
+              <button
+                type="button"
+                className="tpl-resources-downloads-editor__remove-btn"
+                onClick={() => removeResource(idx)}
+                aria-label={`Remove resource ${idx + 1}`}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="tpl-resources-downloads-editor__resource-fields">
+              <div className="tpl-resources-downloads-editor__field">
+                <label className="tpl-resources-downloads-editor__label" htmlFor={`resource-title-${r.id}`}>Title</label>
+                <input
+                  id={`resource-title-${r.id}`}
+                  className="tpl-resources-downloads-editor__input"
+                  type="text"
+                  value={r.title}
+                  onChange={(e) => updateResource(idx, 'title', e.target.value)}
+                />
+              </div>
+
+              <div className="tpl-resources-downloads-editor__field tpl-resources-downloads-editor__field--type">
+                <label className="tpl-resources-downloads-editor__label" htmlFor={`resource-type-${r.id}`}>Type</label>
+                <select
+                  id={`resource-type-${r.id}`}
+                  className="tpl-resources-downloads-editor__type-selector"
+                  value={r.type}
+                  onChange={(e) => updateResource(idx, 'type', e.target.value)}
+                >
+                  <option value="pdf">PDF</option>
+                  <option value="doc">Doc</option>
+                  <option value="link">Link</option>
+                  <option value="video">Video</option>
+                  <option value="image">Image</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div className="tpl-resources-downloads-editor__field tpl-resources-downloads-editor__field--full">
+                <label className="tpl-resources-downloads-editor__label" htmlFor={`resource-url-${r.id}`}>URL</label>
+                <input
+                  id={`resource-url-${r.id}`}
+                  className="tpl-resources-downloads-editor__input"
+                  type="text"
+                  value={r.url}
+                  onChange={(e) => updateResource(idx, 'url', e.target.value)}
+                  placeholder="https://..."
+                />
+              </div>
+
+              <div className="tpl-resources-downloads-editor__field tpl-resources-downloads-editor__field--full">
+                <label className="tpl-resources-downloads-editor__label" htmlFor={`resource-description-${r.id}`}>Description</label>
+                <input
+                  id={`resource-description-${r.id}`}
+                  className="tpl-resources-downloads-editor__input"
+                  type="text"
+                  value={r.description ?? ''}
+                  onChange={(e) => updateResource(idx, 'description', e.target.value)}
+                />
+              </div>
+
+              <div className="tpl-resources-downloads-editor__field tpl-resources-downloads-editor__field--size">
+                <label className="tpl-resources-downloads-editor__label" htmlFor={`resource-size-${r.id}`}>Size</label>
+                <input
+                  id={`resource-size-${r.id}`}
+                  className="tpl-resources-downloads-editor__input"
+                  type="text"
+                  value={r.fileSize ?? ''}
+                  onChange={(e) => updateResource(idx, 'fileSize', e.target.value)}
+                  placeholder="2.4 MB"
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <button type="button" className="tpl-resources-downloads-editor__add-btn" onClick={addResource}>
         + Add Resource
       </button>
-    </div>
+    </section>
   );
 };
