@@ -1,0 +1,405 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\ADMIN\\e-learning-frontend\\playwright.config.ts",
+    "rootDir": "C:/Users/ADMIN/e-learning-frontend/e2e",
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/ADMIN/e-learning-frontend/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/ADMIN/e-learning-frontend/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report",
+          "open": "never"
+        }
+      ],
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 1,
+    "webServer": {
+      "command": "npm start",
+      "port": 3000,
+      "timeout": 120000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "feedback-templates.spec.ts",
+      "file": "feedback-templates.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Feedback Templates E2E Tests",
+          "file": "feedback-templates.spec.ts",
+          "line": 39,
+          "column": 6,
+          "specs": [
+            {
+              "title": "FEEDBACK-01: Create and edit Reflective Question template",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 10847,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "  ✅ Reflective Question template created and edited\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-10T12:40:13.234Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\feedback-templates-Feedbac-c3e1c-eflective-Question-template-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "771920e33662839a3860-f91a3a3443adec711381",
+              "file": "feedback-templates.spec.ts",
+              "line": 41,
+              "column": 7
+            },
+            {
+              "title": "FEEDBACK-02: Create and edit Learner Journal template",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7963,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "  ✅ Learner Journal template created and edited\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-10T12:40:24.262Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\feedback-templates-Feedbac-d1261-it-Learner-Journal-template-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "771920e33662839a3860-4c078471befad87f8f39",
+              "file": "feedback-templates.spec.ts",
+              "line": 80,
+              "column": 7
+            },
+            {
+              "title": "FEEDBACK-03: Create and edit Self-Assessment template",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7900,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "  ✅ Self-Assessment template created\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-10T12:40:32.239Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\feedback-templates-Feedbac-0189e-it-Self-Assessment-template-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "771920e33662839a3860-441293fff99fea1c355d",
+              "file": "feedback-templates.spec.ts",
+              "line": 114,
+              "column": 7
+            },
+            {
+              "title": "FEEDBACK-04: Create and edit Confidence Rating template",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7841,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "  ✅ Confidence Rating template created\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-10T12:40:40.149Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\feedback-templates-Feedbac-1d643--Confidence-Rating-template-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "771920e33662839a3860-58702b8b3a9b43c57742",
+              "file": "feedback-templates.spec.ts",
+              "line": 142,
+              "column": 7
+            },
+            {
+              "title": "FEEDBACK-05: Create and edit Action Planning template",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7870,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "  ✅ Action Planning template created\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-10T12:40:48.001Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\feedback-templates-Feedbac-eccc9-it-Action-Planning-template-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "771920e33662839a3860-137b9097287dd54548b7",
+              "file": "feedback-templates.spec.ts",
+              "line": 170,
+              "column": 7
+            },
+            {
+              "title": "FEEDBACK-06: All feedback templates appear in component picker",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7285,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "  ✅ All 5 feedback templates visible in component picker\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-10T12:40:55.881Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\feedback-templates-Feedbac-817e5--appear-in-component-picker-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "771920e33662839a3860-e44dbd739b292b0bf746",
+              "file": "feedback-templates.spec.ts",
+              "line": 198,
+              "column": 7
+            },
+            {
+              "title": "FEEDBACK-07: Reflective Question preview renders correctly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7810,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-10T12:41:03.176Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\ADMIN\\e-learning-frontend\\test-results\\feedback-templates-Feedbac-1e717-n-preview-renders-correctly-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "771920e33662839a3860-6d4ff1b9d11962fb70ed",
+              "file": "feedback-templates.spec.ts",
+              "line": 230,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-03-10T12:40:07.513Z",
+    "duration": 63789.756,
+    "expected": 7,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

@@ -1,0 +1,120 @@
+.tpl-confidence-rating {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 24px;
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  background: var(--theme-background);
+}
+
+.tpl-confidence-rating__title {
+  margin: 0 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--theme-text);
+}
+
+.tpl-confidence-rating__topic {
+  padding: 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-surface);
+  margin-bottom: 10px;
+}
+
+.tpl-confidence-rating__topic-name {
+  margin: 0;
+  font-weight: 600;
+  color: var(--theme-text);
+}
+
+.tpl-confidence-rating__topic-desc {
+  margin: 4px 0 0;
+  color: var(--theme-text-secondary);
+}
+
+.tpl-confidence-rating__controls {
+  margin-top: 8px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tpl-confidence-rating__option {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--theme-text);
+}
+
+.tpl-confidence-rating__submit {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: var(--theme-primary);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tpl-confidence-rating__submit:disabled {
+  background: var(--theme-muted, #9ca3af);
+  cursor: not-allowed;
+}
+
+.tpl-confidence-rating-editor {
+  display: grid;
+  gap: 12px;
+}
+
+.tpl-confidence-rating-editor__field {
+  display: grid;
+  gap: 6px;
+}
+
+.tpl-confidence-rating-editor__field--scale {
+  grid-template-columns: auto 100px auto 100px;
+  align-items: center;
+}
+
+.tpl-confidence-rating-editor__label {
+  font-weight: 600;
+  color: var(--theme-text);
+}
+
+.tpl-confidence-rating-editor__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tpl-confidence-rating-editor__topic-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+}
+
+.tpl-confidence-rating-editor__input,
+.tpl-confidence-rating-editor__action {
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: var(--theme-surface);
+  color: var(--theme-text);
+}
+
+.tpl-confidence-rating-editor__action {
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .tpl-confidence-rating-editor__field--scale,
+  .tpl-confidence-rating-editor__topic-row {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,122 @@
+.tpl-self-assessment {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 24px;
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  background: var(--theme-background);
+}
+
+.tpl-self-assessment__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  color: var(--theme-text);
+}
+
+.tpl-self-assessment__empty {
+  color: var(--theme-text-secondary);
+}
+
+.tpl-self-assessment__criteria {
+  display: grid;
+  gap: 12px;
+}
+
+.tpl-self-assessment__criterion {
+  padding: 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-surface);
+}
+
+.tpl-self-assessment__criterion-name {
+  margin: 0;
+  color: var(--theme-text);
+  font-weight: 600;
+}
+
+.tpl-self-assessment__criterion-desc {
+  margin: 4px 0 0;
+  color: var(--theme-text-secondary);
+}
+
+.tpl-self-assessment__rating-group {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tpl-self-assessment__rating-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--theme-text);
+}
+
+.tpl-self-assessment__submit-btn {
+  margin-top: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: var(--theme-primary);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tpl-self-assessment__submit-btn:disabled {
+  background: var(--theme-muted, #9ca3af);
+  cursor: not-allowed;
+}
+
+.tpl-self-assessment-editor {
+  display: grid;
+  gap: 12px;
+}
+
+.tpl-self-assessment-editor__field {
+  display: grid;
+  gap: 6px;
+}
+
+.tpl-self-assessment-editor__label {
+  font-weight: 600;
+  color: var(--theme-text);
+}
+
+.tpl-self-assessment-editor__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tpl-self-assessment-editor__criterion-row {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr 1fr 90px auto;
+}
+
+.tpl-self-assessment-editor__input,
+.tpl-self-assessment-editor__action {
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: var(--theme-surface);
+  color: var(--theme-text);
+}
+
+.tpl-self-assessment-editor__action {
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .tpl-self-assessment-editor__criterion-row {
+    grid-template-columns: 1fr;
+  }
+}

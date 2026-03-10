@@ -1,0 +1,144 @@
+.tpl-learner-journal {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  background: var(--theme-background);
+}
+
+.tpl-learner-journal__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  color: var(--theme-text);
+}
+
+.tpl-learner-journal__prompts {
+  margin: 0 0 14px;
+  padding-left: 18px;
+  color: var(--theme-text-secondary);
+}
+
+.tpl-learner-journal__label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--theme-text);
+}
+
+.tpl-learner-journal__textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-surface);
+  color: var(--theme-text);
+}
+
+.tpl-learner-journal__save-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: var(--theme-primary);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tpl-learner-journal__save-btn:disabled {
+  background: var(--theme-muted, #9ca3af);
+  cursor: not-allowed;
+}
+
+.tpl-learner-journal__limit {
+  margin: 10px 0 0;
+  color: var(--theme-text-secondary);
+  font-size: 13px;
+}
+
+.tpl-learner-journal__entries {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.tpl-learner-journal__entry-card {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+}
+
+.tpl-learner-journal__entry-text {
+  margin: 0 0 8px;
+  color: var(--theme-text);
+}
+
+.tpl-learner-journal__entry-meta {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--theme-text-secondary);
+  font-size: 13px;
+}
+
+.tpl-learner-journal__empty {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--theme-text-secondary);
+}
+
+.tpl-learner-journal-editor {
+  display: grid;
+  gap: 12px;
+}
+
+.tpl-learner-journal-editor__field {
+  display: grid;
+  gap: 6px;
+}
+
+.tpl-learner-journal-editor__field-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tpl-learner-journal-editor__label {
+  font-weight: 600;
+  color: var(--theme-text);
+}
+
+.tpl-learner-journal-editor__input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-text);
+}
+
+.tpl-learner-journal-editor__prompt-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+.tpl-learner-journal-editor__add-btn,
+.tpl-learner-journal-editor__remove-btn {
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  cursor: pointer;
+  padding: 8px 10px;
+}

@@ -115,6 +115,18 @@ const SummaryTakeawaysPreview = React.lazy(() => import('../templates/navigation
 const ResourcesDownloadsEditor = React.lazy(() => import('../templates/navigation/ResourcesDownloads').then(m => ({ default: m.ResourcesDownloadsEditor })));
 const ResourcesDownloadsPreview = React.lazy(() => import('../templates/navigation/ResourcesDownloads').then(m => ({ default: m.ResourcesDownloadsPreview })));
 
+// Feedback
+const ReflectiveQuestionEditor = React.lazy(() => import('../templates/feedback/ReflectiveQuestion').then(m => ({ default: m.ReflectiveQuestionEditor })));
+const ReflectiveQuestionPreview = React.lazy(() => import('../templates/feedback/ReflectiveQuestion').then(m => ({ default: m.ReflectiveQuestionPreview })));
+const LearnerJournalEditor = React.lazy(() => import('../templates/feedback/LearnerJournal').then(m => ({ default: m.LearnerJournalEditor })));
+const LearnerJournalPreview = React.lazy(() => import('../templates/feedback/LearnerJournal').then(m => ({ default: m.LearnerJournalPreview })));
+const SelfAssessmentEditor = React.lazy(() => import('../templates/feedback/SelfAssessment').then(m => ({ default: m.SelfAssessmentEditor })));
+const SelfAssessmentPreview = React.lazy(() => import('../templates/feedback/SelfAssessment').then(m => ({ default: m.SelfAssessmentPreview })));
+const ConfidenceRatingEditor = React.lazy(() => import('../templates/feedback/ConfidenceRating').then(m => ({ default: m.ConfidenceRatingEditor })));
+const ConfidenceRatingPreview = React.lazy(() => import('../templates/feedback/ConfidenceRating').then(m => ({ default: m.ConfidenceRatingPreview })));
+const ActionPlanningEditor = React.lazy(() => import('../templates/feedback/ActionPlanning').then(m => ({ default: m.ActionPlanningEditor })));
+const ActionPlanningPreview = React.lazy(() => import('../templates/feedback/ActionPlanning').then(m => ({ default: m.ActionPlanningPreview })));
+
 // Gamification
 const ProgressTrackerEditor = React.lazy(() => import('../templates/gamification/ProgressTracker').then(m => ({ default: m.ProgressTrackerEditor })));
 const ProgressTrackerPreview = React.lazy(() => import('../templates/gamification/ProgressTracker').then(m => ({ default: m.ProgressTrackerPreview })));
@@ -1027,6 +1039,106 @@ r({
   sortOrder: 4,
   editorComponent: ResourcesDownloadsEditor,
   previewComponent: ResourcesDownloadsPreview,
+});
+
+// ─── Feedback ───────────────────────────────────────────────────
+r({
+  typeId: 'reflective-question',
+  displayName: 'Reflective Question',
+  description: 'Open-ended reflective question for critical thinking',
+  category: 'feedback',
+  icon: 'help-circle',
+  tags: ['reflective', 'question', 'think', 'journal'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: {
+    title: 'Reflective Question',
+    question: 'What did you learn from this module?',
+    promptText: 'Take a moment to write your thoughts below.',
+    allowMultipleResponses: false,
+  },
+  sortOrder: 0,
+  editorComponent: ReflectiveQuestionEditor,
+  previewComponent: ReflectiveQuestionPreview,
+});
+
+r({
+  typeId: 'learner-journal',
+  displayName: 'Learner Journal',
+  description: 'Personal learning diary with dated entries',
+  category: 'feedback',
+  icon: 'book',
+  tags: ['journal', 'diary', 'notes', 'personal'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'My Learning Journal',
+    prompts: ['What surprised me today?', 'How can I apply this?'],
+    maxEntries: 10,
+  },
+  sortOrder: 1,
+  editorComponent: LearnerJournalEditor,
+  previewComponent: LearnerJournalPreview,
+});
+
+r({
+  typeId: 'self-assessment',
+  displayName: 'Self-Assessment',
+  description: 'Self-evaluation rubric for skill rating',
+  category: 'feedback',
+  icon: 'user-check',
+  tags: ['self', 'assessment', 'rating', 'evaluate'],
+  completionCapabilities: ['interact', 'score'],
+  scoringEnabled: true,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: {
+    title: 'Self-Assessment',
+    criteria: [{ id: 'crit-1', name: 'Communication', description: '', scale: 5 }],
+  },
+  sortOrder: 2,
+  editorComponent: SelfAssessmentEditor,
+  previewComponent: SelfAssessmentPreview,
+});
+
+r({
+  typeId: 'confidence-rating',
+  displayName: 'Confidence Rating',
+  description: 'Rate your confidence level on covered topics',
+  category: 'feedback',
+  icon: 'thermometer',
+  tags: ['confidence', 'rating', 'self-report'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: {
+    title: 'Confidence Rating',
+    topics: [{ id: 'topic-1', name: 'Topic 1', description: '' }],
+    scale: { min: 1, max: 5, labels: ['Not confident', 'Very confident'] },
+  },
+  sortOrder: 3,
+  editorComponent: ConfidenceRatingEditor,
+  previewComponent: ConfidenceRatingPreview,
+});
+
+r({
+  typeId: 'action-planning',
+  displayName: 'Action Planning',
+  description: 'Create an actionable plan with goals and deadlines',
+  category: 'feedback',
+  icon: 'calendar',
+  tags: ['action', 'plan', 'goals', 'commitment'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'My Action Plan',
+    goals: [{ id: 'goal-1', description: '', deadline: '', actions: [''] }],
+  },
+  sortOrder: 4,
+  editorComponent: ActionPlanningEditor,
+  previewComponent: ActionPlanningPreview,
 });
 
 // ─── Gamification ────────────────────────────────────────────────
