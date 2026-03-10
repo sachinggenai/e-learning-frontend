@@ -1,0 +1,67 @@
+.tpl-regulatory-scenario {
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  border-radius: 12px;
+  color: var(--theme-text);
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.tpl-regulatory-scenario__title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tpl-regulatory-scenario__prompt,
+.tpl-regulatory-scenario__attempts {
+  color: var(--theme-text-secondary);
+  margin: 0;
+}
+
+.tpl-regulatory-scenario__choices {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.tpl-regulatory-scenario__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tpl-regulatory-scenario__feedback {
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.tpl-regulatory-scenario__feedback--correct {
+  border-color: var(--theme-success);
+}
+
+.tpl-regulatory-scenario__feedback--incorrect {
+  border-color: var(--theme-error);
+}
+
+.tpl-regulatory-scenario-editor {
+  display: grid;
+  gap: 10px;
+}
+
+.tpl-regulatory-scenario-editor label,
+.tpl-regulatory-scenario-editor__row {
+  display: grid;
+  gap: 6px;
+}
+
+.tpl-regulatory-scenario-editor__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

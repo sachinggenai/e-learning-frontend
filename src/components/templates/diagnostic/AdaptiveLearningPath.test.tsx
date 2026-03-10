@@ -38,7 +38,7 @@ describe('AdaptiveLearningPathPreview', () => {
     expect(screen.getByText('~20 min')).toBeInTheDocument();
   });
 
-  test('fires interaction on node click', () => {
+  test('fires path_node_opened on node click', () => {
     const onInteraction = jest.fn();
     render(<AdaptiveLearningPathPreview data={mockData} onInteraction={onInteraction} />);
     // node-1 is completed (before currentNodeId), should have open button
@@ -46,6 +46,17 @@ describe('AdaptiveLearningPathPreview', () => {
     fireEvent.click(openBtns[0]);
     expect(onInteraction).toHaveBeenCalledWith(expect.objectContaining({
       interactionType: 'path_node_opened',
+    }));
+  });
+
+  test('fires path_progressed when Continue clicked', () => {
+    const onInteraction = jest.fn();
+    render(<AdaptiveLearningPathPreview data={mockData} onInteraction={onInteraction} />);
+    const continueBtn = screen.getByRole('button', { name: /Continue to next step/i });
+    fireEvent.click(continueBtn);
+    expect(onInteraction).toHaveBeenCalledWith(expect.objectContaining({
+      interactionType: 'path_progressed',
+      interactionId: 'node-2',
     }));
   });
 

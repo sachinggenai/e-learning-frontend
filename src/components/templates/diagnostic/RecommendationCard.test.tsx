@@ -64,6 +64,14 @@ describe('RecommendationCardPreview', () => {
     }));
   });
 
+  test('fires recommendation_viewed on mount', () => {
+    const onInteraction = jest.fn();
+    render(<RecommendationCardPreview data={mockData} onInteraction={onInteraction} />);
+    expect(onInteraction).toHaveBeenCalledWith(expect.objectContaining({
+      interactionType: 'recommendation_viewed',
+    }));
+  });
+
   test('sorts high priority first', () => {
     render(<RecommendationCardPreview data={mockData} />);
     const cards = screen.getAllByRole('listitem');

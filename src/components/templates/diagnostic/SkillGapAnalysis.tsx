@@ -66,7 +66,17 @@ export const SkillGapAnalysisPreview: React.FC<ComponentPreviewProps> = ({
             const severity = gapSeverity(gap, threshold);
 
             return (
-              <li key={item.id} className={`tpl-skill-gap__item tpl-skill-gap__item--${severity}`}>
+              <li
+                key={item.id}
+                className={`tpl-skill-gap__item tpl-skill-gap__item--${severity}`}
+                onMouseEnter={() => onInteraction?.({
+                  componentId,
+                  interactionType: 'gap_item_viewed',
+                  interactionId: item.id,
+                  value: item.skill,
+                  completed: false,
+                })}
+              >
                 <div className="tpl-skill-gap__item-header">
                   <span className="tpl-skill-gap__skill-name">{item.skill}</span>
                   {severity === 'high' && (
@@ -244,6 +254,21 @@ export const SkillGapAnalysisEditor: React.FC<ComponentEditorProps> = ({ data, o
                   onChange={(e) => updateItem(item.id, { targetLevel: Number(e.target.value) })}
                 />
               </div>
+            </div>
+            <div className="tpl-skill-gap-editor__field">
+              <label className="tpl-skill-gap-editor__label" htmlFor={`sga-link-${item.id}`}>
+                Remediation Link
+              </label>
+              <input
+                id={`sga-link-${item.id}`}
+                className="tpl-skill-gap-editor__input"
+                type="url"
+                value={item.remediationLink ?? ''}
+                onChange={(e) =>
+                  updateItem(item.id, { remediationLink: e.target.value || undefined })
+                }
+                placeholder="https://..."
+              />
             </div>
           </div>
         ))}

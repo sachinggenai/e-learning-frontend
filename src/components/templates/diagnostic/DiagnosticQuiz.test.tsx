@@ -67,6 +67,26 @@ describe('DiagnosticQuizPreview', () => {
     expect(screen.getByText(/Results/)).toBeInTheDocument();
   });
 
+  test('fires topic_quiz_started on mount', () => {
+    const onInteraction = jest.fn();
+    render(<DiagnosticQuizPreview data={mockData} onInteraction={onInteraction} />);
+    expect(onInteraction).toHaveBeenCalledWith(expect.objectContaining({
+      interactionType: 'topic_quiz_started',
+    }));
+  });
+
+  test('fires topic_completed per topic on submit', () => {
+    const onInteraction = jest.fn();
+    render(<DiagnosticQuizPreview data={mockData} onInteraction={onInteraction} />);
+    const radios = screen.getAllByRole('radio');
+    fireEvent.click(radios[0]); // Basics: Document Object Model
+    fireEvent.click(radios[3]); // Functions: False
+    fireEvent.click(screen.getByRole('button', { name: 'Submit Quiz' }));
+    expect(onInteraction).toHaveBeenCalledWith(expect.objectContaining({
+      interactionType: 'topic_completed',
+    }));
+  });
+
   test('shows empty state when no questions', () => {
     render(<DiagnosticQuizPreview data={{ title: 'Test', questions: [] }} />);
     expect(screen.getByText('No questions configured yet.')).toBeInTheDocument();

@@ -1,0 +1,72 @@
+.tpl-audit-checklist {
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  border-radius: 12px;
+  color: var(--theme-text);
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.tpl-audit-checklist__title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tpl-audit-checklist__summary,
+.tpl-audit-checklist__empty {
+  margin: 0;
+  color: var(--theme-text-secondary);
+}
+
+.tpl-audit-checklist__grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 2fr 1fr;
+}
+
+.tpl-audit-checklist__items,
+.tpl-audit-checklist__trail {
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.tpl-audit-checklist__item {
+  display: grid;
+  gap: 6px;
+  border-bottom: 1px dashed var(--theme-border);
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+
+.tpl-audit-checklist__required {
+  color: var(--theme-warning);
+  margin-left: 8px;
+  font-size: 0.85rem;
+}
+
+.tpl-audit-checklist-editor {
+  display: grid;
+  gap: 10px;
+}
+
+.tpl-audit-checklist-editor label,
+.tpl-audit-checklist-editor__row {
+  display: grid;
+  gap: 6px;
+}
+
+.tpl-audit-checklist-editor__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .tpl-audit-checklist__grid {
+    grid-template-columns: 1fr;
+  }
+}

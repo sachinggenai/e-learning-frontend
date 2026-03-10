@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FileSearch, CheckCircle2, BarChart2 } from 'lucide-react';
 import type { ComponentEditorProps, ComponentPreviewProps } from '../../../types/registry';
 import './DiagnosticQuiz.css';
@@ -57,6 +57,16 @@ export const DiagnosticQuizPreview: React.FC<ComponentPreviewProps> = ({
   const setAnswer = (qId: string, value: string | boolean) =>
     setAnswers((prev) => ({ ...prev, [qId]: value }));
 
+  useEffect(() => {
+    onInteraction?.({
+      componentId,
+      interactionType: 'topic_quiz_started',
+      interactionId: 'start',
+      value: topics,
+      completed: false,
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleSubmit = () => {
     const scores: Record<string, { earned: number; total: number }> = {};
     questions.forEach((q) => {
@@ -71,6 +81,17 @@ export const DiagnosticQuizPreview: React.FC<ComponentPreviewProps> = ({
     Object.entries(scores).forEach(([topic, { earned, total }]) => {
       pcts[topic] = Math.round((earned / total) * 100);
     });
+
+    Object.entries(pcts).forEach(([topic, score]) => {
+      onInteraction?.({
+        componentId,
+        interactionType: 'topic_completed',
+        interactionId: topic,
+        value: score,
+        completed: false,
+      });
+    });
+
     setTopicScores(pcts);
     setSubmitted(true);
 

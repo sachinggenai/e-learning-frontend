@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ClipboardList, CheckCircle2, Clock } from 'lucide-react';
 import type { ComponentEditorProps, ComponentPreviewProps } from '../../../types/registry';
 import './PreAssessment.css';
@@ -39,19 +39,28 @@ export const PreAssessmentPreview: React.FC<ComponentPreviewProps> = ({
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState<number | null>(null);
 
-  const setAnswer = (qId: string, value: string | boolean) => {
-    setAnswers((prev) => ({ ...prev, [qId]: value }));
-  };
-
-  const handleSubmit = () => {
+  useEffect(() => {
     onInteraction?.({
       componentId,
       interactionType: 'pre_assessment_started',
-      interactionId: 'submit',
-      value: answers,
+      interactionId: 'start',
+      value: { questionCount: questions.length },
       completed: false,
     });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const setAnswer = (qId: string, value: string | boolean) => {
+    setAnswers((prev) => ({ ...prev, [qId]: value }));
+    onInteraction?.({
+      componentId,
+      interactionType: 'question_answered',
+      interactionId: qId,
+      value,
+      completed: false,
+    });
+  };
+
+  const handleSubmit = () => {
     let totalWeight = 0;
     let earnedWeight = 0;
     questions.forEach((q) => {
@@ -313,6 +322,55 @@ export const PreAssessmentEditor: React.FC<ComponentEditorProps> = ({ data, onCh
               placeholder="Question prompt"
               aria-label="Question prompt"
             />
+            {q.type === 'mcq' && (
+              <>
+                <div className="tpl-pre-assessment-editor__field">
+                  <label className="tpl-pre-assessment-editor__label" htmlFor={`pa-options-${q.id}`}>
+                    Options (comma-separated)
+                  </label>
+                  <input
+                    id={`pa-options-${q.id}`}
+                    className="tpl-pre-assessment-editor__input"
+                    type="text"
+                    value={(q.options ?? []).join(', ')}
+                    onChange={(e) => {
+                      const opts = e.target.value.split(',').map((s) => s.trim()).filter(Boolean);
+                      updateQuestion(q.id, { options: opts });
+                    }}
+                    placeholder="Option A, Option B, Option C"
+                  />
+                </div>
+                <div className="tpl-pre-assessment-editor__field">
+                  <label className="tpl-pre-assessment-editor__label" htmlFor={`pa-correct-${q.id}`}>
+                    Correct Answer
+                  </label>
+                  <input
+                    id={`pa-correct-${q.id}`}
+                    className="tpl-pre-assessment-editor__input"
+                    type="text"
+                    value={(q.correctAnswer as string) ?? ''}
+                    onChange={(e) => updateQuestion(q.id, { correctAnswer: e.target.value })}
+                    placeholder="Must match one option exactly"
+                  />
+                </div>
+              </>
+            )}
+            {q.type === 'true-false' && (
+              <div className="tpl-pre-assessment-editor__field">
+                <label className="tpl-pre-assessment-editor__label" htmlFor={`pa-tf-${q.id}`}>
+                  Correct Answer
+                </label>
+                <select
+                  id={`pa-tf-${q.id}`}
+                  className="tpl-pre-assessment-editor__select"
+                  value={String(q.correctAnswer ?? true)}
+                  onChange={(e) => updateQuestion(q.id, { correctAnswer: e.target.value === 'true' })}
+                >
+                  <option value="true">True</option>
+                  <option value="false">False</option>
+                </select>
+              </div>
+            )}
           </div>
         ))}
         <button

@@ -65,6 +65,26 @@ describe('PreAssessmentPreview', () => {
     expect(screen.getByText(/Your score/)).toBeInTheDocument();
   });
 
+  test('fires pre_assessment_started on mount', () => {
+    const onInteraction = jest.fn();
+    render(<PreAssessmentPreview data={mockData} onInteraction={onInteraction} />);
+    expect(onInteraction).toHaveBeenCalledWith(expect.objectContaining({
+      interactionType: 'pre_assessment_started',
+    }));
+  });
+
+  test('fires question_answered when option selected', () => {
+    const onInteraction = jest.fn();
+    render(<PreAssessmentPreview data={mockData} onInteraction={onInteraction} />);
+    onInteraction.mockClear(); // clear mount event
+    const radios = screen.getAllByRole('radio');
+    fireEvent.click(radios[0]);
+    expect(onInteraction).toHaveBeenCalledWith(expect.objectContaining({
+      interactionType: 'question_answered',
+      interactionId: 'q1',
+    }));
+  });
+
   test('shows empty state when no questions', () => {
     render(<PreAssessmentPreview data={{ title: 'Test', questions: [] }} />);
     expect(screen.getByText('No questions configured yet.')).toBeInTheDocument();
@@ -92,5 +112,11 @@ describe('PreAssessmentEditor', () => {
         questions: expect.arrayContaining([expect.objectContaining({ type: 'mcq' })]),
       }),
     }));
+  });
+
+  test('MCQ question shows options and correct answer fields', () => {
+    render(<PreAssessmentEditor data={mockData} onChange={mockOnChange} />);
+    expect(screen.getByPlaceholderText('Option A, Option B, Option C')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Must match one option exactly')).toBeInTheDocument();
   });
 });

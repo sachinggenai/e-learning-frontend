@@ -151,6 +151,18 @@ const CompletionCertificatePreview = React.lazy(() => import('../templates/analy
 const ManagerReviewPageEditor = React.lazy(() => import('../templates/analytics/ManagerReviewPage').then(m => ({ default: m.ManagerReviewPageEditor })));
 const ManagerReviewPagePreview = React.lazy(() => import('../templates/analytics/ManagerReviewPage').then(m => ({ default: m.ManagerReviewPagePreview })));
 
+// Compliance
+const PolicyAcknowledgementEditor = React.lazy(() => import('../templates/compliance/PolicyAcknowledgement').then(m => ({ default: m.PolicyAcknowledgementEditor })));
+const PolicyAcknowledgementPreview = React.lazy(() => import('../templates/compliance/PolicyAcknowledgement').then(m => ({ default: m.PolicyAcknowledgementPreview })));
+const DosAndDontsEditor = React.lazy(() => import('../templates/compliance/DosAndDonts').then(m => ({ default: m.DosAndDontsEditor })));
+const DosAndDontsPreview = React.lazy(() => import('../templates/compliance/DosAndDonts').then(m => ({ default: m.DosAndDontsPreview })));
+const CodeOfConductEditor = React.lazy(() => import('../templates/compliance/CodeOfConduct').then(m => ({ default: m.CodeOfConductEditor })));
+const CodeOfConductPreview = React.lazy(() => import('../templates/compliance/CodeOfConduct').then(m => ({ default: m.CodeOfConductPreview })));
+const RegulatoryScenarioEditor = React.lazy(() => import('../templates/compliance/RegulatoryScenario').then(m => ({ default: m.RegulatoryScenarioEditor })));
+const RegulatoryScenarioPreview = React.lazy(() => import('../templates/compliance/RegulatoryScenario').then(m => ({ default: m.RegulatoryScenarioPreview })));
+const AuditChecklistEditor = React.lazy(() => import('../templates/compliance/AuditChecklist').then(m => ({ default: m.AuditChecklistEditor })));
+const AuditChecklistPreview = React.lazy(() => import('../templates/compliance/AuditChecklist').then(m => ({ default: m.AuditChecklistPreview })));
+
 // Gamification
 const ProgressTrackerEditor = React.lazy(() => import('../templates/gamification/ProgressTracker').then(m => ({ default: m.ProgressTrackerEditor })));
 const ProgressTrackerPreview = React.lazy(() => import('../templates/gamification/ProgressTracker').then(m => ({ default: m.ProgressTrackerPreview })));
@@ -1460,6 +1472,149 @@ r({
   sortOrder: 4,
   editorComponent: ManagerReviewPageEditor,
   previewComponent: ManagerReviewPagePreview,
+});
+
+// ─── Compliance ─────────────────────────────────────────────────
+r({
+  typeId: 'policy-acknowledgement',
+  displayName: 'Policy Acknowledgement',
+  description: 'Policy text with mandatory acknowledgement and optional signature evidence',
+  category: 'compliance',
+  icon: 'badge-check',
+  tags: ['policy', 'acknowledge', 'compliance', 'confirm'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Information Security Policy',
+    policyText: 'I understand and agree to comply with the information security policy and data handling standards.',
+    policyVersion: '2026.1',
+    acknowledgementLabel: 'I have read and acknowledge this policy.',
+    requireSignature: true,
+    confirmationMessage: 'Acknowledgement recorded and stored for audit review.',
+    legalFooter: 'This acknowledgement is legally binding within corporate compliance policy.',
+    userId: 'learner-001',
+    lockAfterSubmission: true,
+    allowAdminOverride: false,
+  },
+  sortOrder: 0,
+  editorComponent: PolicyAcknowledgementEditor,
+  previewComponent: PolicyAcknowledgementPreview,
+});
+
+r({
+  typeId: 'dos-donts',
+  displayName: "Do's and Don'ts",
+  description: 'Two-column guide of acceptable and prohibited behaviors with rationale',
+  category: 'compliance',
+  icon: 'list-checks',
+  tags: ['dos', 'donts', 'best-practices', 'compliance'],
+  completionCapabilities: ['view', 'interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: "Do's and Don'ts",
+    layout: 'columns',
+    dos: [
+      { id: 'do-1', text: 'Report suspicious activity immediately', rationale: 'Early reporting reduces risk', reference: 'POL-SEC-01' },
+      { id: 'do-2', text: 'Verify recipient identity before sharing data', rationale: 'Prevents data leakage', reference: 'POL-DATA-03' },
+    ],
+    donts: [
+      { id: 'dont-1', text: 'Do not share credentials with anyone', rationale: 'Violates access control' },
+      { id: 'dont-2', text: 'Do not bypass approval workflows', rationale: 'Breaks auditability' },
+    ],
+  },
+  sortOrder: 1,
+  editorComponent: DosAndDontsEditor,
+  previewComponent: DosAndDontsPreview,
+});
+
+r({
+  typeId: 'code-of-conduct',
+  displayName: 'Code of Conduct',
+  description: 'Structured conduct principles with section completion and optional quick check',
+  category: 'compliance',
+  icon: 'shield-check',
+  tags: ['code', 'conduct', 'ethics', 'compliance'],
+  completionCapabilities: ['view', 'interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Code of Conduct',
+    requireAllSectionsViewed: true,
+    quickCheckEnabled: true,
+    sections: [
+      {
+        id: 'conduct-1',
+        title: 'Respect',
+        principles: [
+          { id: 'principle-1', title: 'Respect colleagues', description: 'Maintain professional and inclusive communication.' },
+        ],
+      },
+      {
+        id: 'conduct-2',
+        title: 'Integrity',
+        principles: [
+          { id: 'principle-2', title: 'Act with honesty', description: 'Report issues and conflicts of interest transparently.' },
+        ],
+      },
+    ],
+  },
+  sortOrder: 2,
+  editorComponent: CodeOfConductEditor,
+  previewComponent: CodeOfConductPreview,
+});
+
+r({
+  typeId: 'regulatory-scenario',
+  displayName: 'Regulatory Scenario',
+  description: 'Scenario-based compliance decision activity with attempts and immediate feedback',
+  category: 'compliance',
+  icon: 'gavel',
+  tags: ['regulatory', 'compliance', 'scenario', 'risk'],
+  completionCapabilities: ['interact', 'score'],
+  scoringEnabled: true,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Regulatory Scenario',
+    scenarioText: 'A partner requests customer data by email without encrypted transfer. What should you do?',
+    explanation: 'Use approved secure transfer channels and record an auditable approval trail.',
+    maxAttempts: 2,
+    requireCorrectToComplete: true,
+    selectionMode: 'single',
+    choices: [
+      { id: 'choice-1', text: 'Send data immediately to meet timeline', isCorrect: false, feedback: 'This bypasses approved controls.' },
+      { id: 'choice-2', text: 'Decline and route through approved secure process', isCorrect: true },
+    ],
+  },
+  sortOrder: 3,
+  editorComponent: RegulatoryScenarioEditor,
+  previewComponent: RegulatoryScenarioPreview,
+});
+
+r({
+  typeId: 'audit-checklist',
+  displayName: 'Audit Checklist',
+  description: 'Operational checklist with required markers, evidence, and audit trail log',
+  category: 'compliance',
+  icon: 'clipboard-list',
+  tags: ['audit', 'checklist', 'compliance', 'inspection'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Audit Checklist',
+    reviewerName: 'Compliance Reviewer',
+    items: [
+      { id: 'audit-1', label: 'Policy acknowledgement records verified', required: true, completed: false },
+      { id: 'audit-2', label: 'Evidence links added for all required controls', required: true, completed: false },
+      { id: 'audit-3', label: 'Optional reviewer note added', required: false, completed: false },
+    ],
+    completionPct: 0,
+  },
+  sortOrder: 4,
+  editorComponent: AuditChecklistEditor,
+  previewComponent: AuditChecklistPreview,
 });
 
 // ─── Gamification ────────────────────────────────────────────────

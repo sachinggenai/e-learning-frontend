@@ -40,6 +40,17 @@ describe('SkillGapAnalysisPreview', () => {
     expect(screen.getByText(/Gap: 40%/)).toBeInTheDocument();
   });
 
+  test('fires gap_item_viewed on mouse enter', () => {
+    const onInteraction = jest.fn();
+    render(<SkillGapAnalysisPreview data={mockData} onInteraction={onInteraction} />);
+    const items = screen.getAllByRole('listitem');
+    fireEvent.mouseEnter(items[0]);
+    expect(onInteraction).toHaveBeenCalledWith(expect.objectContaining({
+      interactionType: 'gap_item_viewed',
+      interactionId: 's1',
+    }));
+  });
+
   test('shows empty state', () => {
     render(<SkillGapAnalysisPreview data={{ items: [] }} />);
     expect(screen.getByText('No skills configured yet.')).toBeInTheDocument();
@@ -67,5 +78,10 @@ describe('SkillGapAnalysisEditor', () => {
         items: expect.arrayContaining([expect.objectContaining({ skill: '' })]),
       }),
     }));
+  });
+
+  test('shows remediation link field per skill', () => {
+    render(<SkillGapAnalysisEditor data={mockData} onChange={mockOnChange} />);
+    expect(screen.getAllByPlaceholderText('https://...').length).toBeGreaterThan(0);
   });
 });

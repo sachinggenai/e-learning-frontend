@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Map, CheckCircle2, Lock, ArrowRight } from 'lucide-react';
 import type { ComponentEditorProps, ComponentPreviewProps } from '../../../types/registry';
 import './AdaptiveLearningPath.css';
@@ -15,6 +15,7 @@ export interface PathNode {
 export interface AdaptiveLearningPathData {
   title?: string;
   nodes?: PathNode[];
+  branchRules?: Array<{ condition: string; includeNodeIds: string[] }>;
   currentNodeId?: string;
 }
 
@@ -22,16 +23,17 @@ export const AdaptiveLearningPathPreview: React.FC<ComponentPreviewProps> = ({
   data,
   componentId,
   onInteraction,
+  onComplete,
 }) => {
   const d = data as AdaptiveLearningPathData;
   const title = d.title?.trim() || 'Adaptive Learning Path';
   const nodes = d.nodes ?? [];
-  const currentNodeId = d.currentNodeId;
+  const [localCurrentId, setLocalCurrentId] = useState<string | undefined>(d.currentNodeId);
 
   const completedIds = new Set<string>();
   let passedCurrent = false;
   for (const node of nodes) {
-    if (node.id === currentNodeId) { passedCurrent = true; }
+    if (node.id === localCurrentId) { passedCurrent = true; }
     if (!passedCurrent) completedIds.add(node.id);
   }
 
@@ -63,7 +65,7 @@ export const AdaptiveLearningPathPreview: React.FC<ComponentPreviewProps> = ({
         <ol className="tpl-adaptive-path__nodes">
           {nodes.map((node, idx) => {
             const isCompleted = completedIds.has(node.id);
-            const isCurrent = node.id === currentNodeId;
+            const isCurrent = node.id === localCurrentId;
             const isLocked = (node.prerequisites ?? []).some((pid) => !completedIds.has(pid));
             const isLast = idx === nodes.length - 1;
 
@@ -110,6 +112,28 @@ export const AdaptiveLearningPathPreview: React.FC<ComponentPreviewProps> = ({
                     aria-label={`Open ${node.title}`}
                   >
                     <ArrowRight size={16} />
+                  </button>
+                )}
+                {isCurrent && (
+                  <button
+                    type="button"
+                    className="tpl-adaptive-path__continue-btn"
+                    onClick={() => {
+                      const nextIdx = idx + 1;
+                      const nextId = nextIdx < nodes.length ? nodes[nextIdx].id : undefined;
+                      setLocalCurrentId(nextId);
+                      onInteraction?.({
+                        componentId,
+                        interactionType: 'path_progressed',
+                        interactionId: node.id,
+                        value: nextId ?? 'complete',
+                        completed: nextIdx >= nodes.length,
+                      });
+                      if (nextIdx >= nodes.length) onComplete?.(componentId ?? '');
+                    }}
+                    aria-label="Continue to next step"
+                  >
+                    Continue
                   </button>
                 )}
               </li>

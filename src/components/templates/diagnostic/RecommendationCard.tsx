@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Sparkles, AlertTriangle, ArrowUpCircle, Minus, ExternalLink } from 'lucide-react';
 import type { ComponentEditorProps, ComponentPreviewProps } from '../../../types/registry';
 import './RecommendationCard.css';
@@ -10,6 +10,7 @@ export interface RecommendationItem {
   priority: 'low' | 'medium' | 'high';
   ctaLabel?: string;
   ctaTarget?: string;
+  condition?: string;
 }
 
 export interface RecommendationCardData {
@@ -38,6 +39,18 @@ export const RecommendationCardPreview: React.FC<ComponentPreviewProps> = ({
 
   const sorted = [...all].sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]);
   const visible = sorted.slice(0, maxVisible);
+
+  useEffect(() => {
+    visible.forEach((item) => {
+      onInteraction?.({
+        componentId,
+        interactionType: 'recommendation_viewed',
+        interactionId: item.id,
+        value: item.title,
+        completed: false,
+      });
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleCta = (item: RecommendationItem) => {
     onInteraction?.({

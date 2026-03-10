@@ -1,0 +1,80 @@
+.tpl-code-of-conduct {
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.tpl-code-of-conduct__title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tpl-code-of-conduct__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tpl-code-of-conduct__tabs button.is-active {
+  border-color: var(--theme-primary);
+}
+
+.tpl-code-of-conduct__panel {
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.tpl-code-of-conduct__principle {
+  text-align: left;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  padding: 8px;
+  display: grid;
+  gap: 4px;
+}
+
+.tpl-code-of-conduct__status,
+.tpl-code-of-conduct__empty {
+  color: var(--theme-text-secondary);
+}
+
+.tpl-code-of-conduct__quick-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tpl-code-of-conduct-editor {
+  display: grid;
+  gap: 10px;
+}
+
+.tpl-code-of-conduct-editor label,
+.tpl-code-of-conduct-editor__section,
+.tpl-code-of-conduct-editor__principle {
+  display: grid;
+  gap: 6px;
+}
+
+.tpl-code-of-conduct-editor__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tpl-code-of-conduct-editor__section {
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  padding: 10px;
+}
