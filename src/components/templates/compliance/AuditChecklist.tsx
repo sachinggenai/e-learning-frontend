@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ClipboardCheck } from 'lucide-react';
+import { ClipboardCheck, Download } from 'lucide-react';
 import type { ComponentEditorProps, ComponentPreviewProps } from '../../../types/registry';
 import './AuditChecklist.css';
 
@@ -19,6 +19,8 @@ export interface AuditChecklistData {
   completionPct?: number;
   reviewerName?: string;
   reviewedAt?: string;
+  exportFormat?: 'csv' | 'json';
+  lastExportedAt?: string;
 }
 
 interface AuditLogEntry {
@@ -43,6 +45,39 @@ export const AuditChecklistPreview: React.FC<ComponentPreviewProps> = ({ data, c
 
   const addLog = (text: string) => {
     setLogs((prev) => [{ id: `log-${Date.now()}`, text, at: new Date().toISOString() }, ...prev]);
+  };
+
+  const exportAsCSV = () => {
+    const headers = ['Item ID', 'Label', 'Required', 'Completed', 'Notes', 'Evidence URL', 'Completed At'];
+    const rows = items.map((item) => [
+      item.id,
+      item.label,
+      item.required ? 'Yes' : 'No',
+      item.completed ? 'Yes' : 'No',
+      item.notes ?? '',
+      item.evidenceUrl ?? '',
+      item.completedAt ?? '',
+    ]);
+
+    const csv = [headers, ...rows].map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `audit-checklist-${Date.now()}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    onInteraction?.({
+      componentId,
+      interactionType: 'checklist_exported',
+      interactionId: 'csv-export',
+      value: { format: 'csv', itemCount: items.length },
+      completed: false,
+    });
+    addLog('Exported to CSV');
   };
 
   const toggleItem = (itemId: string, checked: boolean) => {
@@ -135,6 +170,9 @@ export const AuditChecklistPreview: React.FC<ComponentPreviewProps> = ({ data, c
       >
         Submit Checklist
       </button>
+      <button type="button" onClick={exportAsCSV} style={{ marginLeft: '0.5rem' }}>
+        <Download size={16} style={{ marginRight: '0.25rem' }} /> Export CSV
+      </button>
     </article>
   );
 };
@@ -149,6 +187,16 @@ export const AuditChecklistEditor: React.FC<ComponentEditorProps> = ({ data, onC
       <label>Title<input value={d.title ?? ''} onChange={(e) => update({ title: e.target.value })} /></label>
       <label>Reviewer Name<input value={d.reviewerName ?? ''} onChange={(e) => update({ reviewerName: e.target.value })} /></label>
       <label>Reviewed At<input type="datetime-local" value={d.reviewedAt ?? ''} onChange={(e) => update({ reviewedAt: e.target.value })} /></label>
+
+      <label>
+        Export Format
+        <select value={d.exportFormat ?? 'csv'} onChange={(e) => update({ exportFormat: e.target.value as 'csv' | 'json' })}>
+          <option value="csv">CSV</option>
+          <option value="json">JSON</option>
+        </select>
+      </label>
+
+      {d.lastExportedAt && <p style={{ fontSize: '0.875rem', color: '#666' }}>Last exported: {new Date(d.lastExportedAt).toLocaleString()}</p>}
 
       <div className="tpl-audit-checklist-editor__head">
         <h3>Checklist Items</h3>

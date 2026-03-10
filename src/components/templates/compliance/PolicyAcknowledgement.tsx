@@ -156,6 +156,18 @@ export const PolicyAcknowledgementEditor: React.FC<ComponentEditorProps> = ({ da
       <label><input type="checkbox" checked={d.requireSignature === true} onChange={(e) => update({ requireSignature: e.target.checked })} /> Require signature</label>
       <label><input type="checkbox" checked={d.lockAfterSubmission !== false} onChange={(e) => update({ lockAfterSubmission: e.target.checked })} /> Lock after submission</label>
       <label><input type="checkbox" checked={d.allowAdminOverride === true} onChange={(e) => update({ allowAdminOverride: e.target.checked })} /> Allow admin override</label>
+
+      {d.record && (
+        <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#f0f9ff', borderRadius: '8px', border: '1px solid #bfdbfe' }}>
+          <h4>Submission Record</h4>
+          <p><strong>User ID:</strong> {d.record.userId}</p>
+          <p><strong>Acknowledged:</strong> {d.record.acknowledged ? 'Yes' : 'No'}</p>
+          {d.record.signature && <p><strong>Signature:</strong> {d.record.signature}</p>}
+          <p><strong>Submitted At:</strong> {new Date(d.record.submittedAt).toLocaleString()}</p>
+          <p><strong>Policy Version:</strong> {d.record.policyVersion}</p>
+          <button type="button" onClick={() => update({ record: undefined })}>Clear Record</button>
+        </div>
+      )}
     </section>
   );
 };

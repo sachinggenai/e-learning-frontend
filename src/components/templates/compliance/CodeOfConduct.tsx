@@ -10,10 +10,18 @@ export interface ConductPrinciple {
   example?: string;
 }
 
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  correctAnswer: string;
+  options?: string[];
+}
+
 export interface ConductSection {
   id: string;
   title: string;
   principles: ConductPrinciple[];
+  quizQuestions?: QuizQuestion[];
 }
 
 export interface CodeOfConductData {
@@ -21,6 +29,8 @@ export interface CodeOfConductData {
   sections?: ConductSection[];
   requireAllSectionsViewed?: boolean;
   quickCheckEnabled?: boolean;
+  quizEnabled?: boolean;
+  quizPassThreshold?: number;
 }
 
 export const CodeOfConductPreview: React.FC<ComponentPreviewProps> = ({ data, componentId, onInteraction, onComplete }) => {
@@ -29,10 +39,23 @@ export const CodeOfConductPreview: React.FC<ComponentPreviewProps> = ({ data, co
   const [activeSectionId, setActiveSectionId] = useState(sections[0]?.id ?? '');
   const [viewedIds, setViewedIds] = useState<string[]>(sections[0]?.id ? [sections[0].id] : []);
   const [quickCheck, setQuickCheck] = useState(false);
+  const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
 
   const active = useMemo(() => sections.find((s) => s.id === activeSectionId) ?? sections[0], [activeSectionId, sections]);
   const allViewed = sections.length > 0 && sections.every((s) => viewedIds.includes(s.id));
-  const canComplete = (d.requireAllSectionsViewed !== true || allViewed) && (d.quickCheckEnabled !== true || quickCheck);
+
+  // Calculate quiz score
+  const allQuizQuestions = sections.flatMap((s) => s.quizQuestions ?? []);
+  const correctAnswers = allQuizQuestions.filter((q) => quizAnswers[q.id] === q.correctAnswer).length;
+  const scorePercentage = allQuizQuestions.length > 0 ? Math.round((correctAnswers / allQuizQuestions.length) * 100) : 0;
+  const passingScore = d.quizPassThreshold ?? 80;
+  const quizPassed = scorePercentage >= passingScore;
+
+  const canComplete =
+    (d.requireAllSectionsViewed !== true || allViewed) &&
+    (!d.quickCheckEnabled || quickCheck) &&
+    (!d.quizEnabled || !allQuizQuestions.length || quizPassed);
 
   const openSection = (sectionId: string) => {
     setActiveSectionId(sectionId);
@@ -42,6 +65,21 @@ export const CodeOfConductPreview: React.FC<ComponentPreviewProps> = ({ data, co
       interactionType: 'conduct_section_opened',
       interactionId: sectionId,
       completed: false,
+    });
+  };
+
+  const handleQuizAnswerChange = (questionId: string, answer: string) => {
+    setQuizAnswers((prev) => ({ ...prev, [questionId]: answer }));
+  };
+
+  const submitQuiz = () => {
+    setQuizSubmitted(true);
+    onInteraction?.({
+      componentId,
+      interactionType: 'conduct_quiz_submitted',
+      interactionId: 'quiz',
+      value: { score: scorePercentage, passed: quizPassed, threshold: passingScore },
+      completed: quizPassed,
     });
   };
 
@@ -87,12 +125,59 @@ export const CodeOfConductPreview: React.FC<ComponentPreviewProps> = ({ data, co
               {principle.example && <em>Example: {principle.example}</em>}
             </button>
           ))}
+
+          {active.quizQuestions && active.quizQuestions.length > 0 && (
+            <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#f9fafb', borderRadius: '8px' }}>
+              <h4>Section Quiz</h4>
+              {active.quizQuestions.map((q) => (
+                <div key={q.id} style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
+                    {q.question}
+                  </label>
+                  {q.options ? (
+                    q.options.map((option) => (
+                      <label key={option} style={{ display: 'block', marginBottom: '0.25rem' }}>
+                        <input
+                          type="radio"
+                          name={q.id}
+                          value={option}
+                          checked={quizAnswers[q.id] === option}
+                          onChange={(e) => handleQuizAnswerChange(q.id, e.target.value)}
+                          disabled={quizSubmitted}
+                        />
+                        {option}
+                      </label>
+                    ))
+                  ) : (
+                    <input
+                      type="text"
+                      value={quizAnswers[q.id] ?? ''}
+                      onChange={(e) => handleQuizAnswerChange(q.id, e.target.value)}
+                      placeholder="Enter answer"
+                      disabled={quizSubmitted}
+                      style={{ width: '100%', padding: '0.5rem' }}
+                    />
+                  )}
+                </div>
+              ))}
+              {!quizSubmitted && (
+                <button type="button" onClick={submitQuiz} style={{ marginTop: '0.5rem' }}>
+                  Submit Quiz Answer
+                </button>
+              )}
+              {quizSubmitted && (
+                <p style={{ marginTop: '0.5rem', fontWeight: '600', color: quizPassed ? '#10b981' : '#ef4444' }}>
+                  Score: {scorePercentage}% {quizPassed ? '✓ Passed' : `✗ Failed (need ${passingScore}%)`}
+                </p>
+              )}
+            </div>
+          )}
         </section>
       )}
 
       {d.requireAllSectionsViewed && <p className="tpl-code-of-conduct__status">Section progress: {viewedIds.length}/{sections.length}</p>}
 
-      {d.quickCheckEnabled && (
+      {d.quickCheckEnabled && !d.quizEnabled && (
         <label className="tpl-code-of-conduct__quick-check">
           <input type="checkbox" checked={quickCheck} onChange={(e) => setQuickCheck(e.target.checked)} />
           I understand these conduct expectations.
@@ -107,7 +192,7 @@ export const CodeOfConductPreview: React.FC<ComponentPreviewProps> = ({ data, co
             componentId,
             interactionType: 'conduct_completed',
             interactionId: 'complete',
-            value: { allViewed, quickCheck },
+            value: { allViewed, quickCheck, quizScore: scorePercentage },
             completed: true,
           });
           onComplete?.(componentId);
@@ -129,6 +214,19 @@ export const CodeOfConductEditor: React.FC<ComponentEditorProps> = ({ data, onCh
       <label>Title<input value={d.title ?? ''} onChange={(e) => update({ title: e.target.value })} /></label>
       <label><input type="checkbox" checked={d.requireAllSectionsViewed === true} onChange={(e) => update({ requireAllSectionsViewed: e.target.checked })} /> Require all sections viewed</label>
       <label><input type="checkbox" checked={d.quickCheckEnabled === true} onChange={(e) => update({ quickCheckEnabled: e.target.checked })} /> Enable quick check</label>
+      <label><input type="checkbox" checked={d.quizEnabled === true} onChange={(e) => update({ quizEnabled: e.target.checked })} /> Enable quiz</label>
+      {d.quizEnabled && (
+        <label>
+          Quiz Pass Threshold (%)
+          <input
+            type="number"
+            min="0"
+            max="100"
+            value={d.quizPassThreshold ?? 80}
+            onChange={(e) => update({ quizPassThreshold: Number(e.target.value) })}
+          />
+        </label>
+      )}
 
       <div className="tpl-code-of-conduct-editor__head">
         <h3>Sections</h3>
@@ -156,6 +254,75 @@ export const CodeOfConductEditor: React.FC<ComponentEditorProps> = ({ data, onCh
               <input value={principle.example ?? ''} placeholder="Example" onChange={(e) => update({ sections: sections.map((s) => s.id === section.id ? { ...s, principles: s.principles.map((p) => p.id === principle.id ? { ...p, example: e.target.value } : p) } : s) })} />
             </div>
           ))}
+
+          {d.quizEnabled && (
+            <>
+              <button
+                type="button"
+                onClick={() => update({
+                  sections: sections.map((s) => s.id === section.id ? {
+                    ...s,
+                    quizQuestions: [...(s.quizQuestions ?? []), { id: `q-${Date.now()}`, question: '', correctAnswer: '' }],
+                  } : s),
+                })}
+              >
+                + Add Quiz Question
+              </button>
+              {section.quizQuestions?.map((question) => (
+                <div key={question.id} style={{ marginLeft: '1rem', padding: '0.5rem', backgroundColor: '#f3f4f6', borderRadius: '4px', marginBottom: '0.5rem' }}>
+                  <input
+                    value={question.question}
+                    placeholder="Question"
+                    onChange={(e) => update({
+                      sections: sections.map((s) => s.id === section.id ? {
+                        ...s,
+                        quizQuestions: (s.quizQuestions ?? []).map((q) => q.id === question.id ? { ...q, question: e.target.value } : q),
+                      } : s),
+                    })}
+                    style={{ width: '100%', marginBottom: '0.25rem' }}
+                  />
+                  <input
+                    value={question.correctAnswer}
+                    placeholder="Correct answer"
+                    onChange={(e) => update({
+                      sections: sections.map((s) => s.id === section.id ? {
+                        ...s,
+                        quizQuestions: (s.quizQuestions ?? []).map((q) => q.id === question.id ? { ...q, correctAnswer: e.target.value } : q),
+                      } : s),
+                    })}
+                    style={{ width: '100%', marginBottom: '0.25rem' }}
+                  />
+                  <textarea
+                    value={(question.options ?? []).join('\n')}
+                    placeholder="Options (one per line, leave blank for text)"
+                    onChange={(e) => update({
+                      sections: sections.map((s) => s.id === section.id ? {
+                        ...s,
+                        quizQuestions: (s.quizQuestions ?? []).map((q) => q.id === question.id ? {
+                          ...q,
+                          options: e.target.value.trim() ? e.target.value.split('\n') : undefined,
+                        } : q),
+                      } : s),
+                    })}
+                    rows={2}
+                    style={{ width: '100%', marginBottom: '0.25rem' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => update({
+                      sections: sections.map((s) => s.id === section.id ? {
+                        ...s,
+                        quizQuestions: (s.quizQuestions ?? []).filter((q) => q.id !== question.id),
+                      } : s),
+                    })}
+                  >
+                    Remove Question
+                  </button>
+                </div>
+              ))}
+            </>
+          )}
+
           <button type="button" onClick={() => update({ sections: sections.filter((s) => s.id !== section.id) })}>Remove Section</button>
         </div>
       ))}

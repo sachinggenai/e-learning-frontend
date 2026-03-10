@@ -57,9 +57,14 @@ export const DosAndDontsPreview: React.FC<ComponentPreviewProps> = ({ data, comp
   const dos = d.dos ?? [];
   const donts = d.donts ?? [];
 
+  // Validation: at least one item per section
+  const isValid = dos.length > 0 && donts.length > 0;
+
   return (
     <article className={`tpl-dos-and-donts tpl-dos-and-donts--${d.layout ?? 'columns'}`}>
       <h2 className="tpl-dos-and-donts__title">{d.title?.trim() || "Do's and Don'ts"}</h2>
+
+      {!isValid && <p style={{ padding: '1rem', backgroundColor: '#fef2f2', color: '#991b1b', borderRadius: '4px', marginBottom: '1rem' }}>⚠️ At least one Do and one Do Not item is required.</p>}
 
       <section className="tpl-dos-and-donts__section" aria-label="Do section">
         <header className="tpl-dos-and-donts__section-title">
@@ -104,6 +109,8 @@ export const DosAndDontsEditor: React.FC<ComponentEditorProps> = ({ data, onChan
   const donts = d.donts ?? [];
 
   const update = (patch: Partial<DosAndDontsData>) => onChange({ data: { ...d, ...patch } });
+  
+  const isValid = dos.length > 0 && donts.length > 0;
 
   return (
     <section className="tpl-dos-and-donts-editor">
@@ -116,8 +123,14 @@ export const DosAndDontsEditor: React.FC<ComponentEditorProps> = ({ data, onChan
         </select>
       </label>
 
+      {!isValid && (
+        <div style={{ padding: '0.75rem', backgroundColor: '#fef3c7', color: '#92400e', borderRadius: '4px', marginBottom: '1rem', fontSize: '0.875rem' }}>
+          ⚠️ Validation: At least one Do item and one Do Not item required
+        </div>
+      )}
+
       <div className="tpl-dos-and-donts-editor__head">
-        <h3>Do Items</h3>
+        <h3>Do Items {dos.length > 0 ? `(${dos.length})` : <span style={{ color: '#ef4444' }}>*required</span>}</h3>
         <button type="button" onClick={() => update({ dos: [...dos, { id: `do-${Date.now()}`, text: '' }] })}>+ Add Do</button>
       </div>
       {dos.map((item) => (
@@ -130,7 +143,7 @@ export const DosAndDontsEditor: React.FC<ComponentEditorProps> = ({ data, onChan
       ))}
 
       <div className="tpl-dos-and-donts-editor__head">
-        <h3>Do Not Items</h3>
+        <h3>Do Not Items {donts.length > 0 ? `(${donts.length})` : <span style={{ color: '#ef4444' }}>*required</span>}</h3>
         <button type="button" onClick={() => update({ donts: [...donts, { id: `dont-${Date.now()}`, text: '' }] })}>+ Add Do Not</button>
       </div>
       {donts.map((item) => (
