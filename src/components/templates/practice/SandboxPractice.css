@@ -1,0 +1,76 @@
+.tpl-sandbox {
+  border: 1px solid #d9e2ec;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
+}
+
+.tpl-sandbox__title {
+  margin: 0 0 0.5rem;
+}
+
+.tpl-sandbox__prompt {
+  margin: 0 0 0.75rem;
+  color: #486581;
+}
+
+.tpl-sandbox__label {
+  font-weight: 600;
+}
+
+.tpl-sandbox__input {
+  width: 100%;
+  margin-top: 0.35rem;
+  border: 1px solid #bcccdc;
+  border-radius: 8px;
+  padding: 0.6rem;
+}
+
+.tpl-sandbox__meta {
+  margin: 0.4rem 0 0;
+  color: #486581;
+}
+
+.tpl-sandbox__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.tpl-sandbox__reference {
+  border: 1px solid #d9e2ec;
+  border-radius: 10px;
+  background: #f7fbff;
+  padding: 0.75rem;
+  margin-top: 0.8rem;
+}
+
+.tpl-sandbox__reference h4 {
+  margin: 0 0 0.4rem;
+}
+
+.tpl-sandbox__reference ul {
+  margin: 0.5rem 0 0;
+}
+
+.tpl-sandbox__submitted {
+  color: #1f5130;
+  font-weight: 600;
+}
+
+.tpl-sandbox-editor {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.tpl-sandbox-editor label {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.tpl-sandbox-editor__checkbox {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}

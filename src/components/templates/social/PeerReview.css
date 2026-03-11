@@ -1,0 +1,168 @@
+.tpl-peer-review {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 44rem;
+  margin: 0 auto;
+}
+
+.tpl-peer-review h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #0f172a;
+}
+
+.tpl-peer-review__criteria {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tpl-peer-review__criterion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.6rem;
+  padding: 0.75rem;
+}
+
+.tpl-peer-review__criterion-label {
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 0.95rem;
+}
+
+.tpl-peer-review__criterion-desc {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.tpl-peer-review__rating {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.tpl-peer-review__star {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1.5px solid #cbd5e1;
+  background: #fff;
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.tpl-peer-review__star.is-active {
+  border-color: #f59e0b;
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.tpl-peer-review__star:hover {
+  border-color: #f59e0b;
+}
+
+.tpl-peer-review__comment {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.tpl-peer-review__comment label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #334155;
+}
+
+.tpl-peer-review__comment textarea {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+}
+
+.tpl-peer-review__comment textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.tpl-peer-review__summary {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #475569;
+  background: #f1f5f9;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.tpl-peer-review__submit {
+  align-self: flex-start;
+  padding: 0.5rem 1.3rem;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.tpl-peer-review__submit:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.tpl-peer-review__submit:not(:disabled):hover {
+  background: #1d4ed8;
+}
+
+/* Editor */
+.tpl-peer-review-editor {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.tpl-peer-review-editor label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.tpl-peer-review-editor input,
+.tpl-peer-review-editor select {
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.9rem;
+}
+
+.tpl-peer-review-editor__checkbox {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 0.5rem !important;
+}
+
+.tpl-peer-review-editor__row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.tpl-peer-review-editor__row input {
+  flex: 1;
+}

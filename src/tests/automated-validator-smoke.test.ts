@@ -1,6 +1,6 @@
 /**
  * Automated Validator Smoke Tests
- * Tests all 29 component type validators in TemplateValidator
+ * Tests all registered component type validators in TemplateValidator
  * 
  * Root Cause Analysis Applied:
  * - All test functions declared as async
@@ -19,7 +19,7 @@ describe('Smoke Tests: Component Validation (Automated)', () => {
     validator = new TemplateValidator();
   });
 
-  test('SMOKE-01: All 29 component types have explicit validators', async () => {
+  test('SMOKE-01: All listed component types have explicit validators', async () => {
     console.log('\n🧪 SMOKE-01: Component validator coverage test');
 
     const allComponentTypes = [
@@ -31,7 +31,9 @@ describe('Smoke Tests: Component Validation (Automated)', () => {
       'carousel', 'step-by-step', 'comparison-table', 'microlearning-cards', 'flashcards', 'quick-tips',
       'image-hotspots', 'video-slide', 'infographic',
       'branching-scenario', 'case-study',
-      'course-menu', 'resources-downloads', 'progress-tracker', 'quiz-game',
+      'course-menu', 'resources-downloads', 'progress-tracker', 'quiz-game', 'points-badges', 'level-learning',
+      'discussion-prompt', 'peer-review', 'poll-vote', 'team-challenge', 'scenario-debate',
+      'guided-practice', 'try-it-simulation', 'software-simulation', 'sandbox-practice', 'error-identification',
     ];
 
     const testCourseData = {
@@ -345,6 +347,16 @@ describe('Smoke Tests: Component Validation (Automated)', () => {
       { type: 'microlearning-cards', data: { cards: [] } },
       { type: 'flashcards', data: { cards: [] } },
       { type: 'quick-tips', data: { tips: [] } },
+      { type: 'discussion-prompt', data: { prompt: '' } },
+      { type: 'peer-review', data: { criteria: [] } },
+      { type: 'poll-vote', data: { options: [] } },
+      { type: 'team-challenge', data: { steps: [] } },
+      { type: 'scenario-debate', data: { positionA: '', positionB: '' } },
+      { type: 'guided-practice', data: { steps: [] } },
+      { type: 'try-it-simulation', data: { targets: [] } },
+      { type: 'software-simulation', data: { steps: [] } },
+      { type: 'sandbox-practice', data: { prompt: '', referenceAnswer: '' } },
+      { type: 'error-identification', data: { tokens: [] } },
     ];
 
     let totalErrors = 0;

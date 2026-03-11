@@ -170,8 +170,12 @@ const AuditChecklistPreview = React.lazy(() => import('../templates/compliance/A
 // Gamification
 const ProgressTrackerEditor = React.lazy(() => import('../templates/gamification/ProgressTracker').then(m => ({ default: m.ProgressTrackerEditor })));
 const ProgressTrackerPreview = React.lazy(() => import('../templates/gamification/ProgressTracker').then(m => ({ default: m.ProgressTrackerPreview })));
+const PointsAndBadgesEditor = React.lazy(() => import('../templates/gamification/PointsAndBadges').then(m => ({ default: m.PointsAndBadgesEditor })));
+const PointsAndBadgesPreview = React.lazy(() => import('../templates/gamification/PointsAndBadges').then(m => ({ default: m.PointsAndBadgesPreview })));
 const QuizGameEditor = React.lazy(() => import('../templates/gamification/QuizGame').then(m => ({ default: m.QuizGameEditor })));
 const QuizGamePreview = React.lazy(() => import('../templates/gamification/QuizGame').then(m => ({ default: m.QuizGamePreview })));
+const LevelBasedLearningEditor = React.lazy(() => import('../templates/gamification/LevelBasedLearning').then(m => ({ default: m.LevelBasedLearningEditor })));
+const LevelBasedLearningPreview = React.lazy(() => import('../templates/gamification/LevelBasedLearning').then(m => ({ default: m.LevelBasedLearningPreview })));
 
 // Accessibility
 const AccessibilityTipCardEditor = React.lazy(() => import('../templates/accessibility/AccessibilityTipCard').then(m => ({ default: m.AccessibilityTipCardEditor })));
@@ -184,6 +188,30 @@ const LanguageSelectorEditor = React.lazy(() => import('../templates/accessibili
 const LanguageSelectorPreview = React.lazy(() => import('../templates/accessibility/LanguageSelector').then(m => ({ default: m.LanguageSelectorPreview })));
 const TranscriptCaptionPageEditor = React.lazy(() => import('../templates/accessibility/TranscriptCaptionPage').then(m => ({ default: m.TranscriptCaptionPageEditor })));
 const TranscriptCaptionPagePreview = React.lazy(() => import('../templates/accessibility/TranscriptCaptionPage').then(m => ({ default: m.TranscriptCaptionPagePreview })));
+
+// Social
+const DiscussionPromptEditor = React.lazy(() => import('../templates/social/DiscussionPrompt').then(m => ({ default: m.DiscussionPromptEditor })));
+const DiscussionPromptPreview = React.lazy(() => import('../templates/social/DiscussionPrompt').then(m => ({ default: m.DiscussionPromptPreview })));
+const PeerReviewEditor = React.lazy(() => import('../templates/social/PeerReview').then(m => ({ default: m.PeerReviewEditor })));
+const PeerReviewPreview = React.lazy(() => import('../templates/social/PeerReview').then(m => ({ default: m.PeerReviewPreview })));
+const PollVoteEditor = React.lazy(() => import('../templates/social/PollVote').then(m => ({ default: m.PollVoteEditor })));
+const PollVotePreview = React.lazy(() => import('../templates/social/PollVote').then(m => ({ default: m.PollVotePreview })));
+const TeamChallengeEditor = React.lazy(() => import('../templates/social/TeamChallenge').then(m => ({ default: m.TeamChallengeEditor })));
+const TeamChallengePreview = React.lazy(() => import('../templates/social/TeamChallenge').then(m => ({ default: m.TeamChallengePreview })));
+const ScenarioDebateEditor = React.lazy(() => import('../templates/social/ScenarioDebate').then(m => ({ default: m.ScenarioDebateEditor })));
+const ScenarioDebatePreview = React.lazy(() => import('../templates/social/ScenarioDebate').then(m => ({ default: m.ScenarioDebatePreview })));
+
+// Practice
+const GuidedPracticeEditor = React.lazy(() => import('../templates/practice/GuidedPractice').then(m => ({ default: m.GuidedPracticeEditor })));
+const GuidedPracticePreview = React.lazy(() => import('../templates/practice/GuidedPractice').then(m => ({ default: m.GuidedPracticePreview })));
+const TryItSimulationEditor = React.lazy(() => import('../templates/practice/TryItSimulation').then(m => ({ default: m.TryItSimulationEditor })));
+const TryItSimulationPreview = React.lazy(() => import('../templates/practice/TryItSimulation').then(m => ({ default: m.TryItSimulationPreview })));
+const SoftwareSimulationEditor = React.lazy(() => import('../templates/practice/SoftwareSimulation').then(m => ({ default: m.SoftwareSimulationEditor })));
+const SoftwareSimulationPreview = React.lazy(() => import('../templates/practice/SoftwareSimulation').then(m => ({ default: m.SoftwareSimulationPreview })));
+const SandboxPracticeEditor = React.lazy(() => import('../templates/practice/SandboxPractice').then(m => ({ default: m.SandboxPracticeEditor })));
+const SandboxPracticePreview = React.lazy(() => import('../templates/practice/SandboxPractice').then(m => ({ default: m.SandboxPracticePreview })));
+const ErrorIdentificationEditor = React.lazy(() => import('../templates/practice/ErrorIdentification').then(m => ({ default: m.ErrorIdentificationEditor })));
+const ErrorIdentificationPreview = React.lazy(() => import('../templates/practice/ErrorIdentification').then(m => ({ default: m.ErrorIdentificationPreview })));
 
 // ─── Registration Helper ─────────────────────────────────────────
 function r(def: ComponentDefinition) { registry.register(def); }
@@ -1691,13 +1719,45 @@ r({
   category: 'gamification',
   icon: 'trophy',
   tags: ['progress', 'tracker', 'milestones', 'gamification'],
-  completionCapabilities: [],
+  completionCapabilities: ['view', 'interact'],
   scoringEnabled: false,
   audioSupport: { perComponent: false, perInteraction: false },
-  defaultData: { title: 'Your Progress', totalPages: 10, completedPages: 0, milestones: [] },
+  defaultData: {
+    title: 'Your Progress',
+    progress: 40,
+    milestones: [
+      { id: 'progress-1', label: 'Start', target: 10 },
+      { id: 'progress-2', label: 'Halfway', target: 50 },
+      { id: 'progress-3', label: 'Finish', target: 100 },
+    ],
+  },
   sortOrder: 0,
   editorComponent: ProgressTrackerEditor,
   previewComponent: ProgressTrackerPreview,
+});
+
+r({
+  typeId: 'points-badges',
+  displayName: 'Points and Badges',
+  description: 'Achievement system with points and unlockable badges',
+  category: 'gamification',
+  icon: 'award',
+  tags: ['points', 'badges', 'achievements', 'gamification'],
+  completionCapabilities: ['view', 'interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Points and Badges',
+    points: 30,
+    maxPoints: 100,
+    badges: [
+      { id: 'badge-1', name: 'Starter', pointsRequired: 10, description: 'Complete your first activity' },
+      { id: 'badge-2', name: 'Focused Learner', pointsRequired: 60, description: 'Maintain momentum across modules' },
+    ],
+  },
+  sortOrder: 1,
+  editorComponent: PointsAndBadgesEditor,
+  previewComponent: PointsAndBadgesPreview,
 });
 
 r({
@@ -1710,10 +1770,47 @@ r({
   completionCapabilities: ['interact', 'score'],
   scoringEnabled: true,
   audioSupport: { perComponent: true, perInteraction: false },
-  defaultData: { questions: [], maxLives: 3, timeLimit: 0 },
-  sortOrder: 1,
+  defaultData: {
+    maxLives: 3,
+    timeLimit: 30,
+    questions: [
+      {
+        id: 'quiz-1',
+        question: 'Which option best describes spaced repetition?',
+        options: ['Cramming once', 'Reviewing information over time', 'Skipping revision', 'Only reading notes'],
+        correctIndex: 1,
+        explanation: 'Spaced repetition improves long-term retention with interval review.',
+        points: 10,
+      },
+    ],
+  },
+  sortOrder: 2,
   editorComponent: QuizGameEditor,
   previewComponent: QuizGamePreview,
+});
+
+r({
+  typeId: 'level-learning',
+  displayName: 'Level-Based Learning',
+  description: 'Progressive level path that unlocks with earned points',
+  category: 'gamification',
+  icon: 'trending-up',
+  tags: ['level', 'path', 'unlock', 'progression'],
+  completionCapabilities: ['view', 'interact', 'score'],
+  scoringEnabled: true,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Level Path',
+    points: 40,
+    levels: [
+      { id: 'level-1', title: 'Novice', requirement: 10, description: 'Complete fundamentals' },
+      { id: 'level-2', title: 'Practitioner', requirement: 40, description: 'Apply concepts in guided tasks' },
+      { id: 'level-3', title: 'Expert', requirement: 80, description: 'Demonstrate mastery in challenges' },
+    ],
+  },
+  sortOrder: 3,
+  editorComponent: LevelBasedLearningEditor,
+  previewComponent: LevelBasedLearningPreview,
 });
 
 // ─── Accessibility ───────────────────────────────────────────────
@@ -1842,6 +1939,263 @@ r({
   sortOrder: 4,
   editorComponent: TranscriptCaptionPageEditor,
   previewComponent: TranscriptCaptionPagePreview,
+});
+
+// ─── Social ──────────────────────────────────────────────────────
+r({
+  typeId: 'discussion-prompt',
+  displayName: 'Discussion Prompt',
+  description: 'Structured discussion prompt with text response and minimum-character validation',
+  category: 'social',
+  icon: 'message-square',
+  tags: ['discussion', 'reflection', 'response', 'social'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Discussion Prompt',
+    prompt: 'Reflect on what you learned in this module. What will you apply in your work?',
+    placeholder: 'Share your thoughts here…',
+    minChars: 50,
+    allowAnonymous: false,
+  },
+  sortOrder: 0,
+  editorComponent: DiscussionPromptEditor,
+  previewComponent: DiscussionPromptPreview,
+});
+
+r({
+  typeId: 'peer-review',
+  displayName: 'Peer Review',
+  description: 'Rubric-based peer review with star ratings per criterion and optional comments',
+  category: 'social',
+  icon: 'users',
+  tags: ['peer', 'review', 'rubric', 'rating', 'feedback'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Peer Review',
+    maxRating: 5,
+    requireComment: false,
+    criteria: [
+      { id: 'c-1', label: 'Clarity', description: 'Was the explanation clear and easy to follow?' },
+      { id: 'c-2', label: 'Depth', description: 'Did the response demonstrate sufficient depth?' },
+      { id: 'c-3', label: 'Relevance', description: 'Was the content relevant to the topic?' },
+    ],
+  },
+  sortOrder: 1,
+  editorComponent: PeerReviewEditor,
+  previewComponent: PeerReviewPreview,
+});
+
+r({
+  typeId: 'poll-vote',
+  displayName: 'Poll / Vote',
+  description: 'Single or multi-select poll with real-time percentage result bars after voting',
+  category: 'social',
+  icon: 'bar-chart-2',
+  tags: ['poll', 'vote', 'opinion', 'survey', 'social'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Quick Poll',
+    question: 'Which approach do you prefer?',
+    allowMultiple: false,
+    options: [
+      { id: 'o-1', label: 'Option A', votes: 4 },
+      { id: 'o-2', label: 'Option B', votes: 6 },
+      { id: 'o-3', label: 'Option C', votes: 2 },
+    ],
+  },
+  sortOrder: 2,
+  editorComponent: PollVoteEditor,
+  previewComponent: PollVotePreview,
+});
+
+r({
+  typeId: 'team-challenge',
+  displayName: 'Team Challenge',
+  description: 'Collaborative task with checklist steps, team size, and optional timebox',
+  category: 'social',
+  icon: 'flag',
+  tags: ['team', 'challenge', 'collaboration', 'checklist', 'social'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Team Challenge',
+    objective: 'Work together to complete all steps within the allocated time.',
+    teamSize: 4,
+    timeboxMin: 15,
+    steps: [
+      { id: 'st-1', text: 'Identify the key problem', ownerRole: 'Lead' },
+      { id: 'st-2', text: 'Brainstorm solutions as a group', ownerRole: 'All' },
+      { id: 'st-3', text: 'Select the best approach and present it', ownerRole: 'Presenter' },
+    ],
+  },
+  sortOrder: 3,
+  editorComponent: TeamChallengeEditor,
+  previewComponent: TeamChallengePreview,
+});
+
+r({
+  typeId: 'scenario-debate',
+  displayName: 'Scenario Debate',
+  description: 'Argumentation exercise where learners choose a position and justify it with a written rationale',
+  category: 'social',
+  icon: 'git-branch',
+  tags: ['debate', 'argument', 'position', 'scenario', 'social'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Scenario Debate',
+    scenario: 'Your organisation is considering a major change in how teams collaborate. Consider the following scenario and choose a position.',
+    positionA: 'Position A',
+    positionB: 'Position B',
+    showOpposing: true,
+    minChars: 50,
+  },
+  sortOrder: 4,
+  editorComponent: ScenarioDebateEditor,
+  previewComponent: ScenarioDebatePreview,
+});
+
+// ─── Practice ───────────────────────────────────────────────────
+r({
+  typeId: 'guided-practice',
+  displayName: 'Guided Practice',
+  description: 'Sequenced guided task flow with optional hints and per-step completion tracking',
+  category: 'practice',
+  icon: 'compass',
+  tags: ['guided', 'practice', 'steps', 'hints'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Guided Practice',
+    intro: 'Follow each step and mark it complete as you progress.',
+    showHintsByDefault: false,
+    steps: [
+      { id: 'step-1', instruction: 'Open the correct workspace and review requirements.', hint: 'Look for key constraints first.', expectedOutcome: 'Workspace prepared.' },
+      { id: 'step-2', instruction: 'Perform the required action and verify the result.', hint: 'Confirm output before moving on.', expectedOutcome: 'Action completed.' },
+    ],
+  },
+  sortOrder: 0,
+  editorComponent: GuidedPracticeEditor,
+  previewComponent: GuidedPracticePreview,
+});
+
+r({
+  typeId: 'try-it-simulation',
+  displayName: 'Try-It Simulation',
+  description: 'Guided mini-simulation with ordered hotspot clicks and immediate feedback',
+  category: 'practice',
+  icon: 'play-circle',
+  tags: ['simulation', 'try-it', 'hotspots', 'practice'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Try-It Simulation',
+    prompt: 'Click the required targets in the correct order.',
+    canvasLabel: 'Simulation canvas',
+    allowRetry: true,
+    targets: [
+      { id: 'target-1', label: 'Start', order: 1, x: 24, y: 36, radius: 22, feedback: 'Good start.' },
+      { id: 'target-2', label: 'Confirm', order: 2, x: 62, y: 58, radius: 22, feedback: 'Sequence complete.' },
+    ],
+  },
+  sortOrder: 1,
+  editorComponent: TryItSimulationEditor,
+  previewComponent: TryItSimulationPreview,
+});
+
+r({
+  typeId: 'software-simulation',
+  displayName: 'Software Simulation',
+  description: 'Screenshot-based workflow simulation with annotated hotspots and step progression',
+  category: 'practice',
+  icon: 'monitor',
+  tags: ['software', 'simulation', 'workflow', 'hotspot'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Software Simulation',
+    strictMode: false,
+    steps: [
+      {
+        id: 'sw-step-1',
+        title: 'Open Settings',
+        instruction: 'Select the settings hotspot to continue.',
+        imageUrl: '',
+        hotspots: [{ id: 'sw-hs-1', x: 18, y: 22, w: 20, h: 12, label: 'Settings' }],
+      },
+      {
+        id: 'sw-step-2',
+        title: 'Save Changes',
+        instruction: 'Select save to complete the flow.',
+        imageUrl: '',
+        hotspots: [{ id: 'sw-hs-2', x: 60, y: 68, w: 22, h: 12, label: 'Save' }],
+      },
+    ],
+  },
+  sortOrder: 2,
+  editorComponent: SoftwareSimulationEditor,
+  previewComponent: SoftwareSimulationPreview,
+});
+
+r({
+  typeId: 'sandbox-practice',
+  displayName: 'Sandbox Practice',
+  description: 'Free-form response area with optional reference reveal and retry flow',
+  category: 'practice',
+  icon: 'flask-conical',
+  tags: ['sandbox', 'practice', 'self-check', 'freeform'],
+  completionCapabilities: ['interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Sandbox Practice',
+    prompt: 'Draft your approach, then compare with the reference.',
+    placeholder: 'Write your solution here...',
+    referenceAnswer: 'Use a clear structure: context, action, and expected outcome.',
+    minChars: 80,
+    allowReveal: true,
+  },
+  sortOrder: 3,
+  editorComponent: SandboxPracticeEditor,
+  previewComponent: SandboxPracticePreview,
+});
+
+r({
+  typeId: 'error-identification',
+  displayName: 'Error Identification',
+  description: 'Select incorrect tokens and receive scored feedback with optional explanations',
+  category: 'practice',
+  icon: 'alert-circle',
+  tags: ['error', 'identify', 'analysis', 'practice'],
+  completionCapabilities: ['interact', 'score'],
+  scoringEnabled: true,
+  audioSupport: { perComponent: false, perInteraction: false },
+  defaultData: {
+    title: 'Error Identification',
+    instructions: 'Select the incorrect statements and submit your choices.',
+    maxSelections: 2,
+    showExplanations: true,
+    tokens: [
+      { id: 'err-1', text: 'Share your password with colleagues when busy.', isError: true, explanation: 'Credentials must never be shared.' },
+      { id: 'err-2', text: 'Use unique passphrases for each system.', isError: false },
+      { id: 'err-3', text: 'Enable multi-factor authentication for sensitive access.', isError: false },
+      { id: 'err-4', text: 'Store PINs in plain text for convenience.', isError: true, explanation: 'PINs should be securely protected.' },
+    ],
+  },
+  sortOrder: 4,
+  editorComponent: ErrorIdentificationEditor,
+  previewComponent: ErrorIdentificationPreview,
 });
 
 // ─── Legacy Aliases ──────────────────────────────────────────────

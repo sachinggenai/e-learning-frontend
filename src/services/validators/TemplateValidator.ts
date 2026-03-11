@@ -145,8 +145,44 @@ export class TemplateValidator implements Validator {
         case "progress-tracker":
           errors.push(...this.validateProgressTracker(page, index));
           break;
+        case "points-badges":
+          errors.push(...this.validatePointsAndBadges(page, index));
+          break;
         case "quiz-game":
           errors.push(...this.validateQuizGame(page, index));
+          break;
+        case "level-learning":
+          errors.push(...this.validateLevelBasedLearning(page, index));
+          break;
+        case "discussion-prompt":
+          errors.push(...this.validateDiscussionPrompt(page, index));
+          break;
+        case "peer-review":
+          errors.push(...this.validatePeerReview(page, index));
+          break;
+        case "poll-vote":
+          errors.push(...this.validatePollVote(page, index));
+          break;
+        case "team-challenge":
+          errors.push(...this.validateTeamChallenge(page, index));
+          break;
+        case "scenario-debate":
+          errors.push(...this.validateScenarioDebate(page, index));
+          break;
+        case "guided-practice":
+          errors.push(...this.validateGuidedPractice(page, index));
+          break;
+        case "try-it-simulation":
+          errors.push(...this.validateTryItSimulation(page, index));
+          break;
+        case "software-simulation":
+          errors.push(...this.validateSoftwareSimulation(page, index));
+          break;
+        case "sandbox-practice":
+          errors.push(...this.validateSandboxPractice(page, index));
+          break;
+        case "error-identification":
+          errors.push(...this.validateErrorIdentification(page, index));
           break;
         default:
           // Check if the template type is a known component type from the registry
@@ -851,9 +887,34 @@ export class TemplateValidator implements Validator {
     const errors: ValidationError[] = [];
     const content = page.content as any;
 
-    if (content.totalPages !== undefined && Number(content.totalPages) <= 0) {
-      errors.push(this.makeWarning(index, "content.totalPages", "Total pages should be greater than 0"));
+    if (content.progress !== undefined && (Number(content.progress) < 0 || Number(content.progress) > 100)) {
+      errors.push(this.makeWarning(index, "content.progress", "Progress should be between 0 and 100"));
     }
+
+    if (content.milestones !== undefined && !Array.isArray(content.milestones)) {
+      errors.push(this.makeError(index, "content.milestones", "Milestones must be an array"));
+    }
+
+    return errors;
+  }
+
+  private validatePointsAndBadges(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.hasMinItems(content.badges, 1)) {
+      errors.push(this.makeWarning(index, "content.badges", "Points and badges should include at least one badge"));
+      return errors;
+    }
+
+    content.badges.forEach((badge: any, i: number) => {
+      if (!this.isNonEmptyString(badge.name)) {
+        errors.push(this.makeError(index, `content.badges[${i}].name`, "Each badge requires a name"));
+      }
+      if (badge.pointsRequired !== undefined && Number(badge.pointsRequired) < 0) {
+        errors.push(this.makeError(index, `content.badges[${i}].pointsRequired`, "Badge pointsRequired must be >= 0"));
+      }
+    });
 
     return errors;
   }
@@ -873,6 +934,27 @@ export class TemplateValidator implements Validator {
       }
       if (!this.hasMinItems(q.options, 2)) {
         errors.push(this.makeError(index, `content.questions[${i}].options`, "Each quiz question needs at least 2 options"));
+      }
+    });
+
+    return errors;
+  }
+
+  private validateLevelBasedLearning(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.hasMinItems(content.levels, 1)) {
+      errors.push(this.makeError(index, "content.levels", "Level-based learning requires at least one level"));
+      return errors;
+    }
+
+    content.levels.forEach((level: any, i: number) => {
+      if (!this.isNonEmptyString(level.title)) {
+        errors.push(this.makeError(index, `content.levels[${i}].title`, "Each level requires a title"));
+      }
+      if (level.requirement !== undefined && Number(level.requirement) < 0) {
+        errors.push(this.makeError(index, `content.levels[${i}].requirement`, "Level requirement must be >= 0"));
       }
     });
 
@@ -939,5 +1021,202 @@ export class TemplateValidator implements Validator {
       message,
       level: "warning",
     };
+  }
+
+  private validateDiscussionPrompt(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.isNonEmptyString(content.prompt)) {
+      errors.push(this.makeError(index, "content.prompt", "Discussion prompt requires a prompt question"));
+    }
+
+    if (content.minChars !== undefined && Number(content.minChars) < 0) {
+      errors.push(this.makeWarning(index, "content.minChars", "Minimum characters should be 0 or greater"));
+    }
+
+    return errors;
+  }
+
+  private validatePeerReview(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.hasMinItems(content.criteria, 1)) {
+      errors.push(this.makeError(index, "content.criteria", "Peer review requires at least one criterion"));
+      return errors;
+    }
+
+    content.criteria.forEach((c: any, i: number) => {
+      if (!this.isNonEmptyString(c.label)) {
+        errors.push(this.makeError(index, `content.criteria[${i}].label`, "Each criterion requires a label"));
+      }
+    });
+
+    return errors;
+  }
+
+  private validatePollVote(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.hasMinItems(content.options, 2)) {
+      errors.push(this.makeError(index, "content.options", "Poll requires at least two options"));
+      return errors;
+    }
+
+    content.options.forEach((o: any, i: number) => {
+      if (!this.isNonEmptyString(o.label)) {
+        errors.push(this.makeError(index, `content.options[${i}].label`, "Each poll option requires a label"));
+      }
+    });
+
+    return errors;
+  }
+
+  private validateTeamChallenge(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.hasMinItems(content.steps, 1)) {
+      errors.push(this.makeError(index, "content.steps", "Team challenge requires at least one step"));
+      return errors;
+    }
+
+    content.steps.forEach((s: any, i: number) => {
+      if (!this.isNonEmptyString(s.text)) {
+        errors.push(this.makeWarning(index, `content.steps[${i}].text`, "Each step should include description text"));
+      }
+    });
+
+    return errors;
+  }
+
+  private validateScenarioDebate(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.isNonEmptyString(content.scenario)) {
+      errors.push(this.makeWarning(index, "content.scenario", "Scenario debate should include a scenario description"));
+    }
+
+    if (!this.isNonEmptyString(content.positionA)) {
+      errors.push(this.makeError(index, "content.positionA", "Scenario debate requires a label for Position A"));
+    }
+
+    if (!this.isNonEmptyString(content.positionB)) {
+      errors.push(this.makeError(index, "content.positionB", "Scenario debate requires a label for Position B"));
+    }
+
+    return errors;
+  }
+
+  private validateGuidedPractice(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.hasMinItems(content.steps, 1)) {
+      errors.push(this.makeError(index, "content.steps", "Guided practice requires at least one step"));
+      return errors;
+    }
+
+    content.steps.forEach((step: any, i: number) => {
+      if (!this.isNonEmptyString(step.instruction)) {
+        errors.push(this.makeError(index, `content.steps[${i}].instruction`, "Each guided step requires an instruction"));
+      }
+    });
+
+    return errors;
+  }
+
+  private validateTryItSimulation(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.hasMinItems(content.targets, 1)) {
+      errors.push(this.makeError(index, "content.targets", "Try-It simulation requires at least one target"));
+      return errors;
+    }
+
+    content.targets.forEach((target: any, i: number) => {
+      if (!this.isNonEmptyString(target.label)) {
+        errors.push(this.makeError(index, `content.targets[${i}].label`, "Each target requires a label"));
+      }
+      if (target.order !== undefined && Number(target.order) < 1) {
+        errors.push(this.makeError(index, `content.targets[${i}].order`, "Target order must be at least 1"));
+      }
+    });
+
+    return errors;
+  }
+
+  private validateSoftwareSimulation(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.hasMinItems(content.steps, 1)) {
+      errors.push(this.makeError(index, "content.steps", "Software simulation requires at least one step"));
+      return errors;
+    }
+
+    content.steps.forEach((step: any, i: number) => {
+      if (!this.isNonEmptyString(step.title)) {
+        errors.push(this.makeError(index, `content.steps[${i}].title`, "Each software step requires a title"));
+      }
+      if (!this.isNonEmptyString(step.instruction)) {
+        errors.push(this.makeWarning(index, `content.steps[${i}].instruction`, "Each software step should include instruction text"));
+      }
+      if (!this.hasMinItems(step.hotspots, 1)) {
+        errors.push(this.makeError(index, `content.steps[${i}].hotspots`, "Each software step requires at least one hotspot"));
+      }
+    });
+
+    return errors;
+  }
+
+  private validateSandboxPractice(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.isNonEmptyString(content.prompt)) {
+      errors.push(this.makeError(index, "content.prompt", "Sandbox practice requires a prompt"));
+    }
+
+    if (!this.isNonEmptyString(content.referenceAnswer)) {
+      errors.push(this.makeWarning(index, "content.referenceAnswer", "Sandbox practice should include a reference answer"));
+    }
+
+    if (content.minChars !== undefined && Number(content.minChars) < 0) {
+      errors.push(this.makeError(index, "content.minChars", "Sandbox minChars must be 0 or greater"));
+    }
+
+    return errors;
+  }
+
+  private validateErrorIdentification(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.hasMinItems(content.tokens, 1)) {
+      errors.push(this.makeError(index, "content.tokens", "Error identification requires at least one token"));
+      return errors;
+    }
+
+    const hasAnyError = content.tokens.some((t: any) => t?.isError === true);
+    if (!hasAnyError) {
+      errors.push(this.makeWarning(index, "content.tokens", "Error identification should include at least one token marked as error"));
+    }
+
+    content.tokens.forEach((token: any, i: number) => {
+      if (!this.isNonEmptyString(token.text)) {
+        errors.push(this.makeError(index, `content.tokens[${i}].text`, "Each token requires text"));
+      }
+    });
+
+    if (content.maxSelections !== undefined && Number(content.maxSelections) < 1) {
+      errors.push(this.makeError(index, "content.maxSelections", "maxSelections must be at least 1"));
+    }
+
+    return errors;
   }
 }

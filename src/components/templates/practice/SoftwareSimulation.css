@@ -1,0 +1,110 @@
+.tpl-software-sim {
+  border: 1px solid #d9e2ec;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
+}
+
+.tpl-software-sim__title {
+  margin: 0 0 0.75rem;
+}
+
+.tpl-software-sim__viewer {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 0.75rem;
+}
+
+.tpl-software-sim__image {
+  position: relative;
+  min-height: 240px;
+  border: 1px solid #bcccdc;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f5f7fa;
+}
+
+.tpl-software-sim__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tpl-software-sim__placeholder {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #829ab1;
+}
+
+.tpl-software-sim__hotspot {
+  position: absolute;
+  border: 2px solid #334e68;
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 0.72rem;
+}
+
+.tpl-software-sim__hotspot.is-primary {
+  border-color: #1992d4;
+  background: rgba(217, 241, 255, 0.8);
+}
+
+.tpl-software-sim__instructions {
+  border: 1px solid #d9e2ec;
+  border-radius: 10px;
+  padding: 0.75rem;
+  background: #fcfdff;
+}
+
+.tpl-software-sim__instructions h4 {
+  margin: 0 0 0.4rem;
+}
+
+.tpl-software-sim__instructions ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.tpl-software-sim__message {
+  margin: 0.6rem 0 0;
+  color: #486581;
+}
+
+.tpl-software-sim__done {
+  color: #1f5130;
+  font-weight: 600;
+}
+
+.tpl-software-sim-editor {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.tpl-software-sim-editor label {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.tpl-software-sim-editor__step {
+  border: 1px solid #d9e2ec;
+  border-radius: 8px;
+  padding: 0.5rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.tpl-software-sim-editor__checkbox {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .tpl-software-sim__viewer {
+    grid-template-columns: 1fr;
+  }
+}

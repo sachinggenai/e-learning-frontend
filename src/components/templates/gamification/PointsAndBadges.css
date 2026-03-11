@@ -1,0 +1,97 @@
+.tpl-points-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.tpl-points-badges h3,
+.tpl-points-badges p {
+  margin: 0;
+}
+
+.tpl-points-badges__meter {
+  width: 100%;
+  height: 0.95rem;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.tpl-points-badges__meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2563eb, #ea580c);
+  transition: width 0.3s ease;
+}
+
+.tpl-points-badges__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tpl-points-badges__badge {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.7rem;
+  background: #f8fafc;
+  padding: 0.65rem 0.75rem;
+  cursor: pointer;
+  color: #0f172a;
+}
+
+.tpl-points-badges__badge.is-unlocked {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.tpl-points-badges__list li p {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.tpl-points-badges-editor {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.tpl-points-badges-editor label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.tpl-points-badges-editor input {
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.45rem 0.6rem;
+}
+
+.tpl-points-badges-editor__card {
+  border: 1px solid #dbeafe;
+  border-radius: 0.75rem;
+  background: #f8fbff;
+  padding: 0.7rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.tpl-points-badges-editor button {
+  justify-self: start;
+  border: 1px solid #2563eb;
+  border-radius: 0.5rem;
+  background: #2563eb;
+  color: #fff;
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
+}
