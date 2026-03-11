@@ -1,0 +1,132 @@
+.tpl-micro-cards {
+  max-width: 700px;
+  margin: 0 auto;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #ffffff;
+}
+
+.tpl-micro-cards--empty {
+  color: #6b7280;
+}
+
+.tpl-micro-cards__header h3 {
+  margin: 0;
+}
+
+.tpl-micro-cards__header p {
+  margin: 0.35rem 0 0;
+  color: #475569;
+}
+
+.tpl-micro-cards__card {
+  margin-top: 0.9rem;
+  border: 1px solid #dbeafe;
+  border-left: 6px solid #2563eb;
+  border-radius: 10px;
+  background: #eff6ff;
+  padding: 1rem;
+}
+
+.tpl-micro-cards__card h4 {
+  margin: 0 0 0.5rem;
+}
+
+.tpl-micro-cards__card p {
+  margin: 0;
+  color: #1e293b;
+  line-height: 1.5;
+}
+
+.tpl-micro-cards__actions {
+  margin-top: 0.9rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tpl-micro-cards__actions button {
+  border: 1px solid #94a3b8;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+}
+
+.tpl-micro-cards__actions button:last-child {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
+  color: #ffffff;
+}
+
+.tpl-micro-cards__actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tpl-micro-cards__progress {
+  margin: 0;
+  text-align: center;
+  color: #475569;
+  font-size: 0.875rem;
+}
+
+.tpl-micro-cards-editor {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.tpl-micro-cards-editor label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+}
+
+.tpl-micro-cards-editor input,
+.tpl-micro-cards-editor textarea {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.875rem;
+}
+
+.tpl-micro-cards-editor__card {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.75rem;
+  background: #f8fafc;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.tpl-micro-cards-editor__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tpl-micro-cards-editor__row > div {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.tpl-micro-cards-editor__row button,
+.tpl-micro-cards-editor__add {
+  border: 1px solid #94a3b8;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+}
+
+.tpl-micro-cards-editor__add {
+  border-style: dashed;
+}
+
+.tpl-micro-cards-editor__warning {
+  margin: 0;
+  color: #b45309;
+  font-size: 0.875rem;
+}

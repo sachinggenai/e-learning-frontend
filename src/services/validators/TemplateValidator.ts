@@ -112,8 +112,14 @@ export class TemplateValidator implements Validator {
         case "comparison-table":
           errors.push(...this.validateComparisonTable(page, index));
           break;
+        case "microlearning-cards":
+          errors.push(...this.validateMicrolearningCards(page, index));
+          break;
         case "flashcards":
           errors.push(...this.validateFlashcards(page, index));
+          break;
+        case "quick-tips":
+          errors.push(...this.validateQuickTips(page, index));
           break;
         case "image-hotspots":
           errors.push(...this.validateImageHotspots(page, index));
@@ -696,6 +702,27 @@ export class TemplateValidator implements Validator {
     return errors;
   }
 
+  private validateMicrolearningCards(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.hasMinItems(content.cards, 1)) {
+      errors.push(this.makeError(index, "content.cards", "Microlearning cards require at least one card"));
+      return errors;
+    }
+
+    content.cards.forEach((card: any, c: number) => {
+      if (!this.isNonEmptyString(card.title)) {
+        errors.push(this.makeWarning(index, `content.cards[${c}].title`, "Each microlearning card should include a title"));
+      }
+      if (!this.isNonEmptyString(card.body)) {
+        errors.push(this.makeWarning(index, `content.cards[${c}].body`, "Each microlearning card should include body text"));
+      }
+    });
+
+    return errors;
+  }
+
   private validateFlashcards(page: any, index: number): ValidationError[] {
     const errors: ValidationError[] = [];
     const content = page.content as any;
@@ -710,6 +737,25 @@ export class TemplateValidator implements Validator {
       const hasBack = this.isNonEmptyString(card.back) || this.isNonEmptyString(card.answer);
       if (!hasFront || !hasBack) {
         errors.push(this.makeWarning(index, `content.cards[${c}]`, "Each flashcard should include front and back content"));
+      }
+    });
+
+    return errors;
+  }
+
+  private validateQuickTips(page: any, index: number): ValidationError[] {
+    const errors: ValidationError[] = [];
+    const content = page.content as any;
+
+    if (!this.hasMinItems(content.tips, 1)) {
+      errors.push(this.makeError(index, "content.tips", "Quick tips require at least one tip"));
+      return errors;
+    }
+
+    content.tips.forEach((tip: any, t: number) => {
+      const hasTitle = this.isNonEmptyString(tip.title) || this.isNonEmptyString(tip.text);
+      if (!hasTitle) {
+        errors.push(this.makeWarning(index, `content.tips[${t}]`, "Each quick tip should include title or text"));
       }
     });
 

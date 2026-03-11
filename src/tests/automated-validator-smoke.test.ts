@@ -28,7 +28,7 @@ describe('Smoke Tests: Component Validation (Automated)', () => {
       'mcq', 'true-false', 'fill-blanks', 'matching', 'multiple-select',
       'scenario-question', 'knowledge-check', 'final-assessment',
       'flip-cards', 'click-reveal', 'drag-drop-sort', 'timeline',
-      'carousel', 'step-by-step', 'comparison-table', 'flashcards',
+      'carousel', 'step-by-step', 'comparison-table', 'microlearning-cards', 'flashcards', 'quick-tips',
       'image-hotspots', 'video-slide', 'infographic',
       'branching-scenario', 'case-study',
       'course-menu', 'resources-downloads', 'progress-tracker', 'quiz-game',
@@ -342,7 +342,9 @@ describe('Smoke Tests: Component Validation (Automated)', () => {
       { type: 'tabs', data: { tabs: [] } },
       { type: 'accordion', data: { items: [] } },
       { type: 'carousel', data: { slides: [] } },
+      { type: 'microlearning-cards', data: { cards: [] } },
       { type: 'flashcards', data: { cards: [] } },
+      { type: 'quick-tips', data: { tips: [] } },
     ];
 
     let totalErrors = 0;

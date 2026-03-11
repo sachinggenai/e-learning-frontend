@@ -86,8 +86,12 @@ const MatrixGridEditor = React.lazy(() => import('../templates/comparison/Matrix
 const MatrixGridPreview = React.lazy(() => import('../templates/comparison/MatrixGrid').then(m => ({ default: m.MatrixGridPreview })));
 
 // Microlearning
+const MicrolearningCardsEditor = React.lazy(() => import('../templates/microlearning/MicrolearningCards').then(m => ({ default: m.MicrolearningCardsEditor })));
+const MicrolearningCardsPreview = React.lazy(() => import('../templates/microlearning/MicrolearningCards').then(m => ({ default: m.MicrolearningCardsPreview })));
 const FlashcardsEditor = React.lazy(() => import('../templates/microlearning/Flashcards').then(m => ({ default: m.FlashcardsEditor })));
 const FlashcardsPreview = React.lazy(() => import('../templates/microlearning/Flashcards').then(m => ({ default: m.FlashcardsPreview })));
+const QuickTipsEditor = React.lazy(() => import('../templates/microlearning/QuickTips').then(m => ({ default: m.QuickTipsEditor })));
+const QuickTipsPreview = React.lazy(() => import('../templates/microlearning/QuickTips').then(m => ({ default: m.QuickTipsPreview })));
 
 // Media-Rich
 const ImageHotspotsEditor = React.lazy(() => import('../templates/media/ImageHotspots').then(m => ({ default: m.ImageHotspotsEditor })));
@@ -831,19 +835,69 @@ r({
 
 // ─── Microlearning ───────────────────────────────────────────────
 r({
+  typeId: 'microlearning-cards',
+  displayName: 'Microlearning Cards',
+  description: 'Bite-sized cards with optional auto-advance and progress tracking',
+  category: 'microlearning',
+  icon: 'square-stack',
+  tags: ['microlearning', 'cards', 'quick', 'bite-size'],
+  completionCapabilities: ['view', 'interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: {
+    heading: 'Microlearning Cards',
+    intro: '',
+    cards: [{ id: 'micro-card-1', title: 'Key Idea', body: 'Add short focused content here.' }],
+    shuffle: false,
+    autoAdvanceSec: 0,
+    showProgress: true,
+  },
+  sortOrder: 0,
+  editorComponent: MicrolearningCardsEditor,
+  previewComponent: MicrolearningCardsPreview,
+});
+
+r({
   typeId: 'flashcards',
   displayName: 'Flashcards',
-  description: 'Study flashcard deck with flip animation',
+  description: 'Study flashcard deck with flip interaction and completion state',
   category: 'microlearning',
   icon: 'layers',
   tags: ['flashcards', 'study', 'memorize', 'microlearning'],
-  completionCapabilities: ['interact'],
+  completionCapabilities: ['view', 'interact'],
   scoringEnabled: false,
   audioSupport: { perComponent: true, perInteraction: false },
-  defaultData: { title: '', cards: [] },
-  sortOrder: 0,
+  defaultData: {
+    title: 'Study Deck',
+    cards: [{ id: 'flashcard-1', front: 'Prompt', back: 'Answer' }],
+    shuffle: false,
+    requireFlipBeforeNext: false,
+  },
+  sortOrder: 1,
   editorComponent: FlashcardsEditor,
   previewComponent: FlashcardsPreview,
+});
+
+r({
+  typeId: 'quick-tips',
+  displayName: 'Quick Tips',
+  description: 'Compact practical tips with expandable details and done tracking',
+  category: 'microlearning',
+  icon: 'lightbulb',
+  tags: ['quick', 'tips', 'microlearning', 'checklist'],
+  completionCapabilities: ['view', 'interact'],
+  scoringEnabled: false,
+  audioSupport: { perComponent: true, perInteraction: false },
+  defaultData: {
+    heading: 'Quick Tips',
+    subtitle: '',
+    allowMarkDone: true,
+    showPriorityBadge: true,
+    tips: [{ id: 'quick-tip-1', title: 'Add your first tip', detail: 'Include practical guidance.', priority: 'medium' }],
+  },
+  sortOrder: 2,
+  editorComponent: QuickTipsEditor,
+  previewComponent: QuickTipsPreview,
 });
 
 // ─── Media-Rich ──────────────────────────────────────────────────

@@ -1,241 +1,263 @@
-/**
- * Flashcards — Study-style flashcard deck.
- *
- * Preview: Card stack with front/back flip and progress tracking.
- * Editor: Add/remove flashcards with term and definition.
- *
- * Category: microlearning
- */
-
-import React, { useState, useCallback } from 'react';
-import type { ComponentPreviewProps, ComponentEditorProps } from '../../../types/registry';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import type { ComponentEditorProps, ComponentPreviewProps } from '../../../types/registry';
+import './Flashcards.css';
 
 interface Flashcard {
   id: string;
-  term: string;
-  definition: string;
+  front: string;
+  back: string;
+  hint?: string;
 }
 
-// ─── Preview ──────────────────────────────────────────────────────
-export const FlashcardsPreview: React.FC<ComponentPreviewProps> = ({
-  data,
-  onInteraction,
-  onComplete,
-}) => {
-  const cards: Flashcard[] = data?.cards ?? [];
-  const [current, setCurrent] = useState(0);
+interface FlashcardsData {
+  title?: string;
+  cards?: Flashcard[];
+  shuffle?: boolean;
+  requireFlipBeforeNext?: boolean;
+}
+
+function normalizeCards(raw: FlashcardsData['cards']): Flashcard[] {
+  return (raw ?? []).map((card, index) => ({
+    id: card.id || `flashcard-${index + 1}`,
+    front: card.front || (card as any).term || '',
+    back: card.back || (card as any).definition || '',
+    hint: card.hint || '',
+  }));
+}
+
+function shuffleOnce<T>(items: T[]): T[] {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = copy[i];
+    copy[i] = copy[j];
+    copy[j] = tmp;
+  }
+  return copy;
+}
+
+export const FlashcardsPreview: React.FC<ComponentPreviewProps> = ({ data, componentId, onInteraction, onComplete }) => {
+  const d = data as FlashcardsData;
+  const sourceCards = useMemo(() => normalizeCards(d.cards), [d.cards]);
+  const cards = useMemo(() => (d.shuffle ? shuffleOnce(sourceCards) : sourceCards), [d.shuffle, sourceCards]);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
-  const [reviewed, setReviewed] = useState<Set<number>>(new Set());
+  const [flippedAtLeastOnce, setFlippedAtLeastOnce] = useState<Set<number>>(new Set());
+  const completedRef = useRef(false);
+
+  const isLast = currentIndex === cards.length - 1;
+  const current = cards[currentIndex];
 
   const flip = useCallback(() => {
-    setFlipped((f) => !f);
-  }, []);
-
-  const next = useCallback(() => {
-    setReviewed((prev) => {
+    setFlipped((prev) => !prev);
+    setFlippedAtLeastOnce((prev) => {
       const next = new Set(prev);
-      next.add(current);
-      if (next.size === cards.length) onComplete?.('');
+      next.add(currentIndex);
       return next;
     });
-    if (current < cards.length - 1) {
-      setCurrent((c) => c + 1);
-      setFlipped(false);
-    }
     onInteraction?.({
-      interactionType: 'flashcard-next',
-      componentId: '',
-      interactionId: cards[current]?.id ?? '',
-      value: current,
+      componentId,
+      interactionType: 'flashcard_flipped',
+      interactionId: current?.id,
+      value: { index: currentIndex, isBackVisible: !flipped },
+      completed: false,
     });
-  }, [current, cards, onInteraction, onComplete]);
+  }, [componentId, current?.id, currentIndex, flipped, onInteraction]);
 
-  const prev = useCallback(() => {
-    if (current > 0) {
-      setCurrent((c) => c - 1);
-      setFlipped(false);
+  const previous = useCallback(() => {
+    if (currentIndex === 0) {
+      return;
     }
-  }, [current]);
+    const nextIndex = currentIndex - 1;
+    setCurrentIndex(nextIndex);
+    setFlipped(false);
+    onInteraction?.({
+      componentId,
+      interactionType: 'flashcard_prev',
+      interactionId: cards[nextIndex]?.id,
+      value: { index: nextIndex },
+      completed: false,
+    });
+  }, [cards, componentId, currentIndex, onInteraction]);
+
+  const next = useCallback(() => {
+    if (d.requireFlipBeforeNext && !flippedAtLeastOnce.has(currentIndex)) {
+      return;
+    }
+
+    if (!isLast) {
+      const nextIndex = currentIndex + 1;
+      setCurrentIndex(nextIndex);
+      setFlipped(false);
+      onInteraction?.({
+        componentId,
+        interactionType: 'flashcard_next',
+        interactionId: cards[nextIndex]?.id,
+        value: { index: nextIndex },
+        completed: false,
+      });
+      return;
+    }
+
+    if (!flippedAtLeastOnce.has(currentIndex) || completedRef.current) {
+      return;
+    }
+
+    completedRef.current = true;
+    onInteraction?.({
+      componentId,
+      interactionType: 'flashcards_completed',
+      interactionId: current?.id,
+      value: { index: currentIndex },
+      completed: true,
+    });
+    onComplete?.(componentId);
+  }, [cards, componentId, current?.id, currentIndex, d.requireFlipBeforeNext, flippedAtLeastOnce, isLast, onComplete, onInteraction]);
 
   if (cards.length === 0) {
-    return <div style={{ padding: 20, color: '#94a3b8' }}>No flashcards configured.</div>;
+    return <div className="tpl-flashcards tpl-flashcards--empty">No flashcards configured.</div>;
   }
 
-  const card = cards[current];
+  const nextDisabled = d.requireFlipBeforeNext
+    ? !flippedAtLeastOnce.has(currentIndex)
+    : isLast && !flippedAtLeastOnce.has(currentIndex);
 
   return (
-    <div style={{ maxWidth: 480, margin: '0 auto' }}>
-      {data?.title && <h3 style={{ marginBottom: 16, textAlign: 'center' }}>{data.title}</h3>}
+    <section
+      className="tpl-flashcards"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          flip();
+        }
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          previous();
+        }
+        if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          next();
+        }
+      }}
+    >
+      {d.title ? <h3 className="tpl-flashcards__title">{d.title}</h3> : null}
 
-      <div
+      <button
+        type="button"
+        className={`tpl-flashcards__card${flipped ? ' is-flipped' : ''}`}
         onClick={flip}
-        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && flip()}
-        tabIndex={0}
-        role="button"
-        aria-label="Flip card"
-        style={{
-          perspective: 800,
-          cursor: 'pointer',
-          minHeight: 200,
-        }}
+        aria-label={`Flip card, currently showing ${flipped ? 'answer' : 'prompt'}`}
       >
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            minHeight: 200,
-            transition: 'transform 0.5s',
-            transformStyle: 'preserve-3d',
-            transform: flipped ? 'rotateY(180deg)' : 'none',
-          }}
-        >
-          <div
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              backfaceVisibility: 'hidden',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 32,
-              border: '1px solid #e2e8f0',
-              borderRadius: 12,
-              background: '#fff',
-              textAlign: 'center',
-              fontSize: 18,
-              fontWeight: 600,
-              color: '#1e293b',
-            }}
-          >
-            {card.term}
-            <span style={{ position: 'absolute', bottom: 12, fontSize: 11, color: '#94a3b8' }}>
-              Click to flip
-            </span>
-          </div>
-          <div
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              backfaceVisibility: 'hidden',
-              transform: 'rotateY(180deg)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 32,
-              border: '1px solid #3b82f6',
-              borderRadius: 12,
-              background: '#eff6ff',
-              textAlign: 'center',
-              fontSize: 15,
-              color: '#334155',
-              lineHeight: 1.6,
-            }}
-          >
-            {card.definition}
-          </div>
+        <div className="tpl-flashcards__face tpl-flashcards__face--front">
+          <span className="tpl-flashcards__label">Prompt</span>
+          <p>{current.front}</p>
+          {current.hint ? <small className="tpl-flashcards__hint">Hint: {current.hint}</small> : null}
         </div>
-      </div>
+        <div className="tpl-flashcards__face tpl-flashcards__face--back">
+          <span className="tpl-flashcards__label">Answer</span>
+          <p>{current.back}</p>
+        </div>
+      </button>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 20 }}>
-        <button
-          onClick={prev}
-          disabled={current === 0}
-          style={{
-            padding: '8px 20px',
-            border: '1px solid #e2e8f0',
-            borderRadius: 6,
-            background: '#fff',
-            cursor: current === 0 ? 'not-allowed' : 'pointer',
-            opacity: current === 0 ? 0.4 : 1,
-          }}
-        >
-          ←
-        </button>
-        <span style={{ fontSize: 13, color: '#64748b' }}>
-          {current + 1} / {cards.length} — {reviewed.size} reviewed
-        </span>
-        <button
-          onClick={next}
-          disabled={current === cards.length - 1}
-          style={{
-            padding: '8px 20px',
-            background: '#3b82f6',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 6,
-            fontWeight: 600,
-            cursor: current === cards.length - 1 ? 'not-allowed' : 'pointer',
-            opacity: current === cards.length - 1 ? 0.4 : 1,
-          }}
-        >
-          →
+      <div className="tpl-flashcards__controls">
+        <button type="button" onClick={previous} disabled={currentIndex === 0}>Previous</button>
+        <p className="tpl-flashcards__meta" aria-live="polite">
+          {currentIndex + 1} / {cards.length}
+        </p>
+        <button type="button" onClick={next} disabled={nextDisabled}>
+          {isLast ? 'Finish' : 'Next'}
         </button>
       </div>
-    </div>
+    </section>
   );
 };
 
-// ─── Editor ───────────────────────────────────────────────────────
-export const FlashcardsEditor: React.FC<ComponentEditorProps> = ({
-  data,
-  onChange,
-}) => {
-  const cards: Flashcard[] = data?.cards ?? [];
+export const FlashcardsEditor: React.FC<ComponentEditorProps> = ({ data, onChange }) => {
+  const d = data as FlashcardsData;
+  const cards = normalizeCards(d.cards);
 
-  const updateCard = (idx: number, field: keyof Flashcard, value: string) => {
-    const updated = [...cards];
-    updated[idx] = { ...updated[idx], [field]: value };
-    onChange({ data: { ...data, cards: updated } });
+  const update = (patch: Partial<FlashcardsData>) => {
+    onChange({ data: { ...d, ...patch } });
+  };
+
+  const updateCard = (index: number, patch: Partial<Flashcard>) => {
+    const nextCards = [...cards];
+    nextCards[index] = { ...nextCards[index], ...patch };
+    update({ cards: nextCards });
   };
 
   const addCard = () => {
-    onChange({
-      data: {
-        ...data,
-        cards: [...cards, { id: `fc-${Date.now()}`, term: '', definition: '' }],
-      },
+    update({
+      cards: [...cards, { id: `flashcard-${Date.now()}`, front: '', back: '', hint: '' }],
     });
   };
 
-  const removeCard = (idx: number) => {
-    onChange({ data: { ...data, cards: cards.filter((_, i) => i !== idx) } });
+  const removeCard = (index: number) => {
+    update({ cards: cards.filter((_, cardIndex) => cardIndex !== index) });
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>Title</label>
-        <input
-          type="text"
-          value={data?.title ?? ''}
-          onChange={(e) => onChange({ data: { ...data, title: e.target.value } })}
-          placeholder="Flashcard Set"
-          style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }}
-        />
-      </div>
+    <section className="tpl-flashcards-editor">
+      <label>
+        Title
+        <input value={d.title ?? ''} onChange={(event) => update({ title: event.target.value })} placeholder="Flashcard Set" />
+      </label>
 
-      {cards.map((card, idx) => (
-        <div key={card.id} style={{ border: '1px solid #e2e8f0', borderRadius: 6, padding: 12, marginBottom: 10, background: '#f9fafb' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-            <span style={{ fontWeight: 600, fontSize: 13 }}>Card {idx + 1}</span>
-            <button onClick={() => removeCard(idx)} style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: 18, cursor: 'pointer' }}>×</button>
+      <label>
+        <input
+          type="checkbox"
+          checked={d.shuffle === true}
+          onChange={(event) => update({ shuffle: event.target.checked })}
+        />
+        &nbsp;Shuffle deck on open
+      </label>
+
+      <label>
+        <input
+          type="checkbox"
+          checked={d.requireFlipBeforeNext === true}
+          onChange={(event) => update({ requireFlipBeforeNext: event.target.checked })}
+        />
+        &nbsp;Require flip before next
+      </label>
+
+      {cards.map((card, index) => (
+        <article className="tpl-flashcards-editor__card" key={card.id}>
+          <div className="tpl-flashcards-editor__row">
+            <strong>Card {index + 1}</strong>
+            <button type="button" onClick={() => removeCard(index)}>Remove</button>
           </div>
-          <div style={{ marginBottom: 8 }}>
-            <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Term</label>
-            <input type="text" value={card.term} onChange={(e) => updateCard(idx, 'term', e.target.value)} style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
-          </div>
-          <div>
-            <label style={{ display: 'block', fontSize: 11, marginBottom: 3 }}>Definition</label>
-            <textarea value={card.definition} onChange={(e) => updateCard(idx, 'definition', e.target.value)} rows={3} style={{ width: '100%', padding: '6px 8px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 13 }} />
-          </div>
-        </div>
+          <label>
+            Front
+            <input
+              value={card.front}
+              onChange={(event) => updateCard(index, { front: event.target.value })}
+              placeholder="Question or prompt"
+            />
+          </label>
+          <label>
+            Back
+            <textarea
+              rows={3}
+              value={card.back}
+              onChange={(event) => updateCard(index, { back: event.target.value })}
+              placeholder="Answer"
+            />
+          </label>
+          <label>
+            Hint
+            <input
+              value={card.hint ?? ''}
+              onChange={(event) => updateCard(index, { hint: event.target.value })}
+              placeholder="Optional hint"
+            />
+          </label>
+        </article>
       ))}
 
-      <button onClick={addCard} style={{ width: '100%', padding: 10, border: '2px dashed #cbd5e1', borderRadius: 6, background: 'transparent', color: '#3b82f6', fontWeight: 500, cursor: 'pointer' }}>
-        + Add Flashcard
-      </button>
-    </div>
+      <button type="button" className="tpl-flashcards-editor__add" onClick={addCard}>Add Flashcard</button>
+    </section>
   );
 };
