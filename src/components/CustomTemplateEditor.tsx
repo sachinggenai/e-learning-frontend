@@ -5,7 +5,7 @@
 
 import React, { useState } from "react";
 import { httpClient } from "../services/httpClient";
-import { useAppDispatch, useAppSelector } from "../store";
+import { useAppSelector } from "../store";
 import {
   EnhancedTemplate,
   FieldDefinition,
@@ -25,9 +25,8 @@ const CustomTemplateEditor: React.FC<CustomTemplateEditorProps> = ({
   onClose,
   existingTemplate,
 }) => {
-  const dispatch = useAppDispatch();
   const courseId = useAppSelector(
-    (state) => (state as any).course.currentCourse?.id,
+    (state) => (state as any).course.currentCourse?.courseId,
   );
 
   const [template, setTemplate] = useState<Partial<EnhancedTemplate>>(
@@ -140,13 +139,26 @@ const CustomTemplateEditor: React.FC<CustomTemplateEditorProps> = ({
         courseId: courseId?.toString(),
       } as EnhancedTemplate;
 
+      const payload = {
+        name: templateData.name,
+        description: templateData.metadata?.description || "Custom template",
+        category: templateData.category,
+        type: templateData.type,
+        fields: templateData.fields,
+        layout: templateData.layout,
+        styling: templateData.styling,
+        sampleContent: undefined,
+        isPublic: false,
+        tags: templateData.metadata?.tags || [],
+      };
+
       if (existingTemplate) {
         await httpClient.put(
-          `/templates/${existingTemplate.id}`,
-          templateData,
+          `/templates/enhanced/custom/${existingTemplate.templateId || existingTemplate.id}`,
+          payload,
         );
       } else {
-        await httpClient.post('/templates', templateData);
+        await httpClient.post('/templates/enhanced/custom', payload);
       }
 
       // Success - close the editor

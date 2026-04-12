@@ -5,7 +5,7 @@
 - [x] Production build created (`npm run build`)
 - [x] Build successful (153.12 kB main.js, 8.37 kB main.css)
 - [x] Environment variables configured (.env.production)
-- [x] Backend API URL set: `https://e-learning-backend-5rau.onrender.com/api/v1`
+- [x] Backend API URL set: `http://localhost:8000/api/v1`
 - [x] render.yaml blueprint created
 - [x] _redirects file for SPA routing
 - [x] .gitignore configured
@@ -33,7 +33,7 @@
 
 4. **Add Environment Variables**
    ```
-   REACT_APP_API_BASE = https://e-learning-backend-5rau.onrender.com/api/v1
+   REACT_APP_API_BASE = http://localhost:8000/api/v1
    NODE_VERSION = 18
    GENERATE_SOURCEMAP = false
    ```
@@ -133,8 +133,8 @@ File sizes after gzip:
 
 - Render Dashboard: https://dashboard.render.com
 - Render Docs: https://render.com/docs/static-sites
-- Your Backend: https://e-learning-backend-5rau.onrender.com
-- API Health Check: https://e-learning-backend-5rau.onrender.com/api/v1/health
+- Your Backend: http://localhost:8000
+- API Health Check: http://localhost:8000/api/v1/health
 
 ## 📝 Notes
 

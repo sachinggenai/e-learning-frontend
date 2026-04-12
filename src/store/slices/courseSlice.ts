@@ -14,7 +14,6 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { courseService } from "../../services/CourseService";
 import { pageService } from "../../services/PageService";
 import { Course as ApiCourse } from "../../types/course";
-import { httpClient } from "../../services/httpClient";
 import logger from "../../utils/logger";
 import { Page } from "./editorSlice";
 import { mapBackendPageToPage } from "../adapters/pageAdapter";
@@ -122,7 +121,7 @@ export const fetchCourse = createAsyncThunk(
 
 export const saveCourse = createAsyncThunk(
   "course/saveCourse",
-  async (course: Partial<Course>) => {
+  async (course: Partial<Course>, { getState }) => {
     logger.info({
       event: "course.save.started",
       message: "Course save operation initiated",
@@ -132,6 +131,46 @@ export const saveCourse = createAsyncThunk(
     if (!course.courseId?.trim()) throw new Error("Course ID is required");
     if (!course.title?.trim()) throw new Error("Course title is required");
 
+    const state: any = getState();
+    const componentsByPage: Record<string, any[]> = state?.components?.byPage || {};
+
+    const pagesPayload = (course.pages ?? []).map((p: any) => {
+      const fromComponentStore = Array.isArray(componentsByPage[p.id])
+        ? componentsByPage[p.id]
+        : [];
+
+      const normalizedComponents = fromComponentStore.length
+        ? fromComponentStore.map((c: any) => ({
+            componentType: c.componentType || c.typeId || p.templateType || "content-text",
+            data: c.data || {},
+            audioConfig: c.audioConfig,
+            completionCriteria: c.completionCriteria,
+            styling: c.styling,
+          }))
+        : Array.isArray(p.components) && p.components.length
+          ? p.components.map((c: any) => ({
+              componentType: c.componentType || c.typeId || p.templateType || "content-text",
+              data: c.data || {},
+              audioConfig: c.audioConfig,
+              completionCriteria: c.completionCriteria,
+              styling: c.styling,
+            }))
+          : [
+              {
+                // Legacy editor pages store content at page-level; preserve it as a single component.
+                componentType: p.templateType || "content-text",
+                data: p.content || {},
+              },
+            ];
+
+      return {
+        pageId: p.id,
+        title: p.title,
+        order: typeof p.order === "number" ? p.order : 0,
+        components: normalizedComponents,
+      };
+    });
+
     // Build an ApiCourse payload from the slice-local Course
     const payload: Partial<ApiCourse> = {
       courseId: course.courseId!,
@@ -139,6 +178,7 @@ export const saveCourse = createAsyncThunk(
       author: course.author ?? "Course Author",
       description: course.description ?? "",
       status: course.status ?? "draft",
+      pages: pagesPayload,
     };
 
     const saved = await courseService.saveCourse(payload as ApiCourse);
@@ -166,8 +206,7 @@ export const saveCourse = createAsyncThunk(
 export const fetchTemplates = createAsyncThunk(
   "course/fetchTemplates",
   async (_: any) => {
-    const { data } = await httpClient.get('/courses/templates/available');
-    const backendTemplates = data.templates || [];
+    const backendTemplates = await courseService.listAvailableTemplates();
 
     const legacyNormalize = (tpls: any[]): Template[] => {
       const categoryToType: Record<string, string> = {
@@ -209,8 +248,33 @@ export const createPageFromTemplate = createAsyncThunk(
     pageTitle: string;
     customizations?: Record<string, any>;
     pageOrder?: number;
-  }) => {
+  }, { getState, rejectWithValue }) => {
     const { courseId, templateId, pageTitle, customizations = {} } = params;
+    const courseIdStr = String(courseId);
+
+    const ensureCoursePersisted = async () => {
+      try {
+        await courseService.getCourse(courseIdStr);
+        return;
+      } catch (error: any) {
+        if (error?.status !== 404) {
+          throw error;
+        }
+      }
+
+      const state: any = getState();
+      const currentCourse = state?.course?.currentCourse;
+      const title = currentCourse?.title || "Untitled Course";
+
+      await courseService.createCourse({
+        courseId: courseIdStr,
+        title,
+        author: currentCourse?.author || "Course Author",
+        description: currentCourse?.description || "",
+        status: currentCourse?.status || "draft",
+        pages: [],
+      } as any);
+    };
 
     // Build a spec-compliant PageCreateRequest (POST /courses/{courseId}/pages)
     // The template's componentType and customization data are sent as the initial component.
@@ -227,12 +291,37 @@ export const createPageFromTemplate = createAsyncThunk(
       ],
     };
 
-    const { data } = await httpClient.post(
-      `/courses/${courseId}/pages`,
-      pageCreateRequest
-    );
-    // Backend returns a PageResponse directly
-    return data;
+    try {
+      await ensureCoursePersisted();
+
+      const data = await pageService.createPage(courseIdStr, pageCreateRequest);
+
+      // Backend returns a PageResponse directly
+      return data;
+    } catch (error: any) {
+      // Some backends can return 500 on FK violation when course record is missing.
+      // Retry once after creating the parent course record.
+      const message = JSON.stringify(error?.raw || error || "").toLowerCase();
+      const fkLikeError =
+        error?.status === 500 &&
+        (message.includes("foreign key") ||
+          message.includes("constraint") ||
+          message.includes("course") ||
+          message.includes("not found"));
+
+      if (fkLikeError) {
+        try {
+          const retry = await pageService.createPage(courseIdStr, pageCreateRequest);
+          return retry;
+        } catch (retryError: any) {
+          return rejectWithValue(
+            retryError?.message || "Failed to create page after course bootstrap"
+          );
+        }
+      }
+
+      return rejectWithValue(error?.message || "Failed to create page from template");
+    }
   }
 );
 

@@ -24,7 +24,7 @@ The production build is ready in the `build/` directory.
    - **Branch:** `main` (or your default branch)
 
 3. **Environment Variables:**
-   - `REACT_APP_API_BASE`: `https://e-learning-backend-5rau.onrender.com/api/v1`
+   - `REACT_APP_API_BASE`: `http://localhost:8000/api/v1`
    - `NODE_VERSION`: `18`
    - `GENERATE_SOURCEMAP`: `false`
 
@@ -68,7 +68,7 @@ serve -s build
 ## Environment Configuration
 
 Production environment uses `.env.production`:
-- Backend API: `https://e-learning-backend-5rau.onrender.com/api/v1`
+- Backend API: `http://localhost:8000/api/v1`
 - Source maps: Disabled for security
 
 ## Build Output

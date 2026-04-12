@@ -11,7 +11,37 @@
  */
 
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { Search, X } from 'lucide-react';
+import {
+  Accessibility,
+  Activity,
+  Award,
+  BarChart3,
+  Box,
+  Brain,
+  CheckSquare,
+  Columns,
+  Film,
+  GitBranch,
+  Layout,
+  LayoutGrid,
+  Map as MapIcon,
+  MessageCircle,
+  MousePointer,
+  MousePointerClick,
+  Navigation,
+  PlayCircle,
+  Route,
+  Search,
+  Shield,
+  ShieldCheck,
+  Trophy,
+  Users,
+  Wrench,
+  X,
+  Zap,
+  Eye,
+  LucideIcon,
+} from 'lucide-react';
 import { registry } from './registry';
 import { ComponentDefinition, CategoryDefinition } from '../types/registry';
 import './ComponentPicker.css';
@@ -231,6 +261,10 @@ interface ComponentCardProps {
 }
 
 const ComponentCard: React.FC<ComponentCardProps> = React.memo(({ definition, onSelect }) => {
+  const category = registry.getCategory(definition.category);
+  const iconKey = definition.icon || category?.icon;
+  const CategoryIcon = resolveCategoryIcon(iconKey, definition.category);
+
   return (
     <button
       className="component-card"
@@ -240,7 +274,7 @@ const ComponentCard: React.FC<ComponentCardProps> = React.memo(({ definition, on
     >
       <div className="component-card__header">
         <span className="component-card__icon" aria-hidden="true">
-          {getIconEmoji(definition.category)}
+          <CategoryIcon size={18} />
         </span>
         <span className="component-card__name">{definition.displayName}</span>
       </div>
@@ -261,28 +295,60 @@ const ComponentCard: React.FC<ComponentCardProps> = React.memo(({ definition, on
 });
 ComponentCard.displayName = 'ComponentCard';
 
-// Simple category → emoji mapping (can be replaced with Lucide icons)
-function getIconEmoji(category: string): string {
-  const map: Record<string, string> = {
-    'content-presentation': '📄',
-    'process-flow': '🔀',
-    'interaction': '🖱️',
-    'scenario': '🎭',
-    'assessment': '✅',
-    'comparison': '⚖️',
-    'media-rich': '🎬',
-    'microlearning': '⚡',
-    'navigation': '🗺️',
-    'gamification': '🏆',
-    'compliance': '🛡️',
-    'diagnostic': '🧠',
-    'practice': '🔧',
-    'feedback': '💬',
-    'social': '👥',
-    'accessibility': '♿',
-    'analytics': '📊',
-  };
-  return map[category] || '📦';
+const iconByName: Record<string, LucideIcon> = {
+  // Backend category icon aliases
+  'layout': Layout,
+  'layout-grid': LayoutGrid,
+  'git-branch': GitBranch,
+  'mouse-pointer': MousePointer,
+  'mouse-pointer-click': MousePointerClick,
+  'map': MapIcon,
+  'route': Route,
+  'check-square': CheckSquare,
+  'columns': Columns,
+  'film': Film,
+  'play-circle': PlayCircle,
+  'navigation': Navigation,
+  'award': Award,
+  'shield': Shield,
+  'shield-check': ShieldCheck,
+  'activity': Activity,
+  'tool': Wrench,
+  'wrench': Wrench,
+  'message-circle': MessageCircle,
+  'users': Users,
+  'accessibility': Accessibility,
+  'eye': Eye,
+  'bar-chart': BarChart3,
+  'bar-chart-3': BarChart3,
+  'brain': Brain,
+  'trophy': Trophy,
+  'zap': Zap,
+};
+
+const iconByCategory: Record<string, LucideIcon> = {
+  'content-presentation': LayoutGrid,
+  'process-flow': GitBranch,
+  'interaction': MousePointerClick,
+  'scenario': Route,
+  'assessment': CheckSquare,
+  'comparison': Columns,
+  'media-rich': Film,
+  'microlearning': Zap,
+  'navigation': MapIcon,
+  'gamification': Trophy,
+  'compliance': ShieldCheck,
+  'diagnostic': Brain,
+  'practice': Wrench,
+  'feedback': MessageCircle,
+  'social': Users,
+  'accessibility': Accessibility,
+  'analytics': BarChart3,
+};
+
+function resolveCategoryIcon(iconName: string | undefined, categoryId: string) {
+  if (iconName && iconByName[iconName]) return iconByName[iconName];
+  return iconByCategory[categoryId] || Box;
 }
 
 export default ComponentPicker;

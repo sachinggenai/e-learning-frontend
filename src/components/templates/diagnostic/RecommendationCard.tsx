@@ -50,7 +50,7 @@ export const RecommendationCardPreview: React.FC<ComponentPreviewProps> = ({
         completed: false,
       });
     });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [componentId, onInteraction, visible]);
 
   const handleCta = (item: RecommendationItem) => {
     onInteraction?.({

@@ -80,8 +80,26 @@ export const recordInteraction = createAsyncThunk(
 
 export const submitPageComplete = createAsyncThunk(
   'completion/submitPageComplete',
-  async ({ courseId, pageId }: { courseId: string; pageId: string }) => {
-    return await completionService.submitPageCompletion(courseId, pageId);
+  async (
+    {
+      courseId,
+      pageId,
+      componentStates,
+    }: {
+      courseId: string;
+      pageId: string;
+      componentStates: Array<{
+        componentId: string;
+        completed: boolean;
+        interactionsCompleted?: string[];
+        audiosCompleted?: string[];
+        score?: number | null;
+      }>;
+    }
+  ) => {
+    return await completionService.submitPageCompletion(courseId, pageId, {
+      componentStates,
+    });
   }
 );
 

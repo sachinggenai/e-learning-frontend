@@ -77,16 +77,40 @@ const Header: React.FC<HeaderProps> = ({
       return;
     }
     try {
-      // Check validation errors first (from useValidation hook, not API errors)
-      if (errors.length > 0) {
+      // Always validate against latest in-memory state before export.
+      const freshValidation = await validate(course);
+      const errorCount = freshValidation.errors.filter((e) => e.level === "error").length;
+      const warnCount = freshValidation.errors.filter((e) => e.level === "warning").length;
+
+      // Block export only for error-level validation issues.
+      if (errorCount > 0) {
+        const detail = [
+          errorCount > 0 ? `${errorCount} error${errorCount > 1 ? "s" : ""}` : "",
+          warnCount > 0 ? `${warnCount} warning${warnCount > 1 ? "s" : ""}` : "",
+        ]
+          .filter(Boolean)
+          .join(", ");
+
         showToast(
           t(
             "export.validation.block",
             "Please fix {count} validation error(s) before exporting"
-          ).replace("{count}", String(errors.length)),
+          ).replace("{count}", String(errorCount || freshValidation.errors.length)) +
+            (detail ? ` (${detail})` : ""),
           "error"
         );
         return;
+      }
+
+      // Warn but allow export when only warnings are present.
+      if (warnCount > 0) {
+        showToast(
+          t(
+            "export.validation.warning",
+            "Continuing export with {count} warning(s)"
+          ).replace("{count}", String(warnCount)),
+          "warning"
+        );
       }
 
       setIsExporting(true);
@@ -102,7 +126,7 @@ const Header: React.FC<HeaderProps> = ({
 
       console.log("Starting SCORM export for course:", course.courseId);
 
-      const result = await exportService.exportScorm(course.courseId, 'scorm_1_2');
+      const result = await exportService.exportScorm(course.courseId, "scorm_1_2");
 
       if (result.success && result.downloadUrl) {
         // Trigger download of the ZIP file
@@ -133,10 +157,19 @@ const Header: React.FC<HeaderProps> = ({
         ),
         "error"
       );
+      const errorDetails = Array.isArray(error?.errors)
+        ? error.errors.map((e: any) => e?.msg || e?.message || JSON.stringify(e)).join("; ")
+        : undefined;
+
       logger.error({
         event: "course.export.error",
         message: "Course export failed",
-        context: { courseId: course?.courseId, error: error.message },
+        context: {
+          courseId: course?.courseId,
+          error: error?.message,
+          status: error?.status,
+          details: errorDetails,
+        },
       });
     } finally {
       setIsExporting(false);

@@ -65,7 +65,7 @@ export const DiagnosticQuizPreview: React.FC<ComponentPreviewProps> = ({
       value: topics,
       completed: false,
     });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [componentId, onInteraction, topics]);
 
   const handleSubmit = () => {
     const scores: Record<string, { earned: number; total: number }> = {};

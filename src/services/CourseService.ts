@@ -8,6 +8,7 @@
  *   POST   /courses                    — create course
  *   GET    /courses/{courseId}          — get course
  *   PATCH  /courses/{courseId}          — update course
+ *   PUT    /courses/{courseId}          — upsert course
  *   DELETE /courses/{courseId}          — delete course
  *   POST   /courses/{courseId}/export   — export (delegated to ExportService)
  */
@@ -48,65 +49,58 @@ class CourseService {
     return data;
   }
 
+  /** Idempotent upsert: creates when absent, updates when present. */
+  async upsertCourse(courseId: string, request: CourseCreateRequest): Promise<Course> {
+    const { data } = await httpClient.put(`/courses/${courseId}`, request);
+    return data;
+  }
+
   /** Delete a course. */
   async deleteCourse(courseId: string): Promise<void> {
     await httpClient.delete(`/courses/${courseId}`);
   }
 
   /**
-   * Save a course — creates if new, updates if existing.
-   * This is a convenience wrapper that mirrors the legacy apiService.saveCourse() behaviour.
+   * Save a course using backend upsert (single PUT call).
+   * This avoids PATCH->404->POST fallback noise and reduces race conditions.
    */
   async saveCourse(course: Course): Promise<Course> {
-    try {
-      // Try PATCH first (update existing)
-      return await this.updateCourse(course.courseId, {
-        title: course.title,
-        author: course.author,
-        language: course.language,
-        description: course.description,
-        version: course.version,
-        navigation: course.navigation,
-        settings: course.settings,
-        scoring: course.scoring ?? undefined,
-        status: course.status,
-      });
-    } catch (error: any) {
-      // If 404, course doesn't exist yet — create it
-      if (error.status === 404) {
-        return this.createCourse({
-          courseId: course.courseId,
-          title: course.title,
-          author: course.author,
-          language: course.language,
-          description: course.description,
-          version: course.version,
-          pages: course.pages?.map((p) => ({
-            title: p.title,
-            components: p.components?.map((c) => ({
-              componentType: c.componentType,
-              data: c.data,
-              audioConfig: c.audioConfig,
-              completionCriteria: c.completionCriteria,
-              styling: c.styling,
-            })),
-            pageCompletion: p.pageCompletion,
-            layout: p.layout,
-            theme: p.theme,
-          })),
-          navigation: course.navigation,
-          settings: course.settings,
-          scoring: course.scoring ?? undefined,
-        });
-      }
-      throw error;
-    }
+    return this.upsertCourse(course.courseId, {
+      courseId: course.courseId,
+      title: course.title,
+      author: course.author,
+      language: course.language,
+      description: course.description,
+      version: course.version,
+      pages: course.pages?.map((p) => ({
+        title: p.title,
+        components: p.components?.map((c) => ({
+          componentType: c.componentType,
+          data: c.data,
+          audioConfig: c.audioConfig,
+          completionCriteria: c.completionCriteria,
+          styling: c.styling,
+        })),
+        pageCompletion: p.pageCompletion,
+        layout: p.layout,
+        theme: p.theme,
+      })),
+      navigation: course.navigation,
+      settings: course.settings,
+      scoring: course.scoring ?? undefined,
+    });
   }
 
   /** Validate course data without persisting. */
   async validateCourse(course: Course | CourseCreateRequest): Promise<CourseValidationResponse> {
-    const { data } = await httpClient.post('/export/validate', course);
+    const { data } = await httpClient.post('/courses/validate', { courseData: course });
     return data;
+  }
+
+  /** List available page templates for add-page flow. */
+  async listAvailableTemplates(): Promise<any[]> {
+    const { data } = await httpClient.get('/courses/templates/available');
+    return data?.templates || [];
   }
 }
 

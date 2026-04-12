@@ -8,6 +8,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { httpClient } from "./services/httpClient";
+import { registryService } from "./services/RegistryService";
 import { useAppSelector } from "./store";
 
 // Component imports
@@ -23,6 +24,7 @@ import { ToastProvider } from "./components/Toast";
 
 // Initialize component registry (self-registering side-effect import)
 import "./components/registry/registrations";
+import { registry } from "./components/registry";
 // Import template styles
 import "./components/templates/TemplateStyles.css";
 
@@ -67,6 +69,69 @@ const AppContent: React.FC = () => {
     };
 
     checkBackend();
+  }, []);
+
+  // Validate backend registry metadata against local self-registered components.
+  useEffect(() => {
+    let disposed = false;
+
+    const syncRegistryContracts = async () => {
+      try {
+        const [typesResponse, categoriesResponse] = await Promise.all([
+          registryService.listTypes({ page: 1, limit: 200 }),
+          registryService.listCategories(),
+        ]);
+
+        if (disposed) return;
+
+        const backendTypeIds = new Set(typesResponse.items.map((item) => item.typeId));
+        const localTypeIds = new Set(registry.getAll().map((item) => item.typeId));
+        const backendCategoryIds = new Set(
+          categoriesResponse.categories.map((item) => item.categoryId)
+        );
+        const localCategoryIds = new Set(
+          registry.getCategories().map((item) => item.categoryId)
+        );
+
+        const missingInFrontend = Array.from(backendTypeIds).filter((id) => !localTypeIds.has(id));
+        const missingInBackend = Array.from(localTypeIds).filter((id) => !backendTypeIds.has(id));
+        const categoryOnlyInFrontend = Array.from(localCategoryIds).filter(
+          (id) => !backendCategoryIds.has(id)
+        );
+        const categoryOnlyInBackend = Array.from(backendCategoryIds).filter(
+          (id) => !localCategoryIds.has(id)
+        );
+
+        if (
+          missingInFrontend.length ||
+          missingInBackend.length ||
+          categoryOnlyInFrontend.length ||
+          categoryOnlyInBackend.length
+        ) {
+          console.warn("[Registry Sync] Metadata drift detected", {
+            backendTypes: backendTypeIds.size,
+            frontendTypes: localTypeIds.size,
+            missingInFrontend,
+            missingInBackend,
+            categoryOnlyInFrontend,
+            categoryOnlyInBackend,
+          });
+          return;
+        }
+
+        console.info("[Registry Sync] Frontend and backend registry metadata are aligned", {
+          components: localTypeIds.size,
+          categories: localCategoryIds.size,
+        });
+      } catch (error) {
+        console.warn("[Registry Sync] Unable to verify registry metadata", error);
+      }
+    };
+
+    syncRegistryContracts();
+    return () => {
+      disposed = true;
+    };
   }, []);
 
   // Handle view switching

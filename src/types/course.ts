@@ -533,8 +533,21 @@ export interface InteractionEvent {
   pageId: string;
   componentId: string;
   interactionType: InteractionType;
+  learnerId?: string | null;
   data?: InteractionData;
   completed?: boolean;
+}
+
+export interface PageCompletionComponentState {
+  componentId: string;
+  completed: boolean;
+  interactionsCompleted?: string[] | null;
+  audiosCompleted?: string[] | null;
+  score?: number | null;
+}
+
+export interface PageCompletionEventRequest {
+  componentStates: PageCompletionComponentState[];
 }
 
 // ─── Score Calculation ───────────────────────────────────────────
@@ -636,7 +649,7 @@ export interface MediaUploadResponse {
 
 // ─── Reorder ─────────────────────────────────────────────────────
 export interface ReorderRequest {
-  orderedIds: string[];
+  orderedIds: Array<string | number>;
 }
 
 // ─── Legacy data types (kept for backward compat) ────────────────

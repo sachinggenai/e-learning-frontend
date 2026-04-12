@@ -26,7 +26,7 @@ async function checkBackendAPI() {
     const req = http.request(
       {
         hostname: "localhost",
-        port: 8003,
+        port: 8000,
         path: "/api/v1/health",
         method: "GET",
         timeout: 2000,

@@ -7,7 +7,7 @@ services:
       - key: NODE_VERSION
         value: 22.16.0
       - key: REACT_APP_API_BASE
-        value: https://e-learning-backend-5rau.onrender.com/api/v1
+        value: http://localhost:8000/api/v1
       - key: GENERATE_SOURCEMAP
         value: false
     headers:

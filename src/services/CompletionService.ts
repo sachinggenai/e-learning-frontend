@@ -14,6 +14,7 @@ import {
   CourseCompletionResponse,
   PageCompletionResponse,
   InteractionEvent,
+  PageCompletionEventRequest,
 } from '../types/course';
 
 class CompletionService {
@@ -27,8 +28,15 @@ class CompletionService {
     return data;
   }
 
-  async submitPageCompletion(courseId: string, pageId: string): Promise<PageCompletionResponse> {
-    const { data } = await httpClient.post(`/courses/${courseId}/pages/${pageId}/completion`, {});
+  async submitPageCompletion(
+    courseId: string,
+    pageId: string,
+    payload: PageCompletionEventRequest,
+  ): Promise<PageCompletionResponse> {
+    const { data } = await httpClient.post(
+      `/courses/${courseId}/pages/${pageId}/completion`,
+      payload,
+    );
     return data;
   }
 
@@ -37,8 +45,19 @@ class CompletionService {
     return data;
   }
 
-  async listInteractions(courseId: string): Promise<any[]> {
-    const { data } = await httpClient.get(`/courses/${courseId}/interactions`);
+  async listInteractions(
+    courseId: string,
+    filters?: {
+      learnerId?: string;
+      interactionType?: string;
+      pageId?: string;
+      limit?: number;
+      offset?: number;
+    },
+  ): Promise<any[]> {
+    const { data } = await httpClient.get(`/courses/${courseId}/interactions`, {
+      params: filters,
+    });
     return data;
   }
 }

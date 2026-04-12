@@ -103,7 +103,7 @@ const PageManager: React.FC = () => {
 
   const handleAddPage = () => {
     // console.log("handleAddPage clicked. Checking for current course..."); // Removed debug log
-    if (currentCourse?.id) {
+    if (currentCourse?.courseId || currentCourse?.id) {
       // console.log("Course found. Opening template selector.", currentCourse); // Removed debug log
       setShowTemplateSelector(true);
       logger.info({

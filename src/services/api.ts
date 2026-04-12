@@ -123,11 +123,9 @@ class ApiService {
         rawObject = courseData;
       }
       const transformed = transformCourseForBackend(rawObject);
-      const courseString = JSON.stringify(transformed);
-
       // Validate data structure before sending (development only)
       if (process.env.NODE_ENV === "development") {
-        const parsedData = JSON.parse(courseString);
+        const parsedData = transformed;
         console.log("🔍 API Validation - Course data structure check:");
         console.log(
           "   ✅ Navigation linearProgression:",
@@ -141,22 +139,21 @@ class ApiService {
       }
 
       const backendRequest = {
-        course: courseString,
+        courseData: transformed,
       };
 
       const response: AxiosResponse<any> = await this.client.post(
-        "/export/validate",
+        "/courses/validate",
         backendRequest
       );
 
       // Transform backend response to match frontend interface
       const backendData = response.data;
-      const validationBlock = backendData.validation || {};
-      const errors = Array.isArray(validationBlock.errors)
-        ? validationBlock.errors
+      const errors = Array.isArray(backendData.errors)
+        ? backendData.errors
         : [];
       return {
-        valid: !!(validationBlock.valid ?? backendData.success),
+        valid: !!backendData.valid,
         errors: errors.map((e: any) => ({
           field: e.field || "validation",
           message: e.message || JSON.stringify(e),
@@ -522,7 +519,7 @@ class ApiService {
       formData.append("file", file);
 
       const response: AxiosResponse = await this.client.post(
-        "/assets/upload",
+        "/media/upload",
         formData,
         {
           headers: {
@@ -543,7 +540,7 @@ class ApiService {
    */
   async deleteAsset(assetId: string): Promise<void> {
     try {
-      await this.client.delete(`/assets/${assetId}`);
+      await this.client.delete(`/media/files/${assetId}`);
     } catch (error) {
       console.error("Asset deletion failed:", error);
       throw new Error("Failed to delete asset");
@@ -560,7 +557,7 @@ class ApiService {
   async createEnhancedTemplate(template: any): Promise<any> {
     try {
       const response: AxiosResponse = await this.client.post(
-        "/enhanced_templates",
+        "/templates/enhanced/custom",
         template
       );
       return response.data;
@@ -576,7 +573,7 @@ class ApiService {
   async getEnhancedTemplates(): Promise<any[]> {
     try {
       const response: AxiosResponse = await this.client.get(
-        "/enhanced_templates"
+        "/templates/enhanced/custom"
       );
       return response.data;
     } catch (error) {
@@ -591,7 +588,7 @@ class ApiService {
   async getEnhancedTemplate(templateId: string): Promise<any> {
     try {
       const response: AxiosResponse = await this.client.get(
-        `/enhanced_templates/${templateId}`
+        `/templates/enhanced/custom/${templateId}`
       );
       return response.data;
     } catch (error) {
@@ -609,7 +606,7 @@ class ApiService {
   ): Promise<any> {
     try {
       const response: AxiosResponse = await this.client.put(
-        `/enhanced_templates/${templateId}`,
+        `/templates/enhanced/custom/${templateId}`,
         updates
       );
       return response.data;
@@ -624,7 +621,7 @@ class ApiService {
    */
   async deleteEnhancedTemplate(templateId: string): Promise<void> {
     try {
-      await this.client.delete(`/enhanced_templates/${templateId}`);
+      await this.client.delete(`/templates/enhanced/custom/${templateId}`);
     } catch (error) {
       console.error("Enhanced template deletion failed:", error);
       throw new Error("Failed to delete enhanced template");

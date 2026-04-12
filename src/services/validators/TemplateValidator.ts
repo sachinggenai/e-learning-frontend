@@ -314,13 +314,14 @@ export class TemplateValidator implements Validator {
   private validateTabs(page: any, index: number): ValidationError[] {
     const errors: ValidationError[] = [];
     const content = page.content as any;
+    const tabs = this.resolveTabsData(page, content);
 
-    if (!this.hasMinItems(content.tabs, 1)) {
+    if (!this.hasMinItems(tabs, 1)) {
       errors.push(this.makeError(index, "content.tabs", "Tabs must include at least one tab"));
       return errors;
     }
 
-    content.tabs.forEach((tab: any, t: number) => {
+    tabs.forEach((tab: any, t: number) => {
       if (!this.isNonEmptyString(tab.title)) {
         errors.push(this.makeError(index, `content.tabs[${t}].title`, "Each tab needs a title"));
       }
@@ -997,6 +998,27 @@ export class TemplateValidator implements Validator {
 
   private isNonEmptyString(value: any): boolean {
     return typeof value === "string" && value.trim().length > 0;
+  }
+
+  private resolveTabsData(page: any, content: any): any[] {
+    if (Array.isArray(content?.tabs) && content.tabs.length > 0) {
+      return content.tabs;
+    }
+
+    if (!Array.isArray(page?.components)) {
+      return content?.tabs || [];
+    }
+
+    const tabsComponent = page.components.find(
+      (component: any) =>
+        component?.componentType === "tabs" || component?.type === "tabs"
+    );
+
+    if (Array.isArray(tabsComponent?.data?.tabs)) {
+      return tabsComponent.data.tabs;
+    }
+
+    return content?.tabs || [];
   }
 
   private hasMinItems(value: any, min: number): boolean {

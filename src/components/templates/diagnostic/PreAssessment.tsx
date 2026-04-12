@@ -47,7 +47,7 @@ export const PreAssessmentPreview: React.FC<ComponentPreviewProps> = ({
       value: { questionCount: questions.length },
       completed: false,
     });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [componentId, onInteraction, questions.length]);
 
   const setAnswer = (qId: string, value: string | boolean) => {
     setAnswers((prev) => ({ ...prev, [qId]: value }));
