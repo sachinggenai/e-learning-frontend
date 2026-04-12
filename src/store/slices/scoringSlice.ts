@@ -7,6 +7,7 @@
 
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { scoringService } from '../../services/ScoringService';
+import { handleApiError } from '../../services/errorHandler';
 import {
   ComponentAnswer,
   ComponentResult,
@@ -57,15 +58,25 @@ const initialState: ScoringSliceState = {
 
 export const fetchScoringConfig = createAsyncThunk(
   'scoring/fetchConfig',
-  async (courseId: string) => {
-    return await scoringService.getScoringConfig(courseId);
+  async (courseId: string, { rejectWithValue }) => {
+    try {
+      return await scoringService.getScoringConfig(courseId);
+    } catch (error) {
+      const handled = handleApiError(error);
+      return rejectWithValue(handled.message);
+    }
   }
 );
 
 export const updateScoringConfig = createAsyncThunk(
   'scoring/updateConfig',
-  async ({ courseId, config }: { courseId: string; config: ScoringConfig }) => {
-    return await scoringService.updateScoringConfig(courseId, config);
+  async ({ courseId, config }: { courseId: string; config: ScoringConfig }, { rejectWithValue }) => {
+    try {
+      return await scoringService.updateScoringConfig(courseId, config);
+    } catch (error) {
+      const handled = handleApiError(error);
+      return rejectWithValue(handled.message);
+    }
   }
 );
 
@@ -79,18 +90,28 @@ export const calculateScore = createAsyncThunk(
     courseId: string;
     answers: ComponentAnswer[];
     attemptNumber?: number;
-  }) => {
-    return await scoringService.calculateScore(courseId, {
-      answers,
-      attemptNumber,
-    });
+  }, { rejectWithValue }) => {
+    try {
+      return await scoringService.calculateScore(courseId, {
+        answers,
+        attemptNumber,
+      });
+    } catch (error) {
+      const handled = handleApiError(error);
+      return rejectWithValue(handled.message);
+    }
   }
 );
 
 export const validateScoringConfig = createAsyncThunk(
   'scoring/validate',
-  async ({ courseId, config }: { courseId: string; config: ScoringConfig }) => {
-    return await scoringService.validateScoringConfig(courseId);
+  async ({ courseId, config }: { courseId: string; config: ScoringConfig }, { rejectWithValue }) => {
+    try {
+      return await scoringService.validateScoringConfig(courseId);
+    } catch (error) {
+      const handled = handleApiError(error);
+      return rejectWithValue(handled.message);
+    }
   }
 );
 
@@ -139,7 +160,7 @@ const scoringSlice = createSlice({
       })
       .addCase(fetchScoringConfig.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message || 'Failed to fetch scoring config';
+        state.error = (action.payload as string) || action.error.message || 'Failed to fetch scoring config';
       });
 
     // Update scoring config
@@ -148,7 +169,7 @@ const scoringSlice = createSlice({
         state.config = action.payload;
       })
       .addCase(updateScoringConfig.rejected, (state, action) => {
-        state.error = action.error.message || 'Failed to update scoring config';
+        state.error = (action.payload as string) || action.error.message || 'Failed to update scoring config';
       });
 
     // Calculate score
@@ -183,7 +204,7 @@ const scoringSlice = createSlice({
       })
       .addCase(calculateScore.rejected, (state, action) => {
         state.isCalculating = false;
-        state.error = action.error.message || 'Failed to calculate score';
+        state.error = (action.payload as string) || action.error.message || 'Failed to calculate score';
       });
   },
 });

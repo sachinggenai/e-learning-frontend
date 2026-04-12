@@ -7,6 +7,7 @@
 
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { completionService } from '../../services/CompletionService';
+import { handleApiError } from '../../services/errorHandler';
 import {
   CompletionType,
   CourseCompletionResponse,
@@ -59,22 +60,37 @@ const initialState: CompletionSliceState = {
 
 export const fetchCourseCompletion = createAsyncThunk(
   'completion/fetchCourseCompletion',
-  async (courseId: string) => {
-    return await completionService.getCourseCompletion(courseId);
+  async (courseId: string, { rejectWithValue }) => {
+    try {
+      return await completionService.getCourseCompletion(courseId);
+    } catch (error) {
+      const handled = handleApiError(error);
+      return rejectWithValue(handled.message);
+    }
   }
 );
 
 export const fetchPageCompletion = createAsyncThunk(
   'completion/fetchPageCompletion',
-  async ({ courseId, pageId }: { courseId: string; pageId: string }) => {
-    return await completionService.getPageCompletion(courseId, pageId);
+  async ({ courseId, pageId }: { courseId: string; pageId: string }, { rejectWithValue }) => {
+    try {
+      return await completionService.getPageCompletion(courseId, pageId);
+    } catch (error) {
+      const handled = handleApiError(error);
+      return rejectWithValue(handled.message);
+    }
   }
 );
 
 export const recordInteraction = createAsyncThunk(
   'completion/recordInteraction',
-  async ({ courseId, event }: { courseId: string; event: InteractionEvent }) => {
-    return await completionService.recordInteraction(courseId, event);
+  async ({ courseId, event }: { courseId: string; event: InteractionEvent }, { rejectWithValue }) => {
+    try {
+      return await completionService.recordInteraction(courseId, event);
+    } catch (error) {
+      const handled = handleApiError(error);
+      return rejectWithValue(handled.message);
+    }
   }
 );
 
@@ -95,11 +111,17 @@ export const submitPageComplete = createAsyncThunk(
         audiosCompleted?: string[];
         score?: number | null;
       }>;
-    }
+    },
+    { rejectWithValue }
   ) => {
-    return await completionService.submitPageCompletion(courseId, pageId, {
-      componentStates,
-    });
+    try {
+      return await completionService.submitPageCompletion(courseId, pageId, {
+        componentStates,
+      });
+    } catch (error) {
+      const handled = handleApiError(error);
+      return rejectWithValue(handled.message);
+    }
   }
 );
 
@@ -235,7 +257,7 @@ const completionSlice = createSlice({
       })
       .addCase(fetchCourseCompletion.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message || 'Failed to fetch completion';
+        state.error = (action.payload as string) || action.error.message || 'Failed to fetch completion';
       });
 
     // Fetch page completion
@@ -263,10 +285,45 @@ const completionSlice = createSlice({
       };
     });
 
+    builder
+      .addCase(submitPageComplete.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(submitPageComplete.fulfilled, (state, action) => {
+        const resp: PageCompletionResponse = action.payload;
+        const existing = state.pages[resp.pageId];
+        const components = existing?.components || {};
+
+        for (const comp of resp.components) {
+          const current = components[comp.componentId];
+          components[comp.componentId] = {
+            componentId: comp.componentId,
+            completed: comp.completed,
+            completionType: comp.completionType,
+            viewed: current?.viewed ?? comp.completed,
+            interacted: current?.interacted ?? comp.completed,
+            interactionsCompleted: current?.interactionsCompleted ?? [],
+            audiosCompleted: current?.audiosCompleted ?? [],
+            scoreAchieved: current?.scoreAchieved ?? null,
+          };
+        }
+
+        state.pages[resp.pageId] = {
+          pageId: resp.pageId,
+          completed: resp.completed,
+          strategy: resp.strategy,
+          components,
+          progress: resp.completed ? 100 : existing?.progress ?? 0,
+        };
+      })
+      .addCase(submitPageComplete.rejected, (state, action) => {
+        state.error = (action.payload as string) || action.error.message || 'Failed to submit page completion';
+      });
+
     // Record interaction — optimistic update already done via local reducers
     builder
       .addCase(recordInteraction.rejected, (state, action) => {
-        state.error = action.error.message || 'Failed to record interaction';
+        state.error = (action.payload as string) || action.error.message || 'Failed to record interaction';
       });
   },
 });

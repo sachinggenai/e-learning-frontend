@@ -17,6 +17,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store';
 import { fetchComponents } from '../store/slices/componentsSlice';
+import { recordInteraction, submitPageComplete } from '../store/slices/completionSlice';
+import { calculateScore } from '../store/slices/scoringSlice';
+import { handleApiError } from '../services/errorHandler';
 import type { Page } from '../types/course';
 import type { ComponentInteractionEvent } from '../types/registry';
 import { PageWrapper } from './PageWrapper';
@@ -79,6 +82,7 @@ const PreviewV2: React.FC<PreviewV2Props> = () => {
   const [showResults, setShowResults] = useState(false);
 
   const currentPage = pages[currentIndex] ?? null;
+  const courseIdForApi = currentCourse?.courseId || String(currentCourse?.id ?? '');
   const isFirstPage = currentIndex === 0;
   const isLastPage = currentIndex >= pages.length - 1;
   const progressPercent = pages.length > 0 ? ((currentIndex + 1) / pages.length) * 100 : 0;
@@ -129,12 +133,128 @@ const PreviewV2: React.FC<PreviewV2Props> = () => {
   /* ── Callbacks ───────────────────────────────────────────── */
   const handlePageComplete = useCallback((pageId: string) => {
     setCompletedPages(prev => new Set(prev).add(pageId));
-  }, []);
+
+    const pageComponents = componentsByPage[pageId] || [];
+    if (!courseIdForApi || pageComponents.length === 0) return;
+
+    const componentStates = pageComponents
+      .map((component: any) => ({
+        componentId: component?.componentId || component?.id,
+        completed: true,
+        interactionsCompleted: [],
+        audiosCompleted: [],
+        score: null,
+      }))
+      .filter((state: any) => Boolean(state.componentId));
+
+    if (componentStates.length === 0) return;
+
+    dispatch(
+      submitPageComplete({
+        courseId: courseIdForApi,
+        pageId,
+        componentStates,
+      })
+    )
+      .unwrap()
+      .catch((error: unknown) => {
+        const handled = handleApiError(error);
+        console.warn('[PreviewV2] submitPageComplete failed:', handled.message);
+      });
+  }, [componentsByPage, courseIdForApi, dispatch]);
 
   const handleInteraction = useCallback((event: ComponentInteractionEvent) => {
     setInteractions(prev => [...prev, event]);
     console.log('[PreviewV2] Interaction:', event);
-  }, []);
+
+    if (!courseIdForApi || !currentPage?.pageId) return;
+
+    const componentId = event.componentId || 'unknown-component';
+
+    dispatch(
+      recordInteraction({
+        courseId: courseIdForApi,
+        event: {
+          pageId: currentPage.pageId,
+          componentId,
+          interactionType: event.interactionType,
+          learnerId: null,
+          data: {
+            interactionId: event.interactionId || null,
+            value: event.value,
+            score: event.score ?? null,
+            maxScore: event.maxScore ?? null,
+            isCorrect: event.isCorrect ?? null,
+          },
+          completed: event.completed ?? false,
+        },
+      })
+    )
+      .unwrap()
+      .catch((error: unknown) => {
+        const handled = handleApiError(error);
+        console.warn('[PreviewV2] recordInteraction failed:', handled.message);
+      });
+
+    if (!event.completed) return;
+
+    if (event.interactionType === 'submit' && componentId !== 'unknown-component') {
+      const pageComponents = componentsByPage[currentPage.pageId] || [];
+      const sourceComponent = pageComponents.find(
+        (component: any) => (component?.componentId || component?.id) === componentId
+      );
+      const componentType = sourceComponent?.componentType || sourceComponent?.typeId || 'unknown';
+
+      const normalizedValue = event.value == null ? null : String(event.value);
+      const selectedOptionIds = normalizedValue ? [normalizedValue] : [];
+      const questionId = event.interactionId || `${componentId}-question`;
+
+      dispatch(
+        calculateScore({
+          courseId: courseIdForApi,
+          answers: [
+            {
+              componentId,
+              componentType,
+              responses: [
+                {
+                  questionId,
+                  selectedOptionIds,
+                  textAnswer: selectedOptionIds.length === 0 ? normalizedValue : null,
+                },
+              ],
+            },
+          ],
+        })
+      )
+        .unwrap()
+        .catch((error: unknown) => {
+          const handled = handleApiError(error);
+          console.warn('[PreviewV2] calculateScore failed:', handled.message);
+        });
+    }
+
+    dispatch(
+      submitPageComplete({
+        courseId: courseIdForApi,
+        pageId: currentPage.pageId,
+        componentStates: [
+          {
+            componentId,
+            completed: true,
+            interactionsCompleted: event.interactionId ? [event.interactionId] : [],
+            audiosCompleted: [],
+            score: event.score ?? null,
+          },
+        ],
+      })
+    )
+      .unwrap()
+      .catch((error: unknown) => {
+        const handled = handleApiError(error);
+        console.warn('[PreviewV2] submitPageComplete(component) failed:', handled.message);
+      });
+  }, [componentsByPage, courseIdForApi, currentPage?.pageId, dispatch]);
 
   /* ── Score aggregation ───────────────────────────────────── */
   const scoreData = useMemo(() => {
@@ -266,7 +386,7 @@ const PreviewV2: React.FC<PreviewV2Props> = () => {
           <PageWrapper
             key={currentPage.pageId}
             page={currentPage}
-            courseId={currentCourse.courseId || String(currentCourse.id)}
+            courseId={courseIdForApi}
             courseTheme={courseTheme}
             onPageComplete={handlePageComplete}
             onInteraction={handleInteraction}

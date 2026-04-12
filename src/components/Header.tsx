@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import { useValidation } from "../hooks/useValidation";
 import { t } from "../i18n/strings";
 import { exportService } from "../services/ExportService";
+import { handleApiError } from "../services/errorHandler";
 import { RootState, useAppDispatch } from "../store/index";
 import {
   clearCurrentCourse,
@@ -66,8 +67,13 @@ const Header: React.FC<HeaderProps> = ({
       await dispatch(saveCourse(course)).unwrap();
       showToast(t("save.success", "Course saved successfully!"), "success");
     } catch (error) {
+      const handled = handleApiError(error);
       console.error("Failed to save course:", error);
-      showToast(t("save.error", "Failed to save course. Please try again."), "error");
+      showToast(
+        t("save.error", "Failed to save course. Please try again.") +
+          (handled.message ? ` (${handled.message})` : ""),
+        "error"
+      );
     }
   };
 
@@ -149,11 +155,12 @@ const Header: React.FC<HeaderProps> = ({
         throw new Error(result.error || "Export failed");
       }
     } catch (error: any) {
+      const handled = handleApiError(error);
       console.error("Export failed:", error);
       showToast(
         t("export.error", "Failed to export course: {error}").replace(
           "{error}",
-          error.message || "Unknown error"
+          handled.message || error.message || "Unknown error"
         ),
         "error"
       );
