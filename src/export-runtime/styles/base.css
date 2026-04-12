@@ -1,0 +1,299 @@
+.rt-page {
+  margin: 0 auto;
+  max-width: 960px;
+  padding: 1.5rem;
+}
+
+.rt-page__title {
+  margin-bottom: 1rem;
+}
+
+.rt-page__components {
+  display: grid;
+  gap: 1rem;
+}
+
+.rt-component {
+  border: 1px solid var(--theme-border, #e0e0e0);
+  border-radius: 12px;
+  background: var(--theme-background, #ffffff);
+  padding: 1rem;
+}
+
+.rt-tabs__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.rt-tabs__button {
+  border: 1px solid var(--theme-border, #e0e0e0);
+  background: var(--theme-surface, #f5f5f5);
+  color: var(--theme-text, #212121);
+  border-radius: 6px;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+}
+
+.rt-tabs__button--active {
+  background: var(--theme-primary, #667eea);
+  border-color: var(--theme-primary, #667eea);
+  color: #ffffff;
+}
+
+.rt-tabs__panel {
+  display: none;
+}
+
+.rt-tabs__panel--active {
+  display: block;
+}
+
+.rt-mcq__options {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.rt-text-media__layout {
+  display: grid;
+  gap: 1rem;
+}
+
+.rt-text-media__media {
+  border: 1px dashed var(--theme-border, #e0e0e0);
+  border-radius: 8px;
+  padding: 0.6rem;
+}
+
+.rt-navigation__list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.rt-navigation__description {
+  margin-top: 0.5rem;
+}
+
+.rt-accordion__items {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.rt-accordion__trigger {
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--theme-border, #e0e0e0);
+  border-radius: 6px;
+  background: var(--theme-surface, #f5f5f5);
+  color: var(--theme-text, #212121);
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+}
+
+.rt-accordion__trigger[aria-expanded="true"] {
+  border-color: var(--theme-primary, #667eea);
+  background: #eef2ff;
+}
+
+.rt-accordion__panel {
+  border: 1px solid var(--theme-border, #e0e0e0);
+  border-top: 0;
+  border-radius: 0 0 8px 8px;
+  padding: 0.75rem 0.8rem;
+}
+
+.rt-unsupported {
+  border-color: var(--theme-warning, #f57c00);
+  background: #fff7ed;
+}
+
+/* ─── Click-reveal ─────────────────────────────────────── */
+
+.rt-click-reveal {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.rt-click-reveal__trigger {
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--theme-primary, #667eea);
+  border-radius: 6px;
+  background: var(--theme-surface, #f5f5f5);
+  color: var(--theme-primary, #1a1a2e);
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.rt-click-reveal__trigger[aria-expanded="true"] {
+  background: var(--theme-primary, #667eea);
+  color: #ffffff;
+}
+
+.rt-click-reveal__panel {
+  border: 1px solid var(--theme-border, #e0e0e0);
+  border-radius: 0 0 6px 6px;
+  padding: 0.75rem 0.8rem;
+}
+
+/* ─── Timeline ──────────────────────────────────────────── */
+
+.rt-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 3px solid var(--theme-primary, #667eea);
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.rt-timeline__date {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--theme-muted, #6b7280);
+  margin-bottom: 0.2rem;
+}
+
+.rt-timeline__title {
+  margin: 0 0 0.3rem;
+  font-size: 1rem;
+}
+
+.rt-timeline__body {
+  font-size: 0.95rem;
+}
+
+/* ─── Assessment (shared by mcq / multiple-select / true-false) ── */
+
+.rt-assessment__question + .rt-assessment__question {
+  margin-top: 1rem;
+}
+
+.rt-assessment__options {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.rt-assessment__option label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+/* ─── Step-by-step ──────────────────────────────────────── */
+
+.rt-step-by-step {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.rt-step-by-step__step {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.rt-step-by-step__number {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--theme-primary, #667eea);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.rt-step-by-step__content {
+  flex: 1;
+}
+
+.rt-step-by-step__title {
+  margin: 0 0 0.3rem;
+  font-size: 1rem;
+}
+
+/* ─── Comparison table ──────────────────────────────────── */
+
+.rt-comparison-table-wrapper {
+  overflow-x: auto;
+}
+
+.rt-comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.rt-comparison-table th,
+.rt-comparison-table td {
+  border: 1px solid var(--theme-border, #e0e0e0);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.rt-comparison-table thead th {
+  background: var(--theme-primary, #667eea);
+  color: #ffffff;
+}
+
+/* ─── Video slide ────────────────────────────────────────── */
+
+.rt-video-slide__title {
+  margin: 0 0 0.5rem;
+}
+
+.rt-video-slide__player {
+  position: relative;
+  width: 100%;
+}
+
+.rt-video-slide__video {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.rt-video-slide__placeholder {
+  padding: 1.5rem;
+  border: 1px dashed var(--theme-border, #e0e0e0);
+  border-radius: 8px;
+  text-align: center;
+  color: var(--theme-muted, #6b7280);
+}
+
+.rt-video-slide__caption {
+  font-size: 0.85rem;
+  color: var(--theme-muted, #6b7280);
+  margin-top: 0.4rem;
+}
+
+/* ─── Responsive ─────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .rt-page {
+    padding: 1rem;
+  }
+
+  .rt-text-media__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .rt-step-by-step__number {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+}
+

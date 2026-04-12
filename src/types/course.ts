@@ -509,7 +509,7 @@ export interface CategoryListResponse {
 }
 
 // ─── Interaction Events ──────────────────────────────────────────
-export type InteractionType =
+export type KnownInteractionType =
   | 'view'
   | 'click'
   | 'submit'
@@ -519,6 +519,9 @@ export type InteractionType =
   | 'select'
   | 'input'
   | 'navigation';
+
+// Open string contract: FE can send new types without backend enum updates.
+export type InteractionType = KnownInteractionType | (string & {});
 
 export interface InteractionData {
   interactionId?: string | null;
@@ -554,6 +557,7 @@ export interface PageCompletionEventRequest {
 export interface QuestionResponse {
   questionId: string;
   selectedOptionIds: string[];
+  textAnswer?: string | null;
 }
 
 export interface ComponentAnswer {

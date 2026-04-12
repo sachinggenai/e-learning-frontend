@@ -37,7 +37,10 @@ function createHttpClient(): AxiosInstance {
       // Normalise error shape
       const normalised = {
         status,
+        code: data?.code,
+        field: data?.field,
         message: data?.message || data?.detail || error.message,
+        details: data?.details,
         errors: data?.errors || data?.detail || [],
         raw: data,
       };
