@@ -48,6 +48,70 @@ function normalizePageForPreview(raw: any): Page {
   };
 }
 
+function buildScoreResponsesFromEvent(
+  sourceComponent: any,
+  event: ComponentInteractionEvent,
+): Array<{ questionId: string; selectedOptionIds: string[]; textAnswer?: string | null }> {
+  const componentType = sourceComponent?.componentType || sourceComponent?.typeId || 'unknown';
+  const value = event.value;
+
+  if (componentType === 'fill-blanks' && value && typeof value === 'object' && !Array.isArray(value)) {
+    return Object.entries(value as Record<string, unknown>).map(([questionId, answerValue]) => ({
+      questionId,
+      selectedOptionIds: [],
+      textAnswer: answerValue == null ? null : String(answerValue),
+    }));
+  }
+
+  if (componentType === 'knowledge-check' && value && typeof value === 'object' && !Array.isArray(value)) {
+    return Object.entries(value as Record<string, unknown>).map(([questionId, answerValue]) => ({
+      questionId,
+      selectedOptionIds: answerValue == null ? [] : [String(answerValue)],
+      textAnswer: null,
+    }));
+  }
+
+  if (Array.isArray(value)) {
+    return [
+      {
+        questionId: event.interactionId || `${sourceComponent?.componentId || sourceComponent?.id || 'component'}-question`,
+        selectedOptionIds: value.map((entry) => String(entry)),
+        textAnswer: null,
+      },
+    ];
+  }
+
+  if (typeof value === 'boolean') {
+    return [
+      {
+        questionId: event.interactionId || `${sourceComponent?.componentId || sourceComponent?.id || 'component'}-question`,
+        selectedOptionIds: [String(value)],
+        textAnswer: null,
+      },
+    ];
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.entries(value as Record<string, unknown>).map(([questionId, answerValue]) => ({
+      questionId,
+      selectedOptionIds: Array.isArray(answerValue)
+        ? answerValue.map((entry) => String(entry))
+        : answerValue == null
+        ? []
+        : [String(answerValue)],
+      textAnswer: null,
+    }));
+  }
+
+  return [
+    {
+      questionId: event.interactionId || `${sourceComponent?.componentId || sourceComponent?.id || 'component'}-question`,
+      selectedOptionIds: value == null ? [] : [String(value)],
+      textAnswer: null,
+    },
+  ];
+}
+
 const PreviewV2: React.FC<PreviewV2Props> = () => {
   const dispatch = useAppDispatch();
   const courseState = useAppSelector((state) => (state as any).course);
@@ -204,10 +268,7 @@ const PreviewV2: React.FC<PreviewV2Props> = () => {
         (component: any) => (component?.componentId || component?.id) === componentId
       );
       const componentType = sourceComponent?.componentType || sourceComponent?.typeId || 'unknown';
-
-      const normalizedValue = event.value == null ? null : String(event.value);
-      const selectedOptionIds = normalizedValue ? [normalizedValue] : [];
-      const questionId = event.interactionId || `${componentId}-question`;
+      const responses = buildScoreResponsesFromEvent(sourceComponent, event);
 
       dispatch(
         calculateScore({
@@ -216,13 +277,7 @@ const PreviewV2: React.FC<PreviewV2Props> = () => {
             {
               componentId,
               componentType,
-              responses: [
-                {
-                  questionId,
-                  selectedOptionIds,
-                  textAnswer: selectedOptionIds.length === 0 ? normalizedValue : null,
-                },
-              ],
+              responses,
             },
           ],
         })
