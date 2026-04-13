@@ -121,7 +121,7 @@ export const fetchCourse = createAsyncThunk(
 
 export const saveCourse = createAsyncThunk(
   "course/saveCourse",
-  async (course: Partial<Course>, { getState }) => {
+  async (course: Partial<Course>) => {
     logger.info({
       event: "course.save.started",
       message: "Course save operation initiated",
@@ -131,46 +131,6 @@ export const saveCourse = createAsyncThunk(
     if (!course.courseId?.trim()) throw new Error("Course ID is required");
     if (!course.title?.trim()) throw new Error("Course title is required");
 
-    const state: any = getState();
-    const componentsByPage: Record<string, any[]> = state?.components?.byPage || {};
-
-    const pagesPayload = (course.pages ?? []).map((p: any) => {
-      const fromComponentStore = Array.isArray(componentsByPage[p.id])
-        ? componentsByPage[p.id]
-        : [];
-
-      const normalizedComponents = fromComponentStore.length
-        ? fromComponentStore.map((c: any) => ({
-            componentType: c.componentType || c.typeId || p.templateType || "content-text",
-            data: c.data || {},
-            audioConfig: c.audioConfig,
-            completionCriteria: c.completionCriteria,
-            styling: c.styling,
-          }))
-        : Array.isArray(p.components) && p.components.length
-          ? p.components.map((c: any) => ({
-              componentType: c.componentType || c.typeId || p.templateType || "content-text",
-              data: c.data || {},
-              audioConfig: c.audioConfig,
-              completionCriteria: c.completionCriteria,
-              styling: c.styling,
-            }))
-          : [
-              {
-                // Legacy editor pages store content at page-level; preserve it as a single component.
-                componentType: p.templateType || "content-text",
-                data: p.content || {},
-              },
-            ];
-
-      return {
-        pageId: p.id,
-        title: p.title,
-        order: typeof p.order === "number" ? p.order : 0,
-        components: normalizedComponents,
-      };
-    });
-
     // Build an ApiCourse payload from the slice-local Course
     const payload: Partial<ApiCourse> = {
       courseId: course.courseId!,
@@ -178,7 +138,6 @@ export const saveCourse = createAsyncThunk(
       author: course.author ?? "Course Author",
       description: course.description ?? "",
       status: course.status ?? "draft",
-      pages: pagesPayload,
     };
 
     const saved = await courseService.saveCourse(payload as ApiCourse);
