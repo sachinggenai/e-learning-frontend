@@ -440,3 +440,43 @@
     border-top: 1px solid var(--sidebar-border);
   }
 }
+
+/* ============================================================
+   DEMO MODE — Template Visibility Filter
+   ============================================================
+   Primary filter: DEMO_VISIBLE_TYPES Set in TemplateSelector.tsx
+   (JS-level whitelist applied before render).
+   This CSS block is a secondary defence layer that hides any card
+   that slips through with a non-whitelisted data-template-type.
+   See notes/DEMO_TEMPLATE_VISIBILITY.md for the full reference.
+   To restore all templates: remove the DEMO_VISIBLE_TYPES filter
+   in TemplateSelector.tsx and delete this CSS block.
+   ============================================================ */
+
+/* ── Step 1: Hide all template cards ───────────────────────── */
+.template-card {
+  display: none !important;
+}
+
+/* ── Step 2: Show only the 19 demo templates ───────────────── */
+.template-card[data-template-type="content-text"],
+.template-card[data-template-type="tabs"],
+.template-card[data-template-type="accordion"],
+.template-card[data-template-type="click-reveal"],
+.template-card[data-template-type="text-with-media"],
+.template-card[data-template-type="image-hotspots"],
+.template-card[data-template-type="flip-cards"],
+.template-card[data-template-type="carousel"],
+.template-card[data-template-type="drag-drop-sort"],
+.template-card[data-template-type="mcq"],
+.template-card[data-template-type="multiple-select"],
+.template-card[data-template-type="true-false"],
+.template-card[data-template-type="fill-blanks"],
+.template-card[data-template-type="matching"],
+.template-card[data-template-type="knowledge-check"],
+.template-card[data-template-type="final-assessment"],
+.template-card[data-template-type="course-menu"],
+.template-card[data-template-type="summary-takeaways"],
+.template-card[data-template-type="completion-certificate"] {
+  display: block !important;
+}

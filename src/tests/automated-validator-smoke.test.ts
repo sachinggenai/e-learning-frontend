@@ -131,13 +131,18 @@ describe('Smoke Tests: Component Validation (Automated)', () => {
 
     const tests = [
       {
-        name: 'Empty content',
-        data: { body: '' },  // Validator expects 'body' field
+        name: 'Empty content (new field)',
+        data: { content: '' },
         shouldError: true,
       },
       {
-        name: 'Valid content',
-        data: { body: 'This is valid text content for the course.' },
+        name: 'Valid content (new field)',
+        data: { content: '<p>This is valid text content for the course.</p>' },
+        shouldError: false,
+      },
+      {
+        name: 'Valid content (legacy body field)',
+        data: { body: 'This is valid legacy text content.' },
         shouldError: false,
       },
       {
@@ -161,8 +166,11 @@ describe('Smoke Tests: Component Validation (Automated)', () => {
 
       // CRITICAL: await the async validate() method
       const result: ValidationResult = await validator.validate(courseData as any);
-      const hasErrors = result.errors.some(e => 
-        e.field?.includes('content.body') || e.message.toLowerCase().includes('body')
+      // Validator now emits field content.content (canonical) for empty content
+      const hasErrors = result.errors.some(e =>
+        e.field?.includes('content.content') ||
+        e.field?.includes('content.body') ||
+        e.message.toLowerCase().includes('body text')
       );
 
       if (test.shouldError) {

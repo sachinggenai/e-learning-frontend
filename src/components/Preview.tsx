@@ -277,14 +277,15 @@ const renderWelcomeTemplate = (template: Template) => {
 
 const renderContentTextTemplate = (template: Template) => {
   const data = template.data as any;
+  // data.content is canonical; data.body is the legacy fallback
+  const htmlContent: string = data.content || data.body || '';
   return (
     <div className="template content-template">
       <h2 className="content-title">{data.title}</h2>
-      <div className="content-body">
-        {data.body.split("\n").map((paragraph: string, index: number) => (
-          <p key={index}>{paragraph}</p>
-        ))}
-      </div>
+      <div
+        className="content-body"
+        dangerouslySetInnerHTML={{ __html: htmlContent }}
+      />
     </div>
   );
 };

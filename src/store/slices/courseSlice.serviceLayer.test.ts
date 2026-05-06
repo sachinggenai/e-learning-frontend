@@ -89,8 +89,20 @@ describe("courseSlice service-layer thunks", () => {
 
     expect(result.type).toBe("course/fetchTemplates/fulfilled");
     expect(courseService.listAvailableTemplates).toHaveBeenCalledTimes(1);
-    expect((result as any).payload.raw).toHaveLength(1);
+    // raw[0] is the injected static content-text entry (also added here so vmTemplates sees it)
+    expect((result as any).payload.raw[0]).toMatchObject({
+      id: "content-text",
+      type: "content-text",
+      title: "Text Content",
+    });
+    // legacy[0] is the static content-text entry always injected when backend doesn't return one
     expect((result as any).payload.legacy[0]).toMatchObject({
+      templateId: "content-text",
+      type: "content-text",
+      title: "Text Content",
+    });
+    // legacy[1] is the mapped backend template
+    expect((result as any).payload.legacy[1]).toMatchObject({
       templateId: "tpl-1",
       type: "content-text",
       title: "Intro Template",

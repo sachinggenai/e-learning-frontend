@@ -236,14 +236,15 @@ r({
 r({
   typeId: 'content-text',
   displayName: 'Text Content',
-  description: 'Rich text content with optional title',
+  description: 'Rich text content with optional title. Paste HTML into the content field.',
   category: 'content-presentation',
   icon: 'file-text',
-  tags: ['text', 'content', 'article'],
+  tags: ['text', 'content', 'article', 'html'],
   completionCapabilities: ['view'],
   scoringEnabled: false,
   audioSupport: { perComponent: true, perInteraction: false },
-  defaultData: { title: '', body: '<p>Enter your content here...</p>' },
+  // data.content is the canonical backend field (matches POST /templates body schema)
+  defaultData: { title: '', content: '<p>Enter your content here...</p>' },
   sortOrder: 1,
   editorComponent: ContentTextEditor,
   previewComponent: ContentTextPreview,

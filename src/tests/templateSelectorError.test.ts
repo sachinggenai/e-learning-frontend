@@ -33,7 +33,7 @@ describe("TemplateSelector selection & title behavior", () => {
       {
         id: 2,
         templateId: "t2",
-        type: "content-video",
+        type: "tabs",
         title: "Video Page",
         order: 1,
         data: { content: {} },

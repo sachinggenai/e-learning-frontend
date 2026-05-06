@@ -179,9 +179,9 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
         </label>
         <textarea
           id="content-body"
-          value={data.body || ""}
-          onChange={(e) => handleChange("body", e.target.value)}
-          className={getFieldError("body") ? "error" : ""}
+          value={data.content || data.body || ""}
+          onChange={(e) => handleChange("content", e.target.value)}
+          className={getFieldError("content") || getFieldError("body") ? "error" : ""}
           placeholder={
             isVideo
               ? "Describe what learners will see in this video..."
@@ -189,9 +189,9 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
           }
           rows={8}
         />
-        {getFieldError("body") && (
+        {(getFieldError("content") || getFieldError("body")) && (
           <span className="error-message">
-            {getFieldError("body")?.message}
+            {(getFieldError("content") || getFieldError("body"))?.message}
           </span>
         )}
       </div>

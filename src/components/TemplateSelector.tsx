@@ -43,6 +43,33 @@ import { fetchTemplates } from "../store/slices/courseSlice";
 import "./TemplateSelector.css";
 import "./common/visuallyHidden.css";
 
+// ─── Demo-mode visible template types ────────────────────────────
+// Only these typeIds appear in the "Add Page from Template" picker.
+// All others are filtered out at the JS level. To restore all templates,
+// remove the DEMO_VISIBLE_TYPES filter in the filteredTemplates computation.
+// See notes/DEMO_TEMPLATE_VISIBILITY.md for the full reference.
+const DEMO_VISIBLE_TYPES = new Set([
+  "content-text",
+  "tabs",
+  "accordion",
+  "click-reveal",
+  "text-with-media",
+  "image-hotspots",
+  "flip-cards",
+  "carousel",
+  "drag-drop-sort",
+  "mcq",
+  "multiple-select",
+  "true-false",
+  "fill-blanks",
+  "matching",
+  "knowledge-check",
+  "final-assessment",
+  "course-menu",
+  "summary-takeaways",
+  "completion-certificate",
+]);
+
 // Legacy Template interface kept temporarily for backward compatibility with existing state shape
 interface LegacyTemplateShape {
   id: string;
@@ -230,14 +257,18 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   const filteredTemplates = (sourceTemplates || []).filter(
     (template: Template) => {
       if (!template) return false;
+      // Demo-mode: only show the whitelisted template types
+      const templateType = (template as any).type || "";
+      if (!DEMO_VISIBLE_TYPES.has(templateType)) return false;
       const title = (template as any).title?.toLowerCase?.() || "";
-      const type = (template as any).type?.toLowerCase?.() || "";
+      const type = templateType.toLowerCase();
       const category = (
         (template as any).category ||
         (template as any).data?.category ||
         ""
       ).toLowerCase();
       return (
+        !normalizedSearch ||
         title.includes(normalizedSearch) ||
         type.includes(normalizedSearch) ||
         category.includes(normalizedSearch)
@@ -399,6 +430,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                       className={`template-card ${
                         selectedTemplate?.id === template.id ? "selected" : ""
                       }`}
+                      data-template-type={(template as any).type}
                       onClick={() => handleTemplateClick(template)}
                       role="button"
                       tabIndex={0}

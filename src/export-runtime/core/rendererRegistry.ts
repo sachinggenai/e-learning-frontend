@@ -3,6 +3,17 @@ import { accordionRenderer } from "../renderers/accordionRenderer";
 import { clickRevealRenderer } from "../renderers/clickRevealRenderer";
 import { contentRenderer, legacyContentRenderer } from "../renderers/contentRenderer";
 import {
+  carouselRenderer,
+  completionCertificateRenderer,
+  dragDropSortRenderer,
+  fillBlanksRenderer,
+  finalAssessmentRenderer,
+  flipCardsRenderer,
+  imageHotspotsRenderer,
+  knowledgeCheckRenderer,
+  matchingRenderer,
+} from "../renderers/demoRenderers";
+import {
   courseMenuRenderer,
   learningRoadmapRenderer,
   moduleOverviewRenderer,
@@ -62,6 +73,16 @@ export function createDefaultRendererRegistry(): RendererRegistry {
     stepByStepRenderer,
     comparisonTableRenderer,
     videoSlideRenderer,
+    // Demo template renderers
+    imageHotspotsRenderer,
+    flipCardsRenderer,
+    carouselRenderer,
+    dragDropSortRenderer,
+    fillBlanksRenderer,
+    matchingRenderer,
+    knowledgeCheckRenderer,
+    finalAssessmentRenderer,
+    completionCertificateRenderer,
   ].forEach((renderer) => registry.register(renderer));
   return registry;
 }

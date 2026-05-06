@@ -178,24 +178,70 @@ export const fetchTemplates = createAsyncThunk(
         if (Array.isArray(tpl.fields)) {
           tpl.fields.forEach((f: any) => { content[f.name] = ""; });
         }
-        const mappedType = categoryToType[tpl.category] || "content-text";
+        const mappedType = categoryToType[tpl.category] || tpl.type || "content-text";
         return {
           id: tpl.id,
           templateId: tpl.id,
           type: mappedType,
-          title: tpl.name,
+          title: tpl.name || tpl.title,
           order: index,
           data: {
             content,
             rawFields: tpl.fields || [],
             description: tpl.description,
-            category: tpl.category,
+            category: tpl.category || tpl.data?.category,
           },
         };
       });
     };
 
-    return { raw: backendTemplates, legacy: legacyNormalize(backendTemplates) };
+    const legacyList = legacyNormalize(backendTemplates);
+
+    // Ensure "Text Content" (content-text) is always available in the picker.
+    // The backend may not expose it via /templates/available yet; we inject a
+    // static entry so authors can paste HTML content without backend changes.
+    const hasContentText = backendTemplates.some(
+      (t: any) => (t.type || t.category) === "content-text" ||
+                  (t.name || t.title || "").toLowerCase().includes("text content"),
+    );
+    if (!hasContentText) {
+      const staticEntry: Template = {
+        id: 0,
+        templateId: "content-text",
+        type: "content-text",
+        title: "Text Content",
+        order: -1,
+        data: {
+          content: { title: "", content: "<p>Enter your content here...</p>" },
+          rawFields: [],
+          description: "Paste or type HTML content into a clean, full-page layout.",
+          category: "content-presentation",
+        },
+      };
+      legacyList.unshift(staticEntry);
+      // Also inject into raw so the v2 adapter path (vmTemplates) sees it.
+      // TemplateSelector uses rawTemplates when available; without this the
+      // static entry is invisible when the backend returns any other templates.
+      const rawStaticEntry = {
+        id: "content-text",
+        templateId: "content-text",
+        type: "content-text",
+        name: "Text Content",
+        title: "Text Content",
+        description: "Paste or type HTML content into a clean, full-page layout.",
+        category: "content-presentation",
+        order: -1,
+        fields: [],
+        data: {
+          content: { title: "", content: "<p>Enter your content here...</p>" },
+          description: "Paste or type HTML content into a clean, full-page layout.",
+          category: "content-presentation",
+        },
+      };
+      backendTemplates.unshift(rawStaticEntry);
+    }
+
+    return { raw: backendTemplates, legacy: legacyList };
   }
 );
 

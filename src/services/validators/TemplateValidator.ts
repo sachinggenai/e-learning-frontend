@@ -966,10 +966,12 @@ export class TemplateValidator implements Validator {
     const errors: ValidationError[] = [];
     const content = page.content as any;
 
-    if (!content.body || content.body.trim().length === 0) {
+    // Accept either data.content (canonical) or data.body (legacy fallback)
+    const htmlContent: string = content.content || content.body || '';
+    if (htmlContent.trim().length === 0) {
       errors.push({
         id: "",
-        field: `pages[${index}].content.body`,
+        field: `pages[${index}].content.content`,
         category: "business",
         message: `Content page ${index + 1} must have body text`,
         level: "warning",

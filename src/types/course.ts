@@ -670,7 +670,10 @@ export interface MCQData {
 
 export interface ContentData {
   title: string;
-  body: string;
+  /** @deprecated use `content` — kept for backward compatibility with legacy slides */
+  body?: string;
+  /** Canonical HTML content field — matches backend data.content field */
+  content?: string;
   videoUrl?: string;
   imageUrl?: string;
 }
