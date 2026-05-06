@@ -197,48 +197,67 @@ export const fetchTemplates = createAsyncThunk(
 
     const legacyList = legacyNormalize(backendTemplates);
 
-    // Ensure "Text Content" (content-text) is always available in the picker.
-    // The backend may not expose it via /templates/available yet; we inject a
-    // static entry so authors can paste HTML content without backend changes.
-    const hasContentText = backendTemplates.some(
-      (t: any) => (t.type || t.category) === "content-text" ||
-                  (t.name || t.title || "").toLowerCase().includes("text content"),
+    // Static registry for all 19 demo-visible templates.
+    // Any entry whose typeId is absent from the backend response is injected so
+    // the picker always shows the full set regardless of backend state.
+    const DEMO_TEMPLATE_REGISTRY: Array<{
+      id: string; name: string; description: string; category: string;
+    }> = [
+      { id: "content-text",           name: "Text Content",          description: "Add text-based content with formatting and navigation",       category: "content-presentation" },
+      { id: "tabs",                   name: "Tabs",                  description: "Organize content into interactive tabbed sections",           category: "content-presentation" },
+      { id: "accordion",              name: "Accordion",             description: "Collapsible sections for progressive content disclosure",     category: "content-presentation" },
+      { id: "click-reveal",           name: "Click & Reveal",        description: "Interactive cards that reveal content on click",              category: "interaction" },
+      { id: "text-with-media",        name: "Text with Media",       description: "Combine text with images or video side by side",             category: "content-presentation" },
+      { id: "image-hotspots",         name: "Image Hotspots",        description: "Clickable hotspots overlaid on an image",                    category: "media-rich" },
+      { id: "flip-cards",             name: "Flip Cards",            description: "Double-sided cards that flip to reveal information",         category: "interaction" },
+      { id: "carousel",               name: "Carousel",              description: "Swipeable slide deck for sequential content",                category: "interaction" },
+      { id: "drag-drop-sort",         name: "Drag & Drop Sort",      description: "Learners drag items into the correct order",                 category: "interaction" },
+      { id: "mcq",                    name: "Multiple Choice",       description: "Assessment with one correct answer from multiple options",    category: "assessment" },
+      { id: "multiple-select",        name: "Multiple Select",       description: "Learners select all correct answers",                        category: "assessment" },
+      { id: "true-false",             name: "True / False",          description: "Simple true or false knowledge check",                       category: "assessment" },
+      { id: "fill-blanks",            name: "Fill in the Blanks",    description: "Learners complete sentences by typing missing words",        category: "assessment" },
+      { id: "matching",               name: "Matching",              description: "Match items from two columns",                               category: "assessment" },
+      { id: "knowledge-check",        name: "Knowledge Check",       description: "Formative quiz to reinforce learning objectives",            category: "assessment" },
+      { id: "final-assessment",       name: "Final Assessment",      description: "Summative graded assessment at the end of a course",         category: "assessment" },
+      { id: "course-menu",            name: "Course Menu",           description: "Navigation hub linking to all modules and pages",            category: "navigation" },
+      { id: "summary-takeaways",      name: "Summary & Takeaways",   description: "Key points and next steps at the end of a module",          category: "navigation" },
+      { id: "completion-certificate", name: "Completion Certificate", description: "Award a certificate on course completion",                  category: "analytics" },
+    ];
+
+    // Inject any demo template not already returned by the backend.
+    const backendTypeIds = new Set(
+      backendTemplates.map((t: any) => t.type || t.id || ""),
     );
-    if (!hasContentText) {
-      const staticEntry: Template = {
-        id: 0,
-        templateId: "content-text",
-        type: "content-text",
-        title: "Text Content",
-        order: -1,
-        data: {
-          content: { title: "", content: "<p>Enter your content here...</p>" },
-          rawFields: [],
-          description: "Paste or type HTML content into a clean, full-page layout.",
-          category: "content-presentation",
-        },
-      };
-      legacyList.unshift(staticEntry);
-      // Also inject into raw so the v2 adapter path (vmTemplates) sees it.
-      // TemplateSelector uses rawTemplates when available; without this the
-      // static entry is invisible when the backend returns any other templates.
-      const rawStaticEntry = {
-        id: "content-text",
-        templateId: "content-text",
-        type: "content-text",
-        name: "Text Content",
-        title: "Text Content",
-        description: "Paste or type HTML content into a clean, full-page layout.",
-        category: "content-presentation",
-        order: -1,
+    let injectOrder = -1;
+    for (const tpl of DEMO_TEMPLATE_REGISTRY) {
+      if (backendTypeIds.has(tpl.id)) continue;
+      const rawEntry = {
+        id: tpl.id,
+        templateId: tpl.id,
+        type: tpl.id,
+        name: tpl.name,
+        title: tpl.name,
+        description: tpl.description,
+        category: tpl.category,
+        order: injectOrder--,
         fields: [],
+        data: { description: tpl.description, category: tpl.category },
+      };
+      const legacyEntry: Template = {
+        id: tpl.id as any,
+        templateId: tpl.id,
+        type: tpl.id,
+        title: tpl.name,
+        order: rawEntry.order,
         data: {
-          content: { title: "", content: "<p>Enter your content here...</p>" },
-          description: "Paste or type HTML content into a clean, full-page layout.",
-          category: "content-presentation",
+          content: {},
+          rawFields: [],
+          description: tpl.description,
+          category: tpl.category,
         },
       };
-      backendTemplates.unshift(rawStaticEntry);
+      backendTemplates.push(rawEntry);
+      legacyList.push(legacyEntry);
     }
 
     return { raw: backendTemplates, legacy: legacyList };

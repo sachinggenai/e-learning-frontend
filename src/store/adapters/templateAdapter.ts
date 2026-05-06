@@ -62,13 +62,14 @@ export function mapTemplateDtoToVm(dto: TemplateDTO): TemplateVM {
   const name = dto.title || dto.name || "Untitled Template";
   const category = dto.category || dto.data?.category;
 
-  // Derive semantic type (future: map explicit backend types)
+  // Prefer explicit type from the DTO; only fall back to category mapping when
+  // the backend omits a type field (legacy course API behaviour).
   const categoryToType: Record<string, string> = {
     introduction: "content-text",
     lab: "content-text",
     assessment: "mcq",
   };
-  const type = categoryToType[category || ""] || dto.type || "content-text";
+  const type = dto.type || categoryToType[category || ""] || "content-text";
 
   // Normalize fields list
   const fields: TemplateVMField[] = (dto.fields || []).map((f) => ({
