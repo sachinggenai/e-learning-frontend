@@ -46,6 +46,7 @@ const Header: React.FC<HeaderProps> = ({
     useValidation();
   const { showToast } = useToast();
   const [isExporting, setIsExporting] = React.useState(false);
+  const [showValidation, setShowValidation] = React.useState(false);
 
   // Safe Redux selectors with null checking
   const courseState = useSelector((state: RootState) => (state as any).course);
@@ -396,12 +397,25 @@ const Header: React.FC<HeaderProps> = ({
           </button>
           <button
             className="action-button"
-            onClick={handleValidate}
+            onClick={async () => {
+              await handleValidate();
+              setShowValidation(true);
+            }}
             disabled={isLoading || isValidating}
             title="Validate course"
           >
             {isValidating ? <Loader size={14} className="spin-icon" /> : <ShieldCheck size={14} />} Validate
           </button>
+          {(hasErrors || hasWarnings) && (
+            <button
+              className={`action-button validation-toggle-btn${hasErrors ? ' danger' : ' warning'}`}
+              onClick={() => setShowValidation((v) => !v)}
+              title={showValidation ? 'Hide validation issues' : 'Show validation issues'}
+            >
+              <ShieldCheck size={14} />
+              {hasErrors ? `${errors.length} error${errors.length !== 1 ? 's' : ''}` : `${warnings.length} warning${warnings.length !== 1 ? 's' : ''}`}
+            </button>
+          )}
           <button
             className="action-button primary"
             onClick={handleExport}
@@ -439,15 +453,13 @@ const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Validation Panel */}
-      {(hasErrors || hasWarnings) && (
+      {/* Validation toggle panel */}
+      {(hasErrors || hasWarnings) && showValidation && (
         <div className="validation-container">
           <ValidationPanel
             errors={errors}
             warnings={warnings}
-            onErrorClick={(error) => {
-              // TODO: Implement navigation to error location
-            }}
+            onErrorClick={() => setShowValidation(false)}
           />
         </div>
       )}

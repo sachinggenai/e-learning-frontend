@@ -122,7 +122,7 @@ const PageManager: React.FC = () => {
       template.id ||
       template.template_id) as string;
     const customizationFields =
-      template.defaults || template.data?.content || {};
+      template.defaultData || template.defaults || template.data?.content || {};
 
     // Use courseId (string) not id (number) for API calls
     const apiCourseId = currentCourse.courseId || String(currentCourse.id);

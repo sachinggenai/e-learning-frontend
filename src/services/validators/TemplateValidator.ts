@@ -184,6 +184,9 @@ export class TemplateValidator implements Validator {
         case "error-identification":
           errors.push(...this.validateErrorIdentification(page, index));
           break;
+        case "completion-certificate":
+          // No blocking validation required; certificate is auto-generated
+          break;
         default:
           // Check if the template type is a known component type from the registry
           if (!(templateType in COMPONENT_TYPE_CATEGORY)) {
@@ -253,8 +256,8 @@ export class TemplateValidator implements Validator {
         id: "",
         field: `pages[${index}].content.question`,
         category: "business",
-        message: `MCQ page ${index + 1} must have a question`,
-        level: "error",
+        message: `MCQ page ${index + 1} is missing a question`,
+        level: "warning",
       });
     }
 
@@ -263,8 +266,8 @@ export class TemplateValidator implements Validator {
         id: "",
         field: `pages[${index}].content.options`,
         category: "business",
-        message: `MCQ page ${index + 1} must have at least 2 options`,
-        level: "error",
+        message: `MCQ page ${index + 1} should have at least 2 options`,
+        level: "warning",
       });
     }
 
@@ -272,13 +275,13 @@ export class TemplateValidator implements Validator {
       ? mcqData.options.some((opt: any) => opt?.isCorrect)
       : false;
 
-    if (!hasCorrectOption && mcqData.correctAnswer === undefined) {
+    if (!hasCorrectOption && !mcqData.correctAnswer) {
       errors.push({
         id: "",
         field: `pages[${index}].content.options`,
         category: "business",
-        message: `MCQ page ${index + 1} must include a correct option`,
-        level: "error",
+        message: `MCQ page ${index + 1} should include a correct option`,
+        level: "warning",
       });
     }
 
@@ -478,7 +481,7 @@ export class TemplateValidator implements Validator {
     const content = page.content as any;
 
     if (!this.hasMinItems(content.questions, 1)) {
-      errors.push(this.makeError(index, "content.questions", "Final assessment requires at least one question"));
+      errors.push(this.makeWarning(index, "content.questions", "Final assessment should include at least one question"));
     }
 
     if (content.passingScore !== undefined && (content.passingScore < 0 || content.passingScore > 100)) {
@@ -534,7 +537,7 @@ export class TemplateValidator implements Validator {
     const content = page.content as any;
 
     if (!this.hasMinItems(content.items, 2)) {
-      errors.push(this.makeError(index, "content.items", "Drag & Drop Sort requires at least two items"));
+      errors.push(this.makeWarning(index, "content.items", "Drag & Drop Sort should include at least two items"));
       return errors;
     }
 
@@ -607,7 +610,7 @@ export class TemplateValidator implements Validator {
     const content = page.content as any;
 
     if (!this.hasMinItems(content.slides, 1)) {
-      errors.push(this.makeError(index, "content.slides", "Carousel requires at least one slide"));
+      errors.push(this.makeWarning(index, "content.slides", "Carousel should include at least one slide"));
       return errors;
     }
 

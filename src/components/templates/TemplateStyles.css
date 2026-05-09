@@ -510,6 +510,12 @@
   flex: 1;
 }
 
+.accordion-editor__panel .form-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+}
+
 /* ═══════════════════════════════════════════════════════════════
  *  Summary
  * ═══════════════════════════════════════════════════════════════ */

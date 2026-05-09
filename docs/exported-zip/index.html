@@ -157,6 +157,14 @@
                         content = this.renderTabs(slide);
                     } else if (slide.type === 'mcq') {
                         content = this.renderMCQ(slide, index);
+                    } else if (slide.type === 'carousel') {
+                        content = this.renderCarousel(slide);
+                    } else if (slide.type === 'drag-drop-sort') {
+                        content = this.renderDragDropSort(slide, index);
+                    } else if (slide.type === 'final-assessment') {
+                        content = this.renderFinalAssessment(slide, index);
+                    } else if (slide.type === 'completion-certificate') {
+                        content = this.renderCompletionCertificate(slide);
                     } else {
                         content = '<div class="slide"><p>Unknown slide type: ' +
                                  this.sanitize(slide.type || 'undefined') + '</p></div>';
@@ -204,7 +212,8 @@
             try {
                 var data = slide.data || {};
                 var title = this.sanitize(slide.title || 'Untitled');
-                var body = this.sanitize(data.content || '');
+                var raw = typeof data.content === 'string' ? data.content : (typeof data.body === 'string' ? data.body : '');
+                var body = this.decodeHTML(raw);
                 return '<div class="template content-template">' +
                        '<h2 class="content-title">' + title + '</h2>' +
                        '<div class="content-body">' + body + '</div>' +
@@ -223,7 +232,7 @@
                 var tabs = Array.isArray(data.tabs) ? data.tabs : [];
 
                 if (tabs.length === 0) {
-                    var fallbackBody = this.sanitize(data.content || '');
+                    var fallbackBody = this.decodeHTML(typeof data.content === 'string' ? data.content : '');
                     return '<div class="template tabs-template">' +
                            '<h2 class="content-title">' + title + '</h2>' +
                            '<div class="content-body">' + fallbackBody + '</div>' +
@@ -236,7 +245,7 @@
                     var tab = tabs[i] || {};
                     var tabId = this.sanitize(tab.id || ('tab-' + i));
                     var tabTitle = this.sanitize(tab.title || ('Tab ' + (i + 1)));
-                    var tabBody = this.sanitize(tab.body || '');
+                    var tabBody = typeof tab.body === 'string' ? tab.body : '';
                     var activeClass = i === 0 ? ' active' : '';
                     navHtml += '<button class="tabs-nav-btn' + activeClass + '" ' +
                                'type="button" ' +
@@ -341,6 +350,232 @@
             }
         },
 
+        renderCarousel: function(slide) {
+            try {
+                var data = slide.data || {};
+                var title = this.sanitize(slide.title || data.title || 'Carousel');
+                var slides = Array.isArray(data.slides) ? data.slides : [];
+
+                if (slides.length === 0) {
+                    return '<div class="template carousel-template">' +
+                           '<h2 class="content-title">' + title + '</h2>' +
+                           '<p class="empty-state">No slides available.</p>' +
+                           '</div>';
+                }
+
+                var dotsHtml = '';
+                var slidesHtml = '';
+                for (var i = 0; i < slides.length; i++) {
+                    var s = slides[i] || {};
+                    var sTitle = this.sanitize(s.title || '');
+                    var sBody = typeof s.body === 'string' ? s.body :
+                                (typeof s.content === 'string' ? s.content : '');
+                    var activeClass = i === 0 ? ' active' : '';
+                    dotsHtml += '<button class="carousel-dot' + activeClass + '" ' +
+                                'type="button" onclick="Player.goToCarouselSlide(' + i + ')">' +
+                                (i + 1) + '</button>';
+                    slidesHtml += '<div class="carousel-slide' + activeClass + '">' +
+                                  (sTitle ? '<h3 class="carousel-slide-title">' + sTitle + '</h3>' : '') +
+                                  '<div class="content-body">' + sBody + '</div>' +
+                                  '</div>';
+                }
+
+                return '<div class="template carousel-template" id="carousel-wrap">' +
+                       '<h2 class="content-title">' + title + '</h2>' +
+                       '<div class="carousel-slides">' + slidesHtml + '</div>' +
+                       '<div class="carousel-nav">' +
+                       '<button type="button" class="carousel-btn" onclick="Player.shiftCarousel(-1)">&#8592;</button>' +
+                       '<div class="carousel-dots">' + dotsHtml + '</div>' +
+                       '<button type="button" class="carousel-btn" onclick="Player.shiftCarousel(1)">&#8594;</button>' +
+                       '</div>' +
+                       '</div>';
+            } catch (error) {
+                console.error('renderCarousel error:', error);
+                return '<div class="template error"><p>Carousel rendering failed</p></div>';
+            }
+        },
+
+        goToCarouselSlide: function(idx) {
+            var wrap = document.getElementById('carousel-wrap');
+            if (!wrap) return;
+            var slides = wrap.querySelectorAll('.carousel-slide');
+            var dots = wrap.querySelectorAll('.carousel-dot');
+            slides.forEach(function(s, i) { s.classList.toggle('active', i === idx); });
+            dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+            wrap._carouselIndex = idx;
+        },
+
+        shiftCarousel: function(dir) {
+            var wrap = document.getElementById('carousel-wrap');
+            if (!wrap) return;
+            var slides = wrap.querySelectorAll('.carousel-slide');
+            var current = wrap._carouselIndex || 0;
+            var next = (current + dir + slides.length) % slides.length;
+            this.goToCarouselSlide(next);
+        },
+
+        renderDragDropSort: function(slide, slideIdx) {
+            try {
+                var data = slide.data || {};
+                var title = this.sanitize(slide.title || data.title || 'Sort Items');
+                var instructions = this.sanitize(data.instructions || 'Arrange items in the correct order.');
+                var items = Array.isArray(data.items) ? data.items : [];
+
+                if (items.length === 0) {
+                    return '<div class="template dragdrop-template">' +
+                           '<h2 class="content-title">' + title + '</h2>' +
+                           '<p class="empty-state">No items to sort.</p>' +
+                           '</div>';
+                }
+
+                // Shuffle for display
+                var shuffled = items.slice().sort(function() { return Math.random() - 0.5; });
+                var listHtml = '';
+                for (var i = 0; i < shuffled.length; i++) {
+                    var item = shuffled[i] || {};
+                    var label = this.sanitize(item.label || item.text || ('Item ' + (i + 1)));
+                    listHtml += '<li class="dragdrop-item" data-id="' + this.sanitize(String(item.id || i)) + '">' +
+                                '<span class="drag-handle">&#9776;</span>' +
+                                '<span class="item-label">' + label + '</span>' +
+                                '</li>';
+                }
+
+                return '<div class="template dragdrop-template">' +
+                       '<h2 class="content-title">' + title + '</h2>' +
+                       '<p class="template-instructions">' + instructions + '</p>' +
+                       '<ul class="dragdrop-list" id="dragdrop-list-' + slideIdx + '">' + listHtml + '</ul>' +
+                       '<button type="button" class="check-btn" ' +
+                       'onclick="Player.checkDragDropOrder(' + slideIdx + ', ' +
+                       JSON.stringify(items.map(function(it) { return String(it.id || ''); })) + ')">' +
+                       'Check Order</button>' +
+                       '<div id="dragdrop-feedback-' + slideIdx + '" class="dragdrop-feedback"></div>' +
+                       '</div>';
+            } catch (error) {
+                console.error('renderDragDropSort error:', error);
+                return '<div class="template error"><p>Drag &amp; Drop rendering failed</p></div>';
+            }
+        },
+
+        checkDragDropOrder: function(slideIdx, correctOrder) {
+            var list = document.getElementById('dragdrop-list-' + slideIdx);
+            var feedback = document.getElementById('dragdrop-feedback-' + slideIdx);
+            if (!list || !feedback) return;
+            var items = list.querySelectorAll('.dragdrop-item');
+            var current = [];
+            items.forEach(function(el) { current.push(el.getAttribute('data-id')); });
+            var correct = JSON.stringify(current) === JSON.stringify(correctOrder);
+            feedback.innerHTML = correct
+                ? '<span class="feedback-correct">&#10003; Correct order!</span>'
+                : '<span class="feedback-incorrect">&#10007; Not quite — try again.</span>';
+        },
+
+        renderFinalAssessment: function(slide, slideIdx) {
+            try {
+                var data = slide.data || {};
+                var title = this.sanitize(slide.title || data.title || 'Final Assessment');
+                var instructions = this.sanitize(data.instructions || '');
+                var passingScore = data.passingScore !== undefined ? Number(data.passingScore) : 70;
+                var questions = Array.isArray(data.questions) ? data.questions : [];
+
+                if (questions.length === 0) {
+                    return '<div class="template assessment-template">' +
+                           '<h2 class="content-title">' + title + '</h2>' +
+                           '<p class="empty-state">No questions configured for this assessment.</p>' +
+                           '</div>';
+                }
+
+                var questionsHtml = '';
+                for (var qi = 0; qi < questions.length; qi++) {
+                    var q = questions[qi] || {};
+                    var qText = this.sanitize(q.question || q.text || ('Question ' + (qi + 1)));
+                    var optionsHtml = '';
+                    var opts = Array.isArray(q.options) ? q.options : [];
+                    for (var oi = 0; oi < opts.length; oi++) {
+                        var opt = opts[oi] || {};
+                        var optText = this.sanitize(opt.text || opt.label || ('Option ' + (oi + 1)));
+                        optionsHtml += '<label class="mcq-option">' +
+                                       '<input type="radio" name="fa_q' + qi + '_' + slideIdx +
+                                       '" value="' + oi + '">' +
+                                       '<span class="option-text">' + optText + '</span>' +
+                                       '</label>';
+                    }
+                    questionsHtml += '<div class="fa-question" data-qi="' + qi + '">' +
+                                     '<p class="fa-question-text">' + (qi + 1) + '. ' + qText + '</p>' +
+                                     '<div class="mcq-options">' + optionsHtml + '</div>' +
+                                     '</div>';
+                }
+
+                return '<div class="template assessment-template">' +
+                       '<h2 class="content-title">' + title + '</h2>' +
+                       (instructions ? '<p class="template-instructions">' + instructions + '</p>' : '') +
+                       '<div class="fa-questions">' + questionsHtml + '</div>' +
+                       '<button type="button" class="check-btn" ' +
+                       'onclick="Player.submitFinalAssessment(' + slideIdx + ', ' +
+                       JSON.stringify(questions.map(function(q) {
+                           var opts = Array.isArray(q.options) ? q.options : [];
+                           return opts.findIndex(function(o) { return o && o.isCorrect; });
+                       })) + ', ' + passingScore + ')">' +
+                       'Submit Assessment</button>' +
+                       '<div id="fa-result-' + slideIdx + '" class="fa-result"></div>' +
+                       '</div>';
+            } catch (error) {
+                console.error('renderFinalAssessment error:', error);
+                return '<div class="template error"><p>Assessment rendering failed</p></div>';
+            }
+        },
+
+        submitFinalAssessment: function(slideIdx, correctAnswers, passingScore) {
+            var correct = 0;
+            for (var qi = 0; qi < correctAnswers.length; qi++) {
+                var selected = document.querySelector(
+                    'input[name="fa_q' + qi + '_' + slideIdx + '"]:checked'
+                );
+                if (selected && Number(selected.value) === correctAnswers[qi]) correct++;
+            }
+            var pct = correctAnswers.length > 0
+                ? Math.round((correct / correctAnswers.length) * 100) : 0;
+            var passed = pct >= passingScore;
+            var resultEl = document.getElementById('fa-result-' + slideIdx);
+            if (resultEl) {
+                resultEl.innerHTML = '<div class="fa-score ' + (passed ? 'pass' : 'fail') + '">' +
+                    'Score: ' + pct + '% &mdash; ' + (passed ? 'Passed ✓' : 'Not Passed ✗') +
+                    ' (Passing: ' + passingScore + '%)' +
+                    '</div>';
+                if (this.state.scormReady) {
+                    SCORM.setScore(pct, 0, 100);
+                    SCORM.setStatus(passed ? 'passed' : 'failed');
+                }
+            }
+        },
+
+        renderCompletionCertificate: function(slide) {
+            try {
+                var data = slide.data || {};
+                var courseName = this.sanitize(data.courseName || data.title || slide.title || 'this course');
+                var learnerName = this.sanitize(data.learnerName || 'Learner');
+                var completionDate = this.sanitize(data.completionDate || new Date().toLocaleDateString());
+                var message = this.sanitize(data.message || 'has successfully completed');
+
+                return '<div class="template certificate-template">' +
+                       '<div class="certificate-border">' +
+                       '<div class="certificate-header">' +
+                       '<h1 class="certificate-title">Certificate of Completion</h1>' +
+                       '</div>' +
+                       '<div class="certificate-body">' +
+                       '<p class="certificate-awarded">This certifies that</p>' +
+                       '<h2 class="certificate-name">' + learnerName + '</h2>' +
+                       '<p class="certificate-message">' + message + '</p>' +
+                       '<h3 class="certificate-course">' + courseName + '</h3>' +
+                       '<p class="certificate-date">Date: ' + completionDate + '</p>' +
+                       '</div>' +
+                       '</div>' +
+                       '</div>';
+            } catch (error) {
+                console.error('renderCompletionCertificate error:', error);
+                return '<div class="template error"><p>Certificate rendering failed</p></div>';
+            }
+        },
+
         selectAnswer: function(slideIdx, optIdx) {
             try {
                 console.log('=== MCQ DEBUG: selectAnswer called ===');
@@ -435,6 +670,14 @@
             var div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        },
+
+        // Decodes HTML entities stored by the backend (e.g. &lt;p&gt; → <p>)
+        decodeHTML: function(str) {
+            if (!str || typeof str !== 'string') return '';
+            var ta = document.createElement('textarea');
+            ta.innerHTML = str;
+            return ta.value;
         },
 
         updateNavigation: function() {

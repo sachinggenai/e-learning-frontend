@@ -1,0 +1,328 @@
+# Course Storyboard Prompt
+
+Paste everything inside the code block below to any LLM to get a ready-to-use course storyboard.
+The LLM will pick a topic and write all the content — you use the storyboard to build the course in the demo app.
+
+---
+
+```
+You are an expert instructional designer. Your job is to create a complete course storyboard that I will use to build a demo e-learning course.
+
+Pick any engaging professional topic (e.g. "Effective Communication at Work", "Cybersecurity Basics", "Introduction to Design Thinking", "Workplace Mental Health", "Agile Project Management") — choose whatever makes for the richest demo content.
+
+---
+
+## YOUR ROLE
+
+Generate a full storyboard document. I will read each page of the storyboard and manually enter the content into the e-learning authoring tool. Your job is to write all the actual content — text, questions, answers, labels, explanations — so I have everything I need without having to think of content myself.
+
+The course uses 19 page templates. Use each one exactly once in the order listed below.
+For every page, write the complete content ready to copy-paste into the tool.
+
+---
+
+## APPLICATION OVERVIEW
+
+The app is a React + Redux course editor. A course contains pages. Each page has one
+component (template). The template type determines the data shape.
+
+Pages are created via:
+  PageManager → "Add Page from Template" dialog → TemplateSelector (19 templates shown)
+  → user picks a template → enters a page title → page is created in the course.
+
+The Redux store holds the course. Each page looks like:
+  { id: string, title: string, type: string, data: { ...template-specific fields } }
+
+---
+
+## 19 AVAILABLE TEMPLATES & THEIR DATA SHAPES
+
+For each template I list: typeId | display name | data fields you must populate.
+
+### 1. content-text — "Text Content"
+Content: full-page rich HTML.
+data: {
+  content: "<p>HTML string here</p>"   // canonical field (required)
+}
+
+### 2. tabs — "Tabs"
+Organizes content into clickable tabs.
+data: {
+  tabs: [
+    { id: "tab-1", title: "Tab Title", body: "<p>HTML content</p>" },
+    { id: "tab-2", title: "Tab Title", body: "<p>HTML content</p>" }
+    // 2–5 tabs recommended
+  ],
+  defaultTabId: "tab-1"
+}
+
+### 3. accordion — "Accordion"
+Collapsible sections.
+data: {
+  items: [
+    { id: "item-1", title: "Section Heading", body: "<p>HTML content</p>", defaultOpen: false },
+    { id: "item-2", title: "Section Heading", body: "<p>HTML content</p>", defaultOpen: false }
+    // 2–6 items recommended
+  ]
+}
+
+### 4. click-reveal — "Click & Reveal"
+Cards that reveal content on click.
+data: {
+  items: [
+    { id: "cr-1", front: "Click prompt text", back: "<p>Revealed content HTML</p>" },
+    { id: "cr-2", front: "Click prompt text", back: "<p>Revealed content HTML</p>" }
+    // 2–6 items
+  ]
+}
+
+### 5. text-with-media — "Text with Media"
+Text alongside an image or video.
+data: {
+  title: "Section title",
+  body: "<p>Text content HTML</p>",
+  mediaType: "image",           // "image" | "video"
+  mediaUrl: "https://...",      // URL to image or video
+  mediaAlt: "Alt text",
+  layout: "image-right"         // "image-left" | "image-right"
+}
+
+### 6. image-hotspots — "Image Hotspots"
+Clickable hotspots on an image.
+data: {
+  imageUrl: "https://...",
+  imageAlt: "Descriptive alt text",
+  hotspots: [
+    { id: "hs-1", x: 30, y: 45, label: "Hotspot label", content: "Popup description text" },
+    { id: "hs-2", x: 65, y: 20, label: "Hotspot label", content: "Popup description text" }
+    // x and y are percentages (0–100)
+  ]
+}
+
+### 7. flip-cards — "Flip Cards"
+Cards with front and back.
+data: {
+  columns: 3,
+  cards: [
+    { id: "fc-1", front: "Term or question", back: "Definition or answer" },
+    { id: "fc-2", front: "Term or question", back: "Definition or answer" }
+    // 4–9 cards recommended
+  ]
+}
+
+### 8. carousel — "Carousel"
+Navigable slide deck.
+data: {
+  slides: [
+    { id: "sl-1", title: "Slide title", content: "<p>Slide HTML content</p>", imageUrl: "" },
+    { id: "sl-2", title: "Slide title", content: "<p>Slide HTML content</p>", imageUrl: "" }
+    // 3–7 slides recommended
+  ]
+}
+
+### 9. drag-drop-sort — "Drag & Drop Sort"
+Learner drags items into the correct order.
+data: {
+  instructions: "Drag the steps into the correct order",
+  items: [
+    { id: "dds-1", text: "Step description", correctOrder: 0 },
+    { id: "dds-2", text: "Step description", correctOrder: 1 },
+    { id: "dds-3", text: "Step description", correctOrder: 2 }
+    // correctOrder is 0-based index of correct position
+    // 3–7 items recommended
+  ]
+}
+
+### 10. mcq — "Multiple Choice"
+Single correct answer.
+data: {
+  question: "Question text?",
+  options: [
+    { id: "opt-a", text: "Option A", isCorrect: false },
+    { id: "opt-b", text: "Option B", isCorrect: true },
+    { id: "opt-c", text: "Option C", isCorrect: false },
+    { id: "opt-d", text: "Option D", isCorrect: false }
+  ],
+  explanation: "Why the correct answer is correct.",
+  maxScore: 1
+}
+
+### 11. multiple-select — "Multiple Select"
+Multiple correct answers.
+data: {
+  question: "Select all that apply:",
+  options: [
+    { id: "ms-a", text: "Option A", isCorrect: true },
+    { id: "ms-b", text: "Option B", isCorrect: false },
+    { id: "ms-c", text: "Option C", isCorrect: true },
+    { id: "ms-d", text: "Option D", isCorrect: false }
+  ],
+  explanation: "Explanation of correct selections.",
+  maxScore: 1
+}
+
+### 12. true-false — "True / False"
+data: {
+  question: "Statement to evaluate.",
+  correctAnswer: true,           // true | false
+  explanation: "Why this is true/false."
+}
+
+### 13. fill-blanks — "Fill in the Blanks"
+Sentence template uses {{blank}} placeholders; blanks array provides answers.
+data: {
+  sentence: "The {{blank}} is the powerhouse of the {{blank}}.",
+  blanks: [
+    { id: "b-1", correctAnswer: "mitochondria", alternatives: ["Mitochondria"] },
+    { id: "b-2", correctAnswer: "cell", alternatives: ["Cell"] }
+  ],
+  instructions: "Type the missing words in the blanks."
+}
+
+### 14. matching — "Matching"
+Match left column items to right column items.
+data: {
+  instructions: "Match each term to its definition.",
+  pairs: [
+    { id: "p-1", left: "Left term A", right: "Right match A" },
+    { id: "p-2", left: "Left term B", right: "Right match B" },
+    { id: "p-3", left: "Left term C", right: "Right match C" }
+    // 3–6 pairs recommended
+  ]
+}
+
+### 15. knowledge-check — "Knowledge Check"
+Multi-question formative quiz.
+data: {
+  title: "Knowledge Check",
+  questions: [
+    {
+      id: "kc-1",
+      question: "Question text?",
+      type: "mcq",
+      options: [
+        { id: "kc-1-a", text: "Option A", isCorrect: false },
+        { id: "kc-1-b", text: "Option B", isCorrect: true }
+      ],
+      explanation: "Explanation."
+    },
+    {
+      id: "kc-2",
+      question: "Another question?",
+      type: "true-false",
+      correctAnswer: false,
+      explanation: "Explanation."
+    }
+    // 2–5 questions
+  ],
+  passingScore: 80
+}
+
+### 16. final-assessment — "Final Assessment"
+Graded summative quiz.
+data: {
+  title: "Final Assessment",
+  instructions: "Answer all questions. You need 80% to pass.",
+  passingScore: 80,
+  questions: [
+    {
+      id: "fa-1",
+      question: "Question text?",
+      type: "mcq",
+      options: [
+        { id: "fa-1-a", text: "Option A", isCorrect: true },
+        { id: "fa-1-b", text: "Option B", isCorrect: false },
+        { id: "fa-1-c", text: "Option C", isCorrect: false }
+      ],
+      explanation: "Explanation.",
+      points: 1
+    }
+    // 5–10 questions for a proper final assessment
+  ]
+}
+
+### 17. course-menu — "Course Menu"
+Navigation hub listing all modules/pages.
+data: {
+  title: "Course Contents",
+  subtitle: "Select a topic to begin",
+  items: [
+    { id: "cm-1", label: "Module 1: Introduction", description: "What you will learn" },
+    { id: "cm-2", label: "Module 2: Core Concepts", description: "Key principles" },
+    { id: "cm-3", label: "Module 3: Practical Skills", description: "Hands-on practice" }
+    // One item per major section of the course
+  ]
+}
+
+### 18. summary-takeaways — "Summary & Takeaways"
+Key points recap and next steps.
+data: {
+  title: "Key Takeaways",
+  introText: "Here is what you learned in this module.",
+  keyPoints: [
+    { id: "kp-1", text: "Key learning point 1", emphasis: "normal" },
+    { id: "kp-2", text: "Key learning point 2", emphasis: "high" },
+    { id: "kp-3", text: "Key learning point 3", emphasis: "normal" }
+  ],
+  closingRemarks: "You are now ready to apply these concepts.",
+  nextSteps: "Proceed to the final assessment to test your knowledge.",
+  showNextStepsSection: true,
+  displayStyle: "cards",
+  showContinueButton: true,
+  continueButtonText: "Continue to Assessment"
+}
+
+### 19. completion-certificate — "Completion Certificate"
+Award page shown on course completion.
+data: {
+  courseTitle: "Course Name",
+  recipientLabel: "This certifies that",
+  completionMessage: "has successfully completed this course.",
+  dateLabel: "Completion Date",
+  showDate: true,
+  showScore: true,
+  scoreSuffix: "% score achieved",
+  organizationName: "Your Organization Name",
+  certificateTitle: "Certificate of Completion"
+}
+
+---
+
+## WHAT I WANT YOU TO GENERATE
+
+For the topic: **[INSERT YOUR TOPIC HERE — e.g. "Workplace Fire Safety", "Effective Communication Skills", "Introduction to Python Programming"]**
+
+Generate a complete course plan structured as a JSON array. Each element is one page:
+
+[
+  {
+    "pageNumber": 1,
+    "pageTitle": "Human-readable page title",
+    "templateType": "typeId from the list above",
+    "data": { ...all required fields populated with real course content... }
+  },
+  ...
+]
+
+RULES:
+1. Use each of the 19 templates exactly once.
+2. Follow this recommended page order for good instructional design:
+   - Page 1: course-menu (navigation overview)
+   - Page 2: content-text (introduction / context)
+   - Pages 3–8: content templates (tabs, accordion, text-with-media, carousel, image-hotspots, click-reveal)
+   - Pages 9–10: interaction templates (flip-cards, drag-drop-sort)
+   - Page 11: knowledge-check (formative mid-point check)
+   - Pages 12–16: assessment templates (mcq, multiple-select, true-false, fill-blanks, matching)
+   - Page 17: summary-takeaways
+   - Page 18: final-assessment
+   - Page 19: completion-certificate
+3. All content must be directly relevant to the course topic.
+4. All IDs must be unique strings (use simple patterns like "tab-1", "opt-a", "kp-1").
+5. Populate EVERY required field — do not leave any field empty or as a placeholder.
+6. HTML fields (content, body, back) should use simple tags: <p>, <ul>, <li>, <strong>, <em>.
+7. For image/media URLs use: https://placehold.co/800x450/4f46e5/ffffff?text=Your+Label
+
+After outputting the JSON, also provide a short summary table:
+| Page # | Template | Page Title |
+listing all 19 pages.
+```
