@@ -131,6 +131,34 @@ const Header: React.FC<HeaderProps> = ({
       );
       if (!confirmExport) return;
 
+      // Flush pending debounced saves — wait up to 3.8s for:
+      //   1. Any active debounce timers to fire (pendingDebounceCount > 0)
+      //   2. All in-flight PATCH requests to settle (pendingSaveCount > 0)
+      // This prevents exporting stale DB data when the user just edited content.
+      const hasPending = () => {
+        const store = (window as any).__REDUX_STORE__;
+        if (!store) return false;
+        const s = (store.getState() as any).components ?? {};
+        return (s.pendingSaveCount ?? 0) + (s.pendingDebounceCount ?? 0) > 0;
+      };
+
+      if (hasPending()) {
+        showToast(t("export.saving", "Saving changes before export…"), "info");
+        const flush = new Promise<void>((resolve) => {
+          let waited = 0;
+          const check = () => {
+            if (!hasPending() || waited >= 3800) {
+              resolve();
+            } else {
+              waited += 100;
+              setTimeout(check, 100);
+            }
+          };
+          check();
+        });
+        await flush;
+      }
+
       console.log("Starting SCORM export for course:", course.courseId);
 
       const result = await exportService.exportScorm(course.courseId, "scorm_1_2");

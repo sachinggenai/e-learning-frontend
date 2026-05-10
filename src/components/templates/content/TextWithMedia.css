@@ -143,3 +143,58 @@
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
+
+/* ── File upload UI ─────────────────────────────────────────── */
+.tpl-text-media-editor__preview {
+  display: block;
+  max-width: 100%;
+  max-height: 160px;
+  object-fit: contain;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.tpl-text-media-editor__upload-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tpl-text-media-editor__upload-btn,
+.tpl-text-media-editor__remove-btn {
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  border: 1px solid;
+  transition: opacity 0.15s;
+}
+
+.tpl-text-media-editor__upload-btn {
+  background: #4a90d9;
+  color: #fff;
+  border-color: #3a7bc8;
+}
+
+.tpl-text-media-editor__upload-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tpl-text-media-editor__remove-btn {
+  background: #fff;
+  color: #c53030;
+  border-color: #c53030;
+}
+
+.tpl-text-media-editor__remove-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tpl-text-media-editor__upload-error {
+  color: #c53030;
+  font-size: 12px;
+  margin: 0 0 6px;
+}

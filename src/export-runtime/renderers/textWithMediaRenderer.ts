@@ -8,9 +8,17 @@ export const textWithMediaRenderer: ExportRenderer = {
     const mediaType = context.sanitizeText(component.data.mediaType ?? "none");
     const body = context.renderRichText(component.data.body ?? component.data.content);
 
+    let mediaElement = "";
+    if (mediaUrl.length > 0) {
+      if (mediaType === "video") {
+        mediaElement = `<video class="rt-text-media__video" src="${mediaUrl}" controls></video>`;
+      } else {
+        mediaElement = `<img class="rt-text-media__image" src="${mediaUrl}" alt="${title}" />`;
+      }
+    }
     const mediaBlock =
-      mediaUrl.length > 0
-        ? `<div class="rt-text-media__media" data-media-type="${mediaType}"><p>${mediaUrl}</p></div>`
+      mediaElement.length > 0
+        ? `<div class="rt-text-media__media" data-media-type="${mediaType}">${mediaElement}</div>`
         : "";
 
     return [

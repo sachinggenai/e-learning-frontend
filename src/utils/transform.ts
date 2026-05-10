@@ -169,11 +169,17 @@ export function transformCourseForExport(course: Course): any {
   const sourceTemplates =
     (course as any).templates || (course as any).pages || [];
 
+  // Map frontend type identifiers to canonical backend type names
+  const EXPORT_TYPE_MAP: Record<string, string> = {
+    'text-with-media': 'content-media',
+  };
+
   // Transform each template with proper structure
   transformed.templates = sourceTemplates.map((page: any, index: number) => {
+    const rawType = page.type || page.templateType;
     const base = {
       id: page.id,
-      type: page.type || page.templateType,
+      type: EXPORT_TYPE_MAP[rawType] ?? rawType,
       order: index, // Required sequential order
       title: page.title,
       data: {} as any,
@@ -187,24 +193,27 @@ export function transformCourseForExport(course: Course): any {
       // If no questions but has legacy format, convert
       let mcqQuestions = questions;
       if (!mcqQuestions.length && content.question && content.options) {
-        // Find the index of the correct answer by matching the text
-        const correctAnswerIndex = content.correctAnswer
-          ? (Array.isArray(content.options) ? content.options : []).findIndex(
-              (opt: any) => {
-                const optionText =
-                  typeof opt === "string"
-                    ? opt
-                    : opt?.text || opt?.option || "";
-                return (
-                  optionText.trim() === (content.correctAnswer || "").trim()
-                );
-              }
-            )
+        const optionsList = Array.isArray(content.options) ? content.options : [];
+        const correctAnswerRaw = (content.correctAnswer || "").trim();
+
+        // 1. Try text-match
+        let correctAnswerIndex = correctAnswerRaw
+          ? optionsList.findIndex((opt: any) => {
+              const optionText =
+                typeof opt === "string" ? opt : opt?.text || opt?.option || "";
+              return optionText.trim() === correctAnswerRaw;
+            })
           : -1;
 
-        const options = (
-          Array.isArray(content.options) ? content.options : []
-        ).map((opt: any, i: number) => {
+        // 2. Fallback: interpret as letter (A→0, B→1 …)
+        if (correctAnswerIndex === -1 && /^[A-Za-z]$/.test(correctAnswerRaw)) {
+          const letterIdx = correctAnswerRaw.toUpperCase().charCodeAt(0) - 65;
+          if (letterIdx >= 0 && letterIdx < optionsList.length) {
+            correctAnswerIndex = letterIdx;
+          }
+        }
+
+        const options = optionsList.map((opt: any, i: number) => {
           if (typeof opt === "string") {
             return {
               id: `opt_${i}`,
@@ -229,23 +238,40 @@ export function transformCourseForExport(course: Course): any {
           },
         ];
       } else if (mcqQuestions.length > 0 && content.correctAnswer) {
-        // Questions exist but correct answer needs to be applied
-        const correctAnswerIndex = (
+        // Questions exist but correct answer needs to be applied.
+        // correctAnswer may be a text string OR a letter like "A"/"B"/"C".
+        const correctAnswerRaw = (content.correctAnswer || "").trim();
+
+        // 1. Try text-match against content.options
+        let correctAnswerIndex = (
           Array.isArray(content.options) ? content.options : []
         ).findIndex((opt: any) => {
           const optionText =
             typeof opt === "string" ? opt : opt?.text || opt?.option || "";
-          return optionText.trim() === (content.correctAnswer || "").trim();
+          return optionText.trim() === correctAnswerRaw;
         });
 
-        // Update the existing questions with correct answer
-        mcqQuestions = mcqQuestions.map((q: any) => ({
-          ...q,
-          options: q.options.map((opt: any, i: number) => ({
-            ...opt,
-            isCorrect: i === correctAnswerIndex,
-          })),
-        }));
+        // 2. If no text match, interpret as a letter (A→0, B→1, C→2 …)
+        if (correctAnswerIndex === -1 && /^[A-Za-z]$/.test(correctAnswerRaw)) {
+          correctAnswerIndex = correctAnswerRaw.toUpperCase().charCodeAt(0) - 65;
+          // Clamp to valid option range
+          const firstQ = mcqQuestions[0];
+          const optCount = firstQ?.options?.length ?? 0;
+          if (correctAnswerIndex < 0 || correctAnswerIndex >= optCount) {
+            correctAnswerIndex = -1;
+          }
+        }
+
+        // Only override isCorrect when we found a valid match
+        if (correctAnswerIndex !== -1) {
+          mcqQuestions = mcqQuestions.map((q: any) => ({
+            ...q,
+            options: q.options.map((opt: any, i: number) => ({
+              ...opt,
+              isCorrect: i === correctAnswerIndex,
+            })),
+          }));
+        }
       }
 
       // Ensure at least one question with valid options
@@ -270,10 +296,19 @@ export function transformCourseForExport(course: Course): any {
       // For non-MCQ templates, map content appropriately
       const content = page.data || page.content || {};
       base.data = {
-        content:
-          content.content || content.template_name || content.body || "Content",
-        subtitle: content.subtitle || undefined,
-        videoUrl: content.videoUrl || undefined,
+        // Use body as the canonical text field; fall back to content/template_name for legacy data
+        body: content.body || content.content || content.template_name || "Content",
+        // Keep content for backward-compat fallback on backend
+        content: content.content || content.template_name || content.body || "Content",
+        subtitle: content.subtitle || null,
+        videoUrl: content.videoUrl || null,
+        questions: null,
+        tabs: null,
+        panels: null,
+        // Preserve media fields — critical for content-media template
+        mediaUrl: content.mediaUrl ?? "",
+        mediaType: content.mediaType ?? "none",
+        mediaPosition: content.mediaPosition ?? "right",
       };
     }
 

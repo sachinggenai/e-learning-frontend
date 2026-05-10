@@ -528,7 +528,13 @@ class ApiService {
         }
       );
 
-      return response.data;
+      // Backend returns nested shape: { success, media: { id, url, ... } }
+      // Fall back to flat shape { id, url } for forward-compatibility
+      const data = response.data;
+      if (data?.media?.url) {
+        return { id: data.media.id ?? "", url: data.media.url };
+      }
+      return data;
     } catch (error) {
       console.error("Asset upload failed:", error);
       throw new Error("Failed to upload asset");

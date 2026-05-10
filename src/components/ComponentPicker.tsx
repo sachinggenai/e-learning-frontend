@@ -46,6 +46,29 @@ import { registry } from './registry';
 import { ComponentDefinition, CategoryDefinition } from '../types/registry';
 import './ComponentPicker.css';
 
+// Templates that are fully implemented and available for use
+const AVAILABLE_TYPES = new Set([
+  'content-text',
+  'tabs',
+  'accordion',
+  'click-reveal',
+  'text-with-media',
+  'image-hotspots',
+  'flip-cards',
+  'carousel',
+  'drag-drop-sort',
+  'mcq',
+  'multiple-select',
+  'true-false',
+  'fill-blanks',
+  'matching',
+  'knowledge-check',
+  'final-assessment',
+  'course-menu',
+  'summary-takeaways',
+  'completion-certificate',
+]);
+
 interface ComponentPickerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -227,7 +250,7 @@ const ComponentPicker: React.FC<ComponentPickerProps> = ({
             ) : selectedCategory ? (
               // Single category view
               filteredComponents.map((comp) => (
-                <ComponentCard key={comp.typeId} definition={comp} onSelect={handleSelect} />
+                <ComponentCard key={comp.typeId} definition={comp} onSelect={handleSelect} isAvailable={AVAILABLE_TYPES.has(comp.typeId)} />
               ))
             ) : (
               // All categories view (grouped)
@@ -240,7 +263,7 @@ const ComponentPicker: React.FC<ComponentPickerProps> = ({
                     </h3>
                     <div className="component-picker__category-grid">
                       {components.map((comp) => (
-                        <ComponentCard key={comp.typeId} definition={comp} onSelect={handleSelect} />
+                        <ComponentCard key={comp.typeId} definition={comp} onSelect={handleSelect} isAvailable={AVAILABLE_TYPES.has(comp.typeId)} />
                       ))}
                     </div>
                   </div>
@@ -258,16 +281,17 @@ const ComponentPicker: React.FC<ComponentPickerProps> = ({
 interface ComponentCardProps {
   definition: ComponentDefinition;
   onSelect: (def: ComponentDefinition) => void;
+  isAvailable?: boolean;
 }
 
-const ComponentCard: React.FC<ComponentCardProps> = React.memo(({ definition, onSelect }) => {
+const ComponentCard: React.FC<ComponentCardProps> = React.memo(({ definition, onSelect, isAvailable = true }) => {
   const category = registry.getCategory(definition.category);
   const iconKey = definition.icon || category?.icon;
   const CategoryIcon = resolveCategoryIcon(iconKey, definition.category);
 
   return (
     <button
-      className="component-card"
+      className={`component-card${isAvailable ? '' : ' component-card--unavailable'}`}
       onClick={() => onSelect(definition)}
       role="listitem"
       aria-label={`Add ${definition.displayName}: ${definition.description}`}

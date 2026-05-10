@@ -25,6 +25,10 @@ export interface ComponentsState {
   /** Loading state per page */
   loading: Record<string, boolean>;
   error: string | null;
+  /** Number of in-flight updateComponent PATCH requests (debounced saves in progress) */
+  pendingSaveCount: number;
+  /** Number of debounce timers that have been set but not yet fired (pending saves not yet in-flight) */
+  pendingDebounceCount: number;
 }
 
 const initialState: ComponentsState = {
@@ -32,6 +36,8 @@ const initialState: ComponentsState = {
   selectedComponentId: null,
   loading: {},
   error: null,
+  pendingSaveCount: 0,
+  pendingDebounceCount: 0,
 };
 
 // ─── Async Thunks ────────────────────────────────────────────────
@@ -118,6 +124,16 @@ const componentsSlice = createSlice({
       state.selectedComponentId = action.payload;
     },
 
+    /** Called when a debounce save timer is started (before the 800ms fires) */
+    debounceStarted: (state) => {
+      state.pendingDebounceCount += 1;
+    },
+
+    /** Called when a debounce save timer fires or is cancelled */
+    debounceSettled: (state) => {
+      state.pendingDebounceCount = Math.max(0, state.pendingDebounceCount - 1);
+    },
+
     /** Optimistic local update (no API call) for real-time editing */
     updateComponentLocal: (
       state,
@@ -200,13 +216,22 @@ const componentsSlice = createSlice({
     });
 
     // Update
+    builder.addCase(updateComponent.pending, (state) => {
+      state.pendingSaveCount += 1;
+    });
     builder.addCase(updateComponent.fulfilled, (state, action) => {
+      state.pendingSaveCount = Math.max(0, state.pendingSaveCount - 1);
       const { pageId, componentId, component } = action.payload;
       const components = state.byPage[pageId];
       if (components) {
         const index = components.findIndex((c) => c.componentId === componentId);
         if (index !== -1) components[index] = component;
       }
+    });
+    builder.addCase(updateComponent.rejected, (state, action) => {
+      state.pendingSaveCount = Math.max(0, state.pendingSaveCount - 1);
+      state.error = action.error.message || 'Failed to save component';
+      console.error('[componentsSlice] updateComponent failed:', action.error.message);
     });
 
     // Remove
@@ -242,6 +267,8 @@ export const {
   setPageComponents,
   clearComponents,
   duplicateComponentLocal,
+  debounceStarted,
+  debounceSettled,
 } = componentsSlice.actions;
 
 export default componentsSlice.reducer;

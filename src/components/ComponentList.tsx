@@ -28,6 +28,8 @@ import {
   removeComponent,
   reorderComponents,
   addComponent,
+  debounceStarted,
+  debounceSettled,
 } from '../store/slices/componentsSlice';
 import { DynamicComponentRenderer } from './DynamicComponentRenderer';
 import { ComponentSlot } from './ComponentSlot';
@@ -101,8 +103,13 @@ export const ComponentList: React.FC<ComponentListProps> = React.memo(({
     // Debounced API persist (800ms after last keystroke)
     if (debounceTimers.current[componentId]) {
       clearTimeout(debounceTimers.current[componentId]);
+      // Cancel the old timer's pending debounce slot
+      dispatch(debounceSettled());
     }
+    // Register a new pending debounce slot so flush logic can wait for it
+    dispatch(debounceStarted());
     debounceTimers.current[componentId] = setTimeout(() => {
+      dispatch(debounceSettled());
       dispatch(updateComponent({
         courseId,
         pageId,

@@ -1,6 +1,18 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import type { ComponentEditorProps, ComponentPreviewProps } from '../../../types/registry';
+import { apiService } from '../../../services/api';
+import { API_BASE_URL } from '../../../services/httpClient';
 import './TextWithMedia.css';
+
+const MAX_FILE_BYTES = 50 * 1024 * 1024; // 50 MB — enforced server-side too
+
+/** Convert upload response's relative URL to an absolute URL for SCORM portability. */
+function toAbsoluteMediaUrl(relativeUrl: string): string {
+  if (!relativeUrl) return '';
+  if (/^https?:\/\//i.test(relativeUrl)) return relativeUrl; // already absolute
+  const origin = API_BASE_URL.replace(/\/api\/v\d+\/?$/, '');
+  return `${origin}${relativeUrl}`;
+}
 
 type MediaType = 'none' | 'image' | 'video';
 type MediaPosition = 'left' | 'right' | 'top' | 'bottom';
@@ -21,7 +33,7 @@ export const TextWithMediaPreview: React.FC<ComponentPreviewProps> = ({
   onComplete,
 }) => {
   const componentData = (data ?? {}) as TextWithMediaData;
-  const mediaType = componentData.mediaType ?? 'none';
+  const mediaType = componentData.mediaType ?? 'image';
   const mediaPosition = componentData.mediaPosition ?? 'right';
 
   React.useEffect(() => {
@@ -71,6 +83,9 @@ export const TextWithMediaPreview: React.FC<ComponentPreviewProps> = ({
 
 export const TextWithMediaEditor: React.FC<ComponentEditorProps> = ({ data, onChange, readOnly }) => {
   const componentData = (data ?? {}) as TextWithMediaData;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const updateField = useCallback(
     (field: keyof TextWithMediaData, value: string) => {
@@ -78,6 +93,30 @@ export const TextWithMediaEditor: React.FC<ComponentEditorProps> = ({ data, onCh
     },
     [componentData, onChange]
   );
+
+  const handleFileChange = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > MAX_FILE_BYTES) {
+      setUploadError(`File is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum is 50 MB.`);
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadError(null);
+    try {
+      const { url } = await apiService.uploadAsset(file);
+      const absoluteUrl = toAbsoluteMediaUrl(url);
+      onChange({ data: { ...componentData, mediaUrl: absoluteUrl } });
+    } catch (err: any) {
+      setUploadError(err?.message ?? 'Upload failed. Please try again.');
+    } finally {
+      setIsUploading(false);
+      // Reset file input so the same file can be re-selected if needed
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  }, [componentData, onChange]);
 
   return (
     <div className="tpl-text-media-editor">
@@ -119,13 +158,13 @@ export const TextWithMediaEditor: React.FC<ComponentEditorProps> = ({ data, onCh
           <select
             id="twm-media-type"
             className="tpl-text-media-editor__input"
-            value={componentData.mediaType ?? 'none'}
+            value={componentData.mediaType ?? 'image'}
             onChange={(event) => updateField('mediaType', event.target.value)}
             disabled={readOnly}
           >
-            <option value="none">None</option>
             <option value="image">Image</option>
             <option value="video">Video</option>
+            <option value="none">None</option>
           </select>
         </div>
 
@@ -149,17 +188,68 @@ export const TextWithMediaEditor: React.FC<ComponentEditorProps> = ({ data, onCh
       </div>
 
       <div className="tpl-text-media-editor__field">
-        <label className="tpl-text-media-editor__label" htmlFor="twm-media-url">
+        <label className="tpl-text-media-editor__label">
           Media URL
         </label>
+
+        {/* Hidden native file picker */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*,video/*"
+          style={{ display: 'none' }}
+          onChange={handleFileChange}
+          disabled={readOnly || isUploading}
+        />
+
+        {/* Current image preview */}
+        {componentData.mediaUrl && componentData.mediaType === 'image' && (
+          <img
+            src={componentData.mediaUrl}
+            alt="Current media"
+            className="tpl-text-media-editor__preview"
+            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+          />
+        )}
+
+        {/* Upload button row */}
+        {!readOnly && (
+          <div className="tpl-text-media-editor__upload-row">
+            <button
+              type="button"
+              className="tpl-text-media-editor__upload-btn"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+            >
+              {isUploading ? 'Uploading…' : componentData.mediaUrl ? 'Change File' : 'Choose File'}
+            </button>
+            {componentData.mediaUrl && (
+              <button
+                type="button"
+                className="tpl-text-media-editor__remove-btn"
+                onClick={() => { onChange({ data: { ...componentData, mediaUrl: '' } }); setUploadError(null); }}
+                disabled={isUploading}
+              >
+                Remove
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Error message */}
+        {uploadError && (
+          <p className="tpl-text-media-editor__upload-error">{uploadError}</p>
+        )}
+
+        {/* Manual URL fallback */}
         <input
           id="twm-media-url"
           className="tpl-text-media-editor__input"
           type="text"
           value={componentData.mediaUrl ?? ''}
-          onChange={(event) => updateField('mediaUrl', event.target.value)}
-          placeholder="https://..."
-          disabled={readOnly}
+          onChange={(event) => { setUploadError(null); updateField('mediaUrl', event.target.value); }}
+          placeholder="Or paste a URL directly…"
+          disabled={readOnly || isUploading}
         />
       </div>
 

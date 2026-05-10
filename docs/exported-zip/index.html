@@ -165,6 +165,8 @@
                         content = this.renderFinalAssessment(slide, index);
                     } else if (slide.type === 'completion-certificate') {
                         content = this.renderCompletionCertificate(slide);
+                    } else if (slide.type === 'text-with-media') {
+                        content = this.renderTextWithMedia(slide);
                     } else {
                         content = '<div class="slide"><p>Unknown slide type: ' +
                                  this.sanitize(slide.type || 'undefined') + '</p></div>';
@@ -573,6 +575,47 @@
             } catch (error) {
                 console.error('renderCompletionCertificate error:', error);
                 return '<div class="template error"><p>Certificate rendering failed</p></div>';
+            }
+        },
+
+        renderTextWithMedia: function(slide) {
+            try {
+                var data = slide.data || {};
+                var title = this.sanitize(slide.title || data.title || 'Text with Media');
+                var body = this.decodeHTML(typeof data.body === 'string' ? data.body :
+                           (typeof data.content === 'string' ? data.content : ''));
+                var mediaUrl = this.sanitize(data.mediaUrl || '');
+                var mediaType = data.mediaType || 'none';
+                var mediaPosition = data.mediaPosition || 'right';
+
+                var mediaHtml = '';
+                if (mediaUrl && mediaType !== 'none') {
+                    if (mediaType === 'image') {
+                        mediaHtml = '<div class="twm-media twm-media--' + mediaPosition + '">' +
+                                    '<img src="' + mediaUrl + '" alt="" class="twm-image" />' +
+                                    '</div>';
+                    } else if (mediaType === 'video') {
+                        mediaHtml = '<div class="twm-media twm-media--' + mediaPosition + '">' +
+                                    '<video class="twm-video" controls>' +
+                                    '<source src="' + mediaUrl + '" /></video>' +
+                                    '</div>';
+                    }
+                }
+
+                var layoutClass = (mediaHtml && (mediaPosition === 'left' || mediaPosition === 'right'))
+                    ? ' twm-layout--side' : '';
+
+                return '<div class="template twm-template">' +
+                       '<h2 class="content-title">' + title + '</h2>' +
+                       '<div class="twm-layout' + layoutClass + '">' +
+                       (mediaPosition === 'left' ? mediaHtml : '') +
+                       '<div class="twm-body content-body">' + body + '</div>' +
+                       (mediaPosition !== 'left' ? mediaHtml : '') +
+                       '</div>' +
+                       '</div>';
+            } catch (error) {
+                console.error('renderTextWithMedia error:', error);
+                return '<div class="template error"><p>Text with Media rendering failed</p></div>';
             }
         },
 

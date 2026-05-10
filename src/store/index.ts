@@ -47,6 +47,9 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
 });
 
+// Expose store for export flush polling (Header.tsx pendingSaveCount check)
+(window as any).__REDUX_STORE__ = store;
+
 export type AppDispatch = typeof store.dispatch;
 
 // Pre-typed hooks for use throughout the app
