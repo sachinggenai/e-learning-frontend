@@ -434,16 +434,6 @@ const Header: React.FC<HeaderProps> = ({
           >
             {isValidating ? <Loader size={14} className="spin-icon" /> : <ShieldCheck size={14} />} Validate
           </button>
-          {(hasErrors || hasWarnings) && (
-            <button
-              className={`action-button validation-toggle-btn${hasErrors ? ' danger' : ' warning'}`}
-              onClick={() => setShowValidation((v) => !v)}
-              title={showValidation ? 'Hide validation issues' : 'Show validation issues'}
-            >
-              <ShieldCheck size={14} />
-              {hasErrors ? `${errors.length} error${errors.length !== 1 ? 's' : ''}` : `${warnings.length} warning${warnings.length !== 1 ? 's' : ''}`}
-            </button>
-          )}
           <button
             className="action-button primary"
             onClick={handleExport}
@@ -467,6 +457,15 @@ const Header: React.FC<HeaderProps> = ({
           >
             <RotateCcw size={14} /> Reset
           </button>
+          {(hasErrors || hasWarnings) && (
+            <button
+              className={`action-button validation-toggle-btn${hasErrors ? ' danger' : ' warning'}`}
+              onClick={() => setShowValidation((v) => !v)}
+              title={hasErrors ? `${errors.length} error${errors.length !== 1 ? 's' : ''}` : `${warnings.length} warning${warnings.length !== 1 ? 's' : ''}`}
+            >
+              <ShieldCheck size={14} />
+            </button>
+          )}
         </div>
 
         {/* Connection status */}

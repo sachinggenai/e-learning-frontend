@@ -1,17 +1,20 @@
-# Backend Fix Request — SCORM Export Missing `mediaUrl`
+# Backend Fix Request — SCORM Export Issues
 **Date:** 2026-05-10  
 **Priority:** 🔴 CRITICAL — Blocker  
 **From:** Frontend Team  
 **To:** Backend Team  
-**Affects:** `POST /export/scorm/{courseId}` — `content-media` template type
+**Affects:** `POST /export/scorm/{courseId}`
 
 ---
 
 ## Summary
 
-The SCORM export endpoint (`POST /export/scorm/{courseId}`) is **not reading `mediaUrl`** from the component's stored data when building `course_data.js` for `content-media` templates. The field is present and correct in the database but comes out as `""` in every export. This causes the image to be invisible in all exported SCORM packages.
+Two issues in the SCORM export generator need to be fixed:
 
-**This is a one-line backend fix.**
+1. **`mediaUrl` not read from DB** — `content-media` templates always export `"mediaUrl": ""` even though the URL is correctly stored in the database. Image never shows.
+2. **`.template` CSS `max-width: 800px`** — The generated `styles.css` constrains all templates to 800px width, preventing them from filling the slide area.
+
+**Both are small backend fixes in the export generator.**
 
 ---
 
@@ -127,6 +130,32 @@ template_data = {
    https://amtrustfinancial.com/getmedia/b50eaa25-b5e7-4d07-9b85-1f3d7e36fd25/ANA_AmTrust_Remote_Worker_Best_Practices_Social_1200X628-min.jpg
    ```
 5. Open `index.html` in a browser — the image should appear on the right side of the slide
+
+---
+
+## Fix #2 — `.template` CSS `max-width: 800px` (styles.css)
+
+### Problem
+
+The `styles.css` embedded in every SCORM ZIP contains:
+
+```css
+.template { max-width: 800px; margin: 0 auto; line-height: 1.6; }
+```
+
+This constrains all template content to 800px wide, leaving large empty margins and preventing full-width layouts (especially the image in `text-with-media`).
+
+### Fix Required
+
+In the backend's SCORM CSS template/generator, change the `.template` rule:
+
+```css
+/* Before (incorrect): */
+.template { max-width: 800px; margin: 0 auto; line-height: 1.6; }
+
+/* After (correct): */
+.template { width: 100%; margin: 0 auto; line-height: 1.6; box-sizing: border-box; }
+```
 
 ---
 
