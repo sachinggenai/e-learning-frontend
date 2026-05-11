@@ -31,7 +31,9 @@
   border-radius: var(--radius-md, 8px);
   background: var(--sidebar-section-bg);
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 
 .layout-selector__option:hover {

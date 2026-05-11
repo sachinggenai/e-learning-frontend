@@ -6,7 +6,18 @@
  */
 
 import React, { memo, useRef, useState } from "react";
-import { FileText, Home, Video, Image, HelpCircle, Zap, Box, Trash2, Check, AlertCircle } from 'lucide-react';
+import {
+  FileText,
+  Home,
+  Video,
+  Image,
+  HelpCircle,
+  Zap,
+  Box,
+  Trash2,
+  Check,
+  AlertCircle,
+} from "lucide-react";
 import { normalizeTemplateType } from "../constants/templateTypes";
 import { t } from "../i18n/strings";
 import { useAppDispatch, useAppSelector } from "../store";
@@ -82,7 +93,7 @@ const PageManager: React.FC = () => {
       // Transform course page to PageManager Page format
       const page: Page = {
         id: coursePage.pageId || coursePage.id,
-        templateType: 'component-page', // Default template type for component-based pages
+        templateType: "component-page", // Default template type for component-based pages
         title: coursePage.title,
         content: { components: coursePage.components || [] },
         order: coursePage.order,
@@ -90,15 +101,13 @@ const PageManager: React.FC = () => {
         isDraft: false,
         lastModified: coursePage.updatedAt || new Date().toISOString(),
       };
-      
+
       if (!pageMap.has(page.id)) {
         pageMap.set(page.id, page);
       }
     });
 
-    return Array.from(pageMap.values()).sort(
-      (a, b) => a.order - b.order
-    );
+    return Array.from(pageMap.values()).sort((a, b) => a.order - b.order);
   }, [currentCourse?.pages]);
 
   const handleAddPage = () => {
@@ -133,7 +142,7 @@ const PageManager: React.FC = () => {
         pageTitle,
         customizations: customizationFields,
         pageOrder: pages.length,
-      }) as any
+      }) as any,
     )
       .then((res: any) => {
         const raw = res?.payload;
@@ -184,19 +193,23 @@ const PageManager: React.FC = () => {
       }
 
       // Look up the latest version of the page from currentCourse.pages
-      const coursePage = currentCourse?.pages.find((p: any) => p.pageId === page.id);
-      
+      const coursePage = currentCourse?.pages.find(
+        (p: any) => p.pageId === page.id,
+      );
+
       // Transform course page to editor Page format
-      const editorPage: Page = coursePage ? {
-        id: coursePage.pageId,
-        templateType: 'component-page',
-        title: coursePage.title,
-        content: { components: coursePage.components || [] },
-        order: coursePage.order,
-        isValid: true,
-        isDraft: false,
-        lastModified: coursePage.updatedAt || new Date().toISOString(),
-      } : page;
+      const editorPage: Page = coursePage
+        ? {
+            id: coursePage.pageId,
+            templateType: "component-page",
+            title: coursePage.title,
+            content: { components: coursePage.components || [] },
+            order: coursePage.order,
+            isValid: true,
+            isDraft: false,
+            lastModified: coursePage.updatedAt || new Date().toISOString(),
+          }
+        : page;
 
       dispatch(setCurrentPage(editorPage));
 
@@ -209,7 +222,7 @@ const PageManager: React.FC = () => {
         },
       });
     },
-    [currentEditorPage, currentCourse, dispatch]
+    [currentEditorPage, currentCourse, dispatch],
   );
 
   const handleDeletePage = (pageId: string, event: React.MouseEvent) => {
@@ -221,15 +234,16 @@ const PageManager: React.FC = () => {
       window.confirm(
         t(
           "confirm.delete.page",
-          'Delete "{title}"? This action cannot be undone.'
-        ).replace("{title}", page.title)
+          'Delete "{title}"? This action cannot be undone.',
+        ).replace("{title}", page.title),
       )
     ) {
       // Optimistic local removal
       dispatch(removePage(pageId));
 
       // API persistence: delete from backend
-      const apiCourseId = currentCourse?.courseId || String(currentCourse?.id ?? '');
+      const apiCourseId =
+        currentCourse?.courseId || String(currentCourse?.id ?? "");
       if (apiCourseId) {
         dispatch(deletePageFromCourse({ courseId: apiCourseId, pageId }));
       }
@@ -243,7 +257,8 @@ const PageManager: React.FC = () => {
 
   const handlePageTitleEdit = React.useCallback(
     (pageId: string, newTitle: string) => {
-      const apiCourseId = currentCourse?.courseId || String(currentCourse?.id ?? '');
+      const apiCourseId =
+        currentCourse?.courseId || String(currentCourse?.id ?? "");
       if (!apiCourseId) return;
 
       dispatch(
@@ -251,7 +266,7 @@ const PageManager: React.FC = () => {
           courseId: apiCourseId,
           pageId,
           title: newTitle,
-        })
+        }),
       );
 
       logger.info({
@@ -260,7 +275,7 @@ const PageManager: React.FC = () => {
         context: { pageId, newTitle },
       });
     },
-    [currentCourse, dispatch]
+    [currentCourse, dispatch],
   );
 
   const dragImageRef = useRef<HTMLDivElement | null>(null);
@@ -316,19 +331,68 @@ const PageManager: React.FC = () => {
     const t = normalizeTemplateType(templateType);
     switch (t) {
       case "welcome":
-        return <Home size={20} color="var(--sidebar-accent)" strokeWidth={2} aria-label="Welcome" />;
+        return (
+          <Home
+            size={20}
+            color="var(--sidebar-accent)"
+            strokeWidth={2}
+            aria-label="Welcome"
+          />
+        );
       case "content-text":
-        return <FileText size={20} color="var(--sidebar-accent)" strokeWidth={2} aria-label="Text" />;
+        return (
+          <FileText
+            size={20}
+            color="var(--sidebar-accent)"
+            strokeWidth={2}
+            aria-label="Text"
+          />
+        );
       case "content-video":
-        return <Video size={20} color="var(--sidebar-accent)" strokeWidth={2} aria-label="Video" />;
+        return (
+          <Video
+            size={20}
+            color="var(--sidebar-accent)"
+            strokeWidth={2}
+            aria-label="Video"
+          />
+        );
       case "mcq":
-        return <HelpCircle size={20} color="var(--sidebar-accent)" strokeWidth={2} aria-label="Quiz" />;
+        return (
+          <HelpCircle
+            size={20}
+            color="var(--sidebar-accent)"
+            strokeWidth={2}
+            aria-label="Quiz"
+          />
+        );
       case "content-image":
-        return <Image size={20} color="var(--sidebar-accent)" strokeWidth={2} aria-label="Image" />;
+        return (
+          <Image
+            size={20}
+            color="var(--sidebar-accent)"
+            strokeWidth={2}
+            aria-label="Image"
+          />
+        );
       case "interactive":
-        return <Zap size={20} color="var(--sidebar-accent)" strokeWidth={2} aria-label="Interactive" />;
+        return (
+          <Zap
+            size={20}
+            color="var(--sidebar-accent)"
+            strokeWidth={2}
+            aria-label="Interactive"
+          />
+        );
       default:
-        return <Box size={20} color="var(--sidebar-accent)" strokeWidth={2} aria-label="Page" />;
+        return (
+          <Box
+            size={20}
+            color="var(--sidebar-accent)"
+            strokeWidth={2}
+            aria-label="Page"
+          />
+        );
     }
   };
 
@@ -336,21 +400,36 @@ const PageManager: React.FC = () => {
     if (page.isDraft) {
       return (
         <span className="status-indicator draft" title="Draft">
-          <AlertCircle size={16} color="var(--sidebar-text-muted)" strokeWidth={2} aria-label="Draft" />
+          <AlertCircle
+            size={16}
+            color="var(--sidebar-text-muted)"
+            strokeWidth={2}
+            aria-label="Draft"
+          />
         </span>
       );
     }
     if (page.isValid) {
       return (
         <span className="status-indicator valid" title="Valid">
-          <Check size={16} color="var(--success, #22c55e)" strokeWidth={2} aria-label="Valid" />
+          <Check
+            size={16}
+            color="var(--success, #22c55e)"
+            strokeWidth={2}
+            aria-label="Valid"
+          />
         </span>
       );
     }
     if (page.isValid === false) {
       return (
         <span className="status-indicator invalid" title="Has errors">
-          <AlertCircle size={16} color="var(--error, #ef4444)" strokeWidth={2} aria-label="Error" />
+          <AlertCircle
+            size={16}
+            color="var(--error, #ef4444)"
+            strokeWidth={2}
+            aria-label="Error"
+          />
         </span>
       );
     }
@@ -386,7 +465,9 @@ const PageManager: React.FC = () => {
                 page={page}
                 index={index}
                 active={currentPage?.id === page.id}
-                courseId={currentCourse?.courseId || String(currentCourse?.id ?? '')}
+                courseId={
+                  currentCourse?.courseId || String(currentCourse?.id ?? "")
+                }
                 onSelect={handlePageSelect}
                 onDelete={handleDeletePage}
                 onTitleEdit={handlePageTitleEdit}
@@ -497,7 +578,7 @@ const PageItem: React.FC<PageItemProps> = ({
 
   const handleSave = React.useCallback(() => {
     const trimmedTitle = editingValue.trim();
-    
+
     // Don't save if empty or unchanged
     if (!trimmedTitle || trimmedTitle === page.title) {
       setIsEditingTitle(false);
@@ -518,15 +599,15 @@ const PageItem: React.FC<PageItemProps> = ({
 
   const handleKeyDown = React.useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter') {
+      if (e.key === "Enter") {
         e.preventDefault();
         handleSave();
-      } else if (e.key === 'Escape') {
+      } else if (e.key === "Escape") {
         e.preventDefault();
         handleCancel();
       }
     },
-    [handleSave, handleCancel]
+    [handleSave, handleCancel],
   );
 
   const handleBlur = React.useCallback(() => {
@@ -565,7 +646,7 @@ const PageItem: React.FC<PageItemProps> = ({
       onDragEnd={onDragEnd}
     >
       <div className="page-top-row">
-        <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+        <div style={{ display: "flex", alignItems: "center", flex: 1 }}>
           <div className="page-icon">{getPageIcon(page.templateType)}</div>
           <span className="page-type">{page.templateType}</span>
         </div>
@@ -576,12 +657,19 @@ const PageItem: React.FC<PageItemProps> = ({
             title="Delete page"
             aria-label={`Delete ${page.title}`}
           >
-            <Trash2 size={16} color="#f87171" strokeWidth={2} aria-label="Delete" />
+            <Trash2
+              size={16}
+              color="#f87171"
+              strokeWidth={2}
+              aria-label="Delete"
+            />
           </button>
         </div>
       </div>
       <div className="page-bottom-row">
-        <div className="page-order" aria-label={`Page order ${index + 1}`}>{index + 1}</div>
+        <div className="page-order" aria-label={`Page order ${index + 1}`}>
+          {index + 1}
+        </div>
         <div className="page-info">
           {isEditingTitle ? (
             <input
@@ -596,14 +684,14 @@ const PageItem: React.FC<PageItemProps> = ({
               onClick={(e) => e.stopPropagation()}
               disabled={isSaving}
               autoComplete="off"
-              style={{ textAlign: 'left' }}
+              style={{ textAlign: "left" }}
             />
           ) : (
             <div
               className="page-title"
               onDoubleClick={handleDoubleClick}
               title="Double-click to edit"
-              style={{ textAlign: 'left' }}
+              style={{ textAlign: "left" }}
             >
               {page.title}
             </div>

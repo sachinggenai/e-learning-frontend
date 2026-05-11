@@ -9,22 +9,29 @@
  *   POST /courses/{courseId}/interactions                — record interaction
  */
 
-import { httpClient } from './httpClient';
+import { httpClient } from "./httpClient";
 import {
   CourseCompletionResponse,
   PageCompletionResponse,
   InteractionEvent,
   PageCompletionEventRequest,
-} from '../types/course';
+} from "../types/course";
 
 class CompletionService {
-  async getCourseCompletion(courseId: string): Promise<CourseCompletionResponse> {
+  async getCourseCompletion(
+    courseId: string,
+  ): Promise<CourseCompletionResponse> {
     const { data } = await httpClient.get(`/courses/${courseId}/completion`);
     return data;
   }
 
-  async getPageCompletion(courseId: string, pageId: string): Promise<PageCompletionResponse> {
-    const { data } = await httpClient.get(`/courses/${courseId}/pages/${pageId}/completion`);
+  async getPageCompletion(
+    courseId: string,
+    pageId: string,
+  ): Promise<PageCompletionResponse> {
+    const { data } = await httpClient.get(
+      `/courses/${courseId}/pages/${pageId}/completion`,
+    );
     return data;
   }
 
@@ -40,8 +47,14 @@ class CompletionService {
     return data;
   }
 
-  async recordInteraction(courseId: string, event: InteractionEvent): Promise<any> {
-    const { data } = await httpClient.post(`/courses/${courseId}/interactions`, event);
+  async recordInteraction(
+    courseId: string,
+    event: InteractionEvent,
+  ): Promise<any> {
+    const { data } = await httpClient.post(
+      `/courses/${courseId}/interactions`,
+      event,
+    );
     return data;
   }
 

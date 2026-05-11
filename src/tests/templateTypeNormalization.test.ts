@@ -1,5 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import React from "react";
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
 import Preview from "../components/Preview";
 // Mock api service (axios dependency) to prevent ESM import issues under Jest env
 jest.mock("../services/api", () => ({
@@ -63,7 +65,54 @@ jest.mock("../context/CourseContext", () => {
 
 describe("Template type normalization", () => {
   test("legacy types render via normalization mapping", () => {
-    render(React.createElement(Preview));
+    const store = configureStore({
+      reducer: {
+        course: () => ({
+          currentCourse: {
+            title: "Normalization Test",
+            author: "Tester",
+            navigation: { showProgress: true },
+            templates: [
+              {
+                id: "t1",
+                type: "video",
+                title: "Legacy Video",
+                data: {
+                  title: "Legacy Video",
+                  videoUrl: "https://example.com/v.mp4",
+                },
+              },
+              {
+                id: "t2",
+                type: "quiz",
+                title: "Legacy Quiz",
+                data: {
+                  question: "Q?",
+                  options: [
+                    { id: "a", text: "A", isCorrect: true },
+                    { id: "b", text: "B", isCorrect: false },
+                  ],
+                },
+              },
+              {
+                id: "t3",
+                type: "text",
+                title: "Legacy Text",
+                data: { title: "Legacy Text", body: "Line1\nLine2" },
+              },
+            ],
+          },
+        }),
+      },
+    });
+
+    render(
+      React.createElement(
+        Provider as any,
+        { store },
+        React.createElement(Preview),
+      ),
+    );
     const videoTitles = screen.getAllByText("Legacy Video");
     expect(videoTitles.length).toBeGreaterThan(0);
     const progressIndicators = screen.getAllByText(/1\s*of\s*3/);

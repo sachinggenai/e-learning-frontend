@@ -9,17 +9,20 @@
  *   GET    /courses/{courseId}/narration        — get course narration map
  */
 
-import { httpClient } from './httpClient';
-import { AudioAssetResponse } from '../types/course';
+import { httpClient } from "./httpClient";
+import { AudioAssetResponse } from "../types/course";
 
 class AudioService {
-  async uploadAudio(file: File, courseId?: string): Promise<AudioAssetResponse> {
+  async uploadAudio(
+    file: File,
+    courseId?: string,
+  ): Promise<AudioAssetResponse> {
     const formData = new FormData();
-    formData.append('file', file);
-    if (courseId) formData.append('courseId', courseId);
+    formData.append("file", file);
+    if (courseId) formData.append("courseId", courseId);
 
-    const { data } = await httpClient.post('/assets/audio', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+    const { data } = await httpClient.post("/assets/audio", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
       timeout: 120_000, // 2 min for large files
     });
     return data;
@@ -30,11 +33,17 @@ class AudioService {
     return data;
   }
 
-  async updateAudioMetadata(audioId: string, updates: {
-    label?: string;
-    transcript?: string;
-  }): Promise<AudioAssetResponse> {
-    const { data } = await httpClient.patch(`/assets/audio/${audioId}`, updates);
+  async updateAudioMetadata(
+    audioId: string,
+    updates: {
+      label?: string;
+      transcript?: string;
+    },
+  ): Promise<AudioAssetResponse> {
+    const { data } = await httpClient.patch(
+      `/assets/audio/${audioId}`,
+      updates,
+    );
     return data;
   }
 

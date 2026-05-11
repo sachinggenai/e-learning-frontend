@@ -32,10 +32,10 @@ describe("export runtime smoke", () => {
 
   it("applies theme style variables for runtime shell", () => {
     const runtime = createExportRuntime();
-    const styleTag = runtime.renderThemeStyle(wave1SmokeCourseFixture);
+    const view = runtime.renderThemeStyle(wave1SmokeCourseFixture);
 
-    expect(styleTag).toContain("--theme-primary: #155eef");
-    expect(styleTag).toContain("data-rt-theme");
+    expect(view).toContain("--theme-primary: #155eef");
+    expect(view).toContain("data-rt-theme");
   });
 
   it("binds interactions for Wave 1 fixture components", () => {

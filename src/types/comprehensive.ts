@@ -34,7 +34,7 @@ import type {
   InteractionType,
   MediaUploadResponse,
   ExportStatusResponse,
-} from './course';
+} from "./course";
 
 // Re-export all course types for convenience
 export type {
@@ -90,9 +90,9 @@ export interface Course {
 export interface ValidationError {
   id: string;
   field: string;
-  category: 'schema' | 'business' | 'template' | 'navigation' | 'component';
+  category: "schema" | "business" | "template" | "navigation" | "component";
   message: string;
-  level: 'error' | 'warning' | 'info';
+  level: "error" | "warning" | "info";
   context?: {
     suggestion?: string;
     autoFixable?: boolean;
@@ -124,7 +124,7 @@ export interface Validator {
 // ─── API Request/Response Types ──────────────────────────────────
 export interface CourseExportRequest {
   courseData: Course;
-  format: 'scorm_1_2' | 'scorm_2004' | 'json' | 'html';
+  format: "scorm_1_2" | "scorm_2004" | "json" | "html";
   includeAssets?: boolean;
 }
 
@@ -149,7 +149,7 @@ export interface CourseState {
   isLoading: boolean;
   isSaving: boolean;
   error: string | null;
-  saveStatus: 'idle' | 'saving' | 'saved' | 'error';
+  saveStatus: "idle" | "saving" | "saved" | "error";
   lastSaved: string | null;
 }
 
@@ -164,11 +164,11 @@ export interface EditorState {
 }
 
 export interface CompletionState {
-  componentStates: Record<string, boolean>;        // componentId -> completed
-  interactionsCompleted: Record<string, string[]>;  // componentId -> interactionId[]
-  audiosCompleted: Record<string, string[]>;        // componentId -> audioId[]
-  pageCompleted: Record<string, boolean>;           // pageId -> completed
-  overallProgress: number;                          // 0-100
+  componentStates: Record<string, boolean>; // componentId -> completed
+  interactionsCompleted: Record<string, string[]>; // componentId -> interactionId[]
+  audiosCompleted: Record<string, string[]>; // componentId -> audioId[]
+  pageCompleted: Record<string, boolean>; // pageId -> completed
+  overallProgress: number; // 0-100
 }
 
 export interface ScoringState {
@@ -185,8 +185,8 @@ export interface ThemeState {
 
 // ─── Component Prop Types ────────────────────────────────────────
 export interface HeaderProps {
-  currentView: 'editor' | 'preview';
-  onViewChange: (view: 'editor' | 'preview') => void;
+  currentView: "editor" | "preview";
+  onViewChange: (view: "editor" | "preview") => void;
   isBackendConnected: boolean;
   onOpenTemplateEditor?: () => void;
 }
@@ -231,13 +231,13 @@ export interface PageWrapperProps {
 
 export interface CompletionIndicatorProps {
   completed: boolean;
-  size?: 'small' | 'medium' | 'large';
+  size?: "small" | "medium" | "large";
 }
 
 export interface QuizFeedbackProps {
   result: ScoreCalculateResponse;
   showCorrectAnswers: boolean;
-  feedbackMode: 'immediate' | 'on-submit' | 'end-of-quiz';
+  feedbackMode: "immediate" | "on-submit" | "end-of-quiz";
 }
 
 export interface ScoreSummaryProps {
@@ -276,13 +276,13 @@ export interface SummaryData {
 
 // ─── Template Types Union (legacy) ───────────────────────────────
 export type TemplateType =
-  | 'welcome'
-  | 'content-text'
-  | 'content-video'
-  | 'content-image'
-  | 'mcq'
-  | 'summary'
-  | 'interactive';
+  | "welcome"
+  | "content-text"
+  | "content-video"
+  | "content-image"
+  | "mcq"
+  | "summary"
+  | "interactive";
 
 export type TemplateData = WelcomeData | ContentData | MCQData | SummaryData;
 
@@ -303,10 +303,27 @@ export interface ApiService {
   deletePage(courseId: string, pageId: string): Promise<void>;
   reorderPages(courseId: string, orderedIds: string[]): Promise<void>;
   // Components
-  addComponent(courseId: string, pageId: string, component: ComponentCreateRequest): Promise<Component>;
-  updateComponent(courseId: string, pageId: string, componentId: string, updates: any): Promise<Component>;
-  deleteComponent(courseId: string, pageId: string, componentId: string): Promise<void>;
-  reorderComponents(courseId: string, pageId: string, orderedIds: string[]): Promise<void>;
+  addComponent(
+    courseId: string,
+    pageId: string,
+    component: ComponentCreateRequest,
+  ): Promise<Component>;
+  updateComponent(
+    courseId: string,
+    pageId: string,
+    componentId: string,
+    updates: any,
+  ): Promise<Component>;
+  deleteComponent(
+    courseId: string,
+    pageId: string,
+    componentId: string,
+  ): Promise<void>;
+  reorderComponents(
+    courseId: string,
+    pageId: string,
+    orderedIds: string[],
+  ): Promise<void>;
   // Registry
   listComponentTypes(category?: string): Promise<ComponentTypeSummary[]>;
   getComponentType(typeId: string): Promise<any>;
@@ -315,14 +332,28 @@ export interface ApiService {
   // Themes
   listThemes(): Promise<any[]>;
   getCourseTheme(courseId: string): Promise<ResolvedThemeResponse>;
-  setCourseTheme(courseId: string, themeId: string, overrides?: ThemeOverrides): Promise<ResolvedThemeResponse>;
+  setCourseTheme(
+    courseId: string,
+    themeId: string,
+    overrides?: ThemeOverrides,
+  ): Promise<ResolvedThemeResponse>;
   // Scoring
   getScoringConfig(courseId: string): Promise<ScoringConfig>;
-  updateScoringConfig(courseId: string, config: ScoringConfig): Promise<ScoringConfig>;
-  calculateScore(courseId: string, answers: any): Promise<ScoreCalculateResponse>;
+  updateScoringConfig(
+    courseId: string,
+    config: ScoringConfig,
+  ): Promise<ScoringConfig>;
+  calculateScore(
+    courseId: string,
+    answers: any,
+  ): Promise<ScoreCalculateResponse>;
   // Completion
   getCourseCompletion(courseId: string): Promise<CourseCompletionResponse>;
-  recordPageCompletion(courseId: string, pageId: string, states: any): Promise<any>;
+  recordPageCompletion(
+    courseId: string,
+    pageId: string,
+    states: any,
+  ): Promise<any>;
   recordInteraction(courseId: string, event: InteractionEvent): Promise<any>;
   // Audio
   uploadAudio(file: File): Promise<any>;
@@ -351,7 +382,7 @@ export interface UndoRedoState<T> {
 // ─── App State Types ─────────────────────────────────────────────
 export interface AppState {
   isBackendConnected: boolean;
-  currentView: 'editor' | 'preview';
+  currentView: "editor" | "preview";
   loading: boolean;
 }
 

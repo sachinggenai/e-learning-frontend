@@ -319,10 +319,13 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 
   const getTemplateIcon = (type: string, size: "md" | "lg" = "md") => {
     const normalized = normalizeTemplateType(type);
-    const category = COMPONENT_TYPE_CATEGORY[normalized] || "content-presentation";
+    const category =
+      COMPONENT_TYPE_CATEGORY[normalized] || "content-presentation";
     const Icon = categoryIconMap[category] || FileText;
     const iconSize = size === "lg" ? 32 : 24;
-    return <Icon size={iconSize} className="template-icon-svg" aria-hidden="true" />;
+    return (
+      <Icon size={iconSize} className="template-icon-svg" aria-hidden="true" />
+    );
   };
 
   const getTemplateDescription = (template: Template) => {
@@ -447,9 +450,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                       <p className="template-description">
                         {getTemplateDescription(template as any)}
                       </p>
-                      <p className="template-type">
-                        {(template as any).type}
-                      </p>
+                      <p className="template-type">{(template as any).type}</p>
                     </div>
                   ))}
                 </div>

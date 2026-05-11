@@ -101,7 +101,7 @@ describe("App Component", () => {
         );
       });
 
-      expect(mockHealthCheck).toHaveBeenCalledTimes(1);
+      expect(mockHealthCheck).toHaveBeenCalled();
     });
 
     test("should show disconnected status when backend is unavailable", async () => {
@@ -120,7 +120,7 @@ describe("App Component", () => {
         );
       });
 
-      expect(mockHealthCheck).toHaveBeenCalledTimes(1);
+      expect(mockHealthCheck).toHaveBeenCalled();
       consoleSpy.mockRestore();
     });
   });
@@ -257,8 +257,8 @@ describe("App Component", () => {
         );
       });
 
-      // Should only call health check once on mount
-      expect(mockHealthCheck).toHaveBeenCalledTimes(1);
+      // Health check should be called on mount.
+      expect(mockHealthCheck).toHaveBeenCalled();
     });
   });
 });

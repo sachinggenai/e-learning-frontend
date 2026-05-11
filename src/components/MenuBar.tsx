@@ -77,7 +77,11 @@ const MenuBar: React.FC = () => {
     handleNewCourse: () => void;
     handleSaveCourse: () => void;
     handleOpenCourse: () => void;
-  }>({ handleNewCourse: () => {}, handleSaveCourse: () => {}, handleOpenCourse: () => {} });
+  }>({
+    handleNewCourse: () => {},
+    handleSaveCourse: () => {},
+    handleOpenCourse: () => {},
+  });
 
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [showMediaUpload, setShowMediaUpload] = useState(false);
@@ -130,8 +134,8 @@ const MenuBar: React.FC = () => {
       const shouldSave = window.confirm(
         t(
           "unsaved.changes.confirm",
-          "You have unsaved changes. Save before creating a new course?"
-        )
+          "You have unsaved changes. Save before creating a new course?",
+        ),
       );
       if (shouldSave) {
         await handleSaveCourse();
@@ -166,7 +170,10 @@ const MenuBar: React.FC = () => {
       } catch (err: any) {
         // Fallback: set client-side so user can still work
         dispatch(setCurrentCourse(newCourse));
-        showToast(t("course.created.local", `Course "${title}" created (offline mode)`), "warning");
+        showToast(
+          t("course.created.local", `Course "${title}" created (offline mode)`),
+          "warning",
+        );
         logger.error({
           event: "course.create.save_failed",
           message: "Course created locally but failed to save to backend",
@@ -507,7 +514,7 @@ const MenuBar: React.FC = () => {
       } else {
         // Page structure validation
         const hasWelcomePage = currentCourse.pages.some(
-          (p: any) => normalizeTemplateType(p.templateType) === "welcome"
+          (p: any) => normalizeTemplateType(p.templateType) === "welcome",
         );
         if (!hasWelcomePage) {
           errors.push({
@@ -527,7 +534,7 @@ const MenuBar: React.FC = () => {
             acc[norm] = (acc[norm] || 0) + 1;
             return acc;
           },
-          {} as Record<string, number>
+          {} as Record<string, number>,
         );
 
         // Derive aggregated buckets (e.g., all content-* types count as content)
@@ -557,7 +564,7 @@ const MenuBar: React.FC = () => {
           .map((p: any) => p.title)
           .filter(Boolean);
         const duplicateTitles = titles.filter(
-          (title: string, index: number) => titles.indexOf(title) !== index
+          (title: string, index: number) => titles.indexOf(title) !== index,
         );
         if (duplicateTitles.length > 0) {
           errors.push({
@@ -576,10 +583,10 @@ const MenuBar: React.FC = () => {
       const pagesWithTranscripts = currentCourse.pages.filter(
         (p: any) =>
           normalizeTemplateType(p.templateType) === "content-video" &&
-          p.content?.transcript
+          p.content?.transcript,
       ).length;
       const videoPagesCount = currentCourse.pages.filter(
-        (p: any) => normalizeTemplateType(p.templateType) === "content-video"
+        (p: any) => normalizeTemplateType(p.templateType) === "content-video",
       ).length;
 
       if (videoPagesCount > 0 && pagesWithTranscripts / videoPagesCount < 0.8) {
@@ -808,8 +815,8 @@ const MenuBar: React.FC = () => {
       const selector = `.dropdown-menu[data-menu="${openMenu}"] .dropdown-item:not(.disabled)`;
       const focusable = Array.from(
         (menuRef.current || document).querySelectorAll<HTMLButtonElement>(
-          selector
-        )
+          selector,
+        ),
       );
       if (focusable.length && focusedItemIndex >= 0) {
         const idx = Math.min(focusedItemIndex, focusable.length - 1);
@@ -833,7 +840,7 @@ const MenuBar: React.FC = () => {
   const handleMenuButtonKeyDown = (
     e: React.KeyboardEvent<HTMLButtonElement>,
     menuName: string,
-    index: number
+    index: number,
   ) => {
     switch (e.key) {
       case "ArrowRight":
@@ -881,7 +888,7 @@ const MenuBar: React.FC = () => {
     if (!focusable.length) return;
     const maxIndex = focusable.length - 1;
     const currentFocusPos = focusable.findIndex(
-      ({ i }) => i === focusable[focusedItemIndex]?.i
+      ({ i }) => i === focusable[focusedItemIndex]?.i,
     );
 
     switch (e.key) {
@@ -990,7 +997,7 @@ const MenuBar: React.FC = () => {
                       <span className="menu-shortcut">{item.shortcut}</span>
                     )}
                   </button>
-                )
+                ),
               )}
             </div>
           )}
@@ -1072,7 +1079,7 @@ const MenuBar: React.FC = () => {
           onIgnoreWarning={(errorId: string) => {
             // Remove warning from list
             setValidationErrorsState((prev) =>
-              prev.filter((e) => e.id !== errorId)
+              prev.filter((e) => e.id !== errorId),
             );
           }}
           onExportReport={(errors) => {

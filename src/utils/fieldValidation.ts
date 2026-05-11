@@ -109,7 +109,7 @@ export function validateTemplate(template: Template): FieldIssue[] {
     case "content-video": {
       const data = template.data as ContentData;
       // Accept data.content (canonical) or data.body (legacy fallback)
-      const htmlContent = data.content || data.body || '';
+      const htmlContent = data.content || data.body || "";
       if (!htmlContent.trim()) {
         issues.push({
           field: `templates[${template.order}].data.content`,

@@ -156,7 +156,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
       if (files.length + fileArray.length > maxFiles) {
         showToast(
           `Maximum ${maxFiles} files allowed. Current: ${files.length}, Adding: ${fileArray.length}`,
-          "warning"
+          "warning",
         );
         return;
       }

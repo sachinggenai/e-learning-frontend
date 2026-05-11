@@ -481,12 +481,70 @@ export class TemplateValidator implements Validator {
     const content = page.content as any;
 
     if (!this.hasMinItems(content.questions, 1)) {
-      errors.push(this.makeWarning(index, "content.questions", "Final assessment should include at least one question"));
+      errors.push(this.makeError(index, "content.questions", "Final assessment must include at least one question"));
+      return errors;
     }
 
     if (content.passingScore !== undefined && (content.passingScore < 0 || content.passingScore > 100)) {
-      errors.push(this.makeWarning(index, "content.passingScore", "Passing score should be between 0 and 100"));
+      errors.push(this.makeError(index, "content.passingScore", "Passing score must be between 0 and 100"));
     }
+
+    if (content.maxAttempts !== undefined && (!Number.isInteger(content.maxAttempts) || content.maxAttempts < 1)) {
+      errors.push(this.makeError(index, "content.maxAttempts", "Max attempts must be an integer of at least 1"));
+    }
+
+    content.questions.forEach((question: any, qIndex: number) => {
+      const fieldBase = `content.questions[${qIndex}]`;
+      const typeRaw = String(question?.type || '').toLowerCase();
+      const type = typeRaw === 'fill-blank' ? 'fill-in-blank' : typeRaw;
+
+      if (!this.isNonEmptyString(question?.question)) {
+        errors.push(this.makeError(index, `${fieldBase}.question`, "Question text is required"));
+      }
+
+      if (typeof question?.points !== 'number' || !Number.isFinite(question.points) || question.points <= 0) {
+        errors.push(this.makeError(index, `${fieldBase}.points`, "Points must be a number greater than 0"));
+      }
+
+      if (!["mcq", "multiple-select", "true-false", "fill-in-blank"].includes(type)) {
+        errors.push(this.makeError(index, `${fieldBase}.type`, "Question type must be mcq, multiple-select, true-false, or fill-in-blank"));
+        return;
+      }
+
+      if (type === "mcq") {
+        if (!this.hasMinItems(question?.options, 2)) {
+          errors.push(this.makeError(index, `${fieldBase}.options`, "MCQ requires at least 2 options"));
+          return;
+        }
+        const correctCount = question.options.filter((opt: any) => Boolean(opt?.isCorrect)).length;
+        if (correctCount !== 1) {
+          errors.push(this.makeError(index, `${fieldBase}.options`, "MCQ must have exactly one correct option"));
+        }
+      }
+
+      if (type === "multiple-select") {
+        if (!this.hasMinItems(question?.options, 2)) {
+          errors.push(this.makeError(index, `${fieldBase}.options`, "Multiple-select requires at least 2 options"));
+          return;
+        }
+        const hasCorrect = question.options.some((opt: any) => Boolean(opt?.isCorrect));
+        if (!hasCorrect) {
+          errors.push(this.makeError(index, `${fieldBase}.options`, "Multiple-select requires at least one correct option"));
+        }
+      }
+
+      if (type === "true-false" && typeof question?.correctAnswer !== "boolean") {
+        errors.push(this.makeError(index, `${fieldBase}.correctAnswer`, "True/False requires a boolean correct answer"));
+      }
+
+      if (type === "fill-in-blank") {
+        const answers = Array.isArray(question?.correctAnswers) ? question.correctAnswers : [];
+        const hasAnswer = answers.some((ans: any) => this.isNonEmptyString(ans));
+        if (!hasAnswer && !this.isNonEmptyString(question?.correctAnswer)) {
+          errors.push(this.makeError(index, `${fieldBase}.correctAnswers`, "Fill in the Blank requires at least one accepted answer"));
+        }
+      }
+    });
 
     return errors;
   }

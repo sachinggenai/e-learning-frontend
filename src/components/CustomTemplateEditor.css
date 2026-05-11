@@ -82,7 +82,9 @@
   font-family: var(--font-sans);
   color: var(--text-primary);
   background: var(--surface-card);
-  transition: border-color var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
+  transition:
+    border-color var(--transition-fast) ease,
+    box-shadow var(--transition-fast) ease;
 }
 
 .form-input:focus,

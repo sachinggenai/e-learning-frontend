@@ -74,7 +74,6 @@
   cursor: not-allowed;
 }
 
-
 .page-order {
   display: flex;
   align-items: center;
@@ -87,7 +86,7 @@
   border-radius: 50%;
   font-size: var(--text-xs);
   font-weight: var(--font-bold);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   border: 1px solid var(--sidebar-border);
   flex-shrink: 0;
   transition: all var(--transition-fast);
@@ -100,24 +99,31 @@
   scrollbar-width: thin;
 }
 
-.page-list::-webkit-scrollbar-track { background: transparent; }
-.page-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 3px; }
-.page-list::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.15); }
+.page-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.page-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 3px;
+}
+.page-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.15);
+}
 
-  border: 1px solid var(--sidebar-accent);
+border: 1px solid var(--sidebar-accent);
 .empty-state {
   text-align: center;
-.page-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  margin-top: 2px;
-  margin-right: 6px;
-  line-height: 1;
-  flex-shrink: 0;
-}
+  .page-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-top: 2px;
+    margin-right: 6px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
   font-size: var(--text-sm);
   color: var(--sidebar-text-muted);
 }
@@ -185,7 +191,7 @@
   border-radius: 50%;
   font-size: var(--text-xs);
   font-weight: var(--font-bold);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   border: 1px solid var(--sidebar-border);
   flex-shrink: 0;
   transition: all var(--transition-fast);
@@ -298,8 +304,13 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .page-item.saving {
@@ -342,23 +353,23 @@
   margin-bottom: 2px;
   transition: opacity var(--transition-fast);
 
-.page-top-row .page-icon svg {
-  width: 13px;
-  height: 13px;
-}
+  .page-top-row .page-icon svg {
+    width: 13px;
+    height: 13px;
+  }
 
-.page-top-row .page-type {
-  font-weight: 500;
-}
+  .page-top-row .page-type {
+    font-weight: 500;
+  }
 
-.page-top-row .page-actions {
-  margin-left: auto;
-}
+  .page-top-row .page-actions {
+    margin-left: auto;
+  }
 
-.page-top-row .delete-page-button svg {
-  width: 16px;
-  height: 16px;
-}
+  .page-top-row .delete-page-button svg {
+    width: 16px;
+    height: 16px;
+  }
   margin-top: 2px;
 }
 

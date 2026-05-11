@@ -24,7 +24,7 @@
 export function scoreMCQ(
   selectedOptionId: string,
   correctOptionId: string,
-  maxPoints = 100
+  maxPoints = 100,
 ): { score: number; maxScore: number; correct: boolean } {
   const correct = selectedOptionId === correctOptionId;
   return {
@@ -42,13 +42,18 @@ export function scoreMCQ(
 export function scoreMultiSelect(
   selectedIds: string[],
   correctIds: string[],
-  mode: 'proportional' | 'all-or-nothing' = 'proportional',
-  maxPoints = 100
-): { score: number; maxScore: number; correct: boolean; partialCredit: boolean } {
+  mode: "proportional" | "all-or-nothing" = "proportional",
+  maxPoints = 100,
+): {
+  score: number;
+  maxScore: number;
+  correct: boolean;
+  partialCredit: boolean;
+} {
   const selected = new Set(selectedIds);
   const correct = new Set(correctIds);
 
-  if (mode === 'all-or-nothing') {
+  if (mode === "all-or-nothing") {
     const isExactMatch =
       selected.size === correct.size &&
       Array.from(selected).every((id) => correct.has(id));
@@ -65,7 +70,12 @@ export function scoreMultiSelect(
   // Minimum score is 0
   const totalCorrect = correct.size;
   if (totalCorrect === 0) {
-    return { score: maxPoints, maxScore: maxPoints, correct: true, partialCredit: false };
+    return {
+      score: maxPoints,
+      maxScore: maxPoints,
+      correct: true,
+      partialCredit: false,
+    };
   }
 
   let hits = 0;
@@ -97,7 +107,7 @@ export function scoreMultiSelect(
 export function scoreTrueFalse(
   response: boolean,
   correctAnswer: boolean,
-  maxPoints = 100
+  maxPoints = 100,
 ): { score: number; maxScore: number; correct: boolean } {
   const correct = response === correctAnswer;
   return {
@@ -114,13 +124,18 @@ export function scoreTrueFalse(
 export function scoreFillBlanks(
   responses: string[],
   correctAnswers: string[],
-  options: { caseSensitive?: boolean; trimWhitespace?: boolean } = {}
+  options: { caseSensitive?: boolean; trimWhitespace?: boolean } = {},
 ): { score: number; maxScore: number; correct: boolean; perBlank: boolean[] } {
   const { caseSensitive = false, trimWhitespace = true } = options;
   const maxPoints = 100;
 
   if (correctAnswers.length === 0) {
-    return { score: maxPoints, maxScore: maxPoints, correct: true, perBlank: [] };
+    return {
+      score: maxPoints,
+      maxScore: maxPoints,
+      correct: true,
+      perBlank: [],
+    };
   }
 
   const normalize = (s: string): string => {
@@ -131,9 +146,9 @@ export function scoreFillBlanks(
   };
 
   const perBlank: boolean[] = correctAnswers.map((answer, i) => {
-    const response = responses[i] ?? '';
+    const response = responses[i] ?? "";
     // Support multiple accepted answers separated by |
-    const acceptedAnswers = answer.split('|').map(normalize);
+    const acceptedAnswers = answer.split("|").map(normalize);
     return acceptedAnswers.includes(normalize(response));
   });
 
@@ -157,11 +172,21 @@ export function scoreFillBlanks(
 export function scoreMatching(
   pairs: Array<{ left: string; right: string }>,
   correctPairs: Array<{ left: string; right: string }>,
-  mode: 'per-pair' | 'all-or-nothing' = 'per-pair',
-  maxPoints = 100
-): { score: number; maxScore: number; correct: boolean; partialCredit: boolean } {
+  mode: "per-pair" | "all-or-nothing" = "per-pair",
+  maxPoints = 100,
+): {
+  score: number;
+  maxScore: number;
+  correct: boolean;
+  partialCredit: boolean;
+} {
   if (correctPairs.length === 0) {
-    return { score: maxPoints, maxScore: maxPoints, correct: true, partialCredit: false };
+    return {
+      score: maxPoints,
+      maxScore: maxPoints,
+      correct: true,
+      partialCredit: false,
+    };
   }
 
   const correctMap = new Map(correctPairs.map((p) => [p.left, p.right]));
@@ -173,8 +198,10 @@ export function scoreMatching(
     }
   }
 
-  if (mode === 'all-or-nothing') {
-    const allCorrect = correctCount === correctPairs.length && pairs.length === correctPairs.length;
+  if (mode === "all-or-nothing") {
+    const allCorrect =
+      correctCount === correctPairs.length &&
+      pairs.length === correctPairs.length;
     return {
       score: allCorrect ? maxPoints : 0,
       maxScore: maxPoints,
@@ -200,7 +227,7 @@ export function scoreMatching(
 export function scoreDragDrop(
   placements: Record<string, string>,
   correctPlacements: Record<string, string>,
-  maxPoints = 100
+  maxPoints = 100,
 ): { score: number; maxScore: number; correct: boolean } {
   const correctKeys = Object.keys(correctPlacements);
   if (correctKeys.length === 0) {
@@ -231,7 +258,7 @@ export function scoreDragDrop(
 export function scoreScenario(
   pathChoices: string[],
   scoringTree: Record<string, number>,
-  maxPoints = 100
+  maxPoints = 100,
 ): { score: number; maxScore: number; correct: boolean } {
   let totalEarned = 0;
   let totalPossible = 0;
@@ -247,7 +274,8 @@ export function scoreScenario(
   }
 
   // Normalize to maxPoints scale
-  const percentage = totalPossible > 0 ? Math.max(0, totalEarned / totalPossible) : 1;
+  const percentage =
+    totalPossible > 0 ? Math.max(0, totalEarned / totalPossible) : 1;
   const score = Math.round(percentage * maxPoints);
 
   return {
@@ -271,7 +299,7 @@ export interface ComponentScoreEntry {
  * Weights should sum to 1.0 (or be normalized).
  */
 export function calculateWeightedTotal(
-  componentScores: ComponentScoreEntry[]
+  componentScores: ComponentScoreEntry[],
 ): { totalScore: number; maxScore: number; percentage: number } {
   if (componentScores.length === 0) {
     return { totalScore: 0, maxScore: 0, percentage: 0 };
@@ -283,12 +311,14 @@ export function calculateWeightedTotal(
   let weightedMax = 0;
 
   for (const entry of componentScores) {
-    const normalizedWeight = totalWeight > 0 ? entry.weight / totalWeight : 1 / componentScores.length;
+    const normalizedWeight =
+      totalWeight > 0 ? entry.weight / totalWeight : 1 / componentScores.length;
     weightedSum += (entry.score / entry.maxScore) * normalizedWeight * 100;
     weightedMax += normalizedWeight * 100;
   }
 
-  const percentage = weightedMax > 0 ? Math.round(weightedSum / weightedMax * 100) : 0;
+  const percentage =
+    weightedMax > 0 ? Math.round((weightedSum / weightedMax) * 100) : 0;
 
   return {
     totalScore: Math.round(weightedSum),
@@ -302,9 +332,9 @@ export function calculateWeightedTotal(
  */
 export function determinePassFail(
   percentage: number,
-  passingScore: number
-): 'passed' | 'failed' {
-  return percentage >= passingScore ? 'passed' : 'failed';
+  passingScore: number,
+): "passed" | "failed" {
+  return percentage >= passingScore ? "passed" : "failed";
 }
 
 /**
@@ -312,18 +342,18 @@ export function determinePassFail(
  */
 export function selectAttemptScore(
   attemptScores: number[],
-  mode: 'best' | 'last' | 'average'
+  mode: "best" | "last" | "average",
 ): number {
   if (attemptScores.length === 0) return 0;
 
   switch (mode) {
-    case 'best':
+    case "best":
       return Math.max(...attemptScores);
-    case 'last':
+    case "last":
       return attemptScores[attemptScores.length - 1];
-    case 'average':
+    case "average":
       return Math.round(
-        attemptScores.reduce((sum, s) => sum + s, 0) / attemptScores.length
+        attemptScores.reduce((sum, s) => sum + s, 0) / attemptScores.length,
       );
     default:
       return attemptScores[attemptScores.length - 1];

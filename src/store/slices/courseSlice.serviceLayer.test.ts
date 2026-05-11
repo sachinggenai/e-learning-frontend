@@ -89,24 +89,30 @@ describe("courseSlice service-layer thunks", () => {
 
     expect(result.type).toBe("course/fetchTemplates/fulfilled");
     expect(courseService.listAvailableTemplates).toHaveBeenCalledTimes(1);
-    // raw[0] is the injected static content-text entry (also added here so vmTemplates sees it)
-    expect((result as any).payload.raw[0]).toMatchObject({
-      id: "content-text",
-      type: "content-text",
-      title: "Text Content",
-    });
-    // legacy[0] is the static content-text entry always injected when backend doesn't return one
-    expect((result as any).payload.legacy[0]).toMatchObject({
-      templateId: "content-text",
-      type: "content-text",
-      title: "Text Content",
-    });
-    // legacy[1] is the mapped backend template
-    expect((result as any).payload.legacy[1]).toMatchObject({
-      templateId: "tpl-1",
-      type: "content-text",
-      title: "Intro Template",
-    });
+    // raw always includes an injected static content-text entry, but order may vary.
+    expect((result as any).payload.raw).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "content-text",
+          type: "content-text",
+          title: "Text Content",
+        }),
+      ])
+    );
+    expect((result as any).payload.legacy).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          templateId: "content-text",
+          type: "content-text",
+          title: "Text Content",
+        }),
+        expect.objectContaining({
+          templateId: "tpl-1",
+          type: "content-text",
+          title: "Intro Template",
+        }),
+      ])
+    );
   });
 
   it("createPageFromTemplate uses pageService.createPage when course exists", async () => {

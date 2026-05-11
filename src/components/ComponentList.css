@@ -32,7 +32,9 @@
   text-align: center;
   color: var(--text-tertiary);
   background: rgba(99, 102, 241, 0.02);
-  transition: border-color var(--transition-normal), background var(--transition-normal);
+  transition:
+    border-color var(--transition-normal),
+    background var(--transition-normal);
 }
 
 .component-list__empty:hover {

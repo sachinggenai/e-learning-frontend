@@ -14,6 +14,19 @@ export const TrueFalsePreview: React.FC<ComponentPreviewProps> = ({
   const [submitted, setSubmitted] = useState(false);
   const correctAnswer = data.correctAnswer ?? true;
 
+  // Build choices from data.options when present (≥ 2 items);
+  // otherwise synthesise True / False using correctAnswer.
+  const choices: Array<{ value: boolean; label: string }> =
+    data.options && data.options.length >= 2
+      ? data.options.map((o: { id: string; text: string; isCorrect: boolean }) => ({
+          value: o.isCorrect,
+          label: o.text,
+        }))
+      : [
+          { value: true, label: 'True' },
+          { value: false, label: 'False' },
+        ];
+
   const handleSubmit = useCallback(() => {
     if (answer === null) return;
     setSubmitted(true);
@@ -30,7 +43,7 @@ export const TrueFalsePreview: React.FC<ComponentPreviewProps> = ({
     <div className="tf-component" role="group" aria-labelledby={`tf-q-${componentId}`}>
       <h3 id={`tf-q-${componentId}`} className="tf__question">{data.question || 'True or False?'}</h3>
       <div className="tf__options">
-        {[true, false].map((val) => (
+        {choices.map(({ value: val, label }) => (
           <button
             key={String(val)}
             role="radio"
@@ -39,7 +52,7 @@ export const TrueFalsePreview: React.FC<ComponentPreviewProps> = ({
             onClick={() => !submitted && setAnswer(val)}
             disabled={submitted}
           >
-            {val ? 'True' : 'False'}
+            {label}
             {submitted && val === correctAnswer && <CheckCircle size={16} />}
             {submitted && answer === val && val !== correctAnswer && <XCircle size={16} />}
           </button>

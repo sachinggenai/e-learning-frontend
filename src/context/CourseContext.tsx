@@ -48,7 +48,8 @@ const createDefaultCourse = (): Course => {
         data: {
           title: "Work in Progress",
           subtitle: "Work in Progress",
-          description: "Work in Progress: This is an introduction to your eLearning course.",
+          description:
+            "Work in Progress: This is an introduction to your eLearning course.",
         },
       },
     ],
@@ -630,7 +631,7 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({ children }) => {
 
         const response = await apiService.exportCourse({
           courseData: JSON.stringify(backendCourseData),
-          format: format.toLowerCase() as 'scorm_1_2' | 'scorm_2004',
+          format: format.toLowerCase() as "scorm_1_2" | "scorm_2004",
           includeAssets,
         });
 

@@ -73,27 +73,38 @@ const Header: React.FC<HeaderProps> = ({
       showToast(
         t("save.error", "Failed to save course. Please try again.") +
           (handled.message ? ` (${handled.message})` : ""),
-        "error"
+        "error",
       );
     }
   };
 
   const handleExport = async () => {
     if (!course) {
-      showToast(t("export.no.course", "Please load a course before exporting."), "warning");
+      showToast(
+        t("export.no.course", "Please load a course before exporting."),
+        "warning",
+      );
       return;
     }
     try {
       // Always validate against latest in-memory state before export.
       const freshValidation = await validate(course);
-      const errorCount = freshValidation.errors.filter((e) => e.level === "error").length;
-      const warnCount = freshValidation.errors.filter((e) => e.level === "warning").length;
+      const errorCount = freshValidation.errors.filter(
+        (e) => e.level === "error",
+      ).length;
+      const warnCount = freshValidation.errors.filter(
+        (e) => e.level === "warning",
+      ).length;
 
       // Block export only for error-level validation issues.
       if (errorCount > 0) {
         const detail = [
-          errorCount > 0 ? `${errorCount} error${errorCount > 1 ? "s" : ""}` : "",
-          warnCount > 0 ? `${warnCount} warning${warnCount > 1 ? "s" : ""}` : "",
+          errorCount > 0
+            ? `${errorCount} error${errorCount > 1 ? "s" : ""}`
+            : "",
+          warnCount > 0
+            ? `${warnCount} warning${warnCount > 1 ? "s" : ""}`
+            : "",
         ]
           .filter(Boolean)
           .join(", ");
@@ -101,10 +112,12 @@ const Header: React.FC<HeaderProps> = ({
         showToast(
           t(
             "export.validation.block",
-            "Please fix {count} validation error(s) before exporting"
-          ).replace("{count}", String(errorCount || freshValidation.errors.length)) +
-            (detail ? ` (${detail})` : ""),
-          "error"
+            "Please fix {count} validation error(s) before exporting",
+          ).replace(
+            "{count}",
+            String(errorCount || freshValidation.errors.length),
+          ) + (detail ? ` (${detail})` : ""),
+          "error",
         );
         return;
       }
@@ -114,9 +127,9 @@ const Header: React.FC<HeaderProps> = ({
         showToast(
           t(
             "export.validation.warning",
-            "Continuing export with {count} warning(s)"
+            "Continuing export with {count} warning(s)",
           ).replace("{count}", String(warnCount)),
-          "warning"
+          "warning",
         );
       }
 
@@ -126,8 +139,8 @@ const Header: React.FC<HeaderProps> = ({
       const confirmExport = confirm(
         t(
           "export.confirm",
-          'Export "{title}" as SCORM package?\n\nThis will download a ZIP file ready for LMS upload.'
-        ).replace("{title}", course?.title || "course")
+          'Export "{title}" as SCORM package?\n\nThis will download a ZIP file ready for LMS upload.',
+        ).replace("{title}", course?.title || "course"),
       );
       if (!confirmExport) return;
 
@@ -161,7 +174,10 @@ const Header: React.FC<HeaderProps> = ({
 
       console.log("Starting SCORM export for course:", course.courseId);
 
-      const result = await exportService.exportScorm(course.courseId, "scorm_1_2");
+      const result = await exportService.exportScorm(
+        course.courseId,
+        "scorm_1_2",
+      );
 
       if (result.success && result.downloadUrl) {
         // Trigger download of the ZIP file
@@ -169,7 +185,7 @@ const Header: React.FC<HeaderProps> = ({
         linkElement.setAttribute("href", result.downloadUrl);
         linkElement.setAttribute(
           "download",
-          result.fileName || `${course.courseId}_scorm.zip`
+          result.fileName || `${course.courseId}_scorm.zip`,
         );
         document.body.appendChild(linkElement);
         linkElement.click();
@@ -179,7 +195,10 @@ const Header: React.FC<HeaderProps> = ({
         window.URL.revokeObjectURL(result.downloadUrl);
 
         console.log("SCORM package exported successfully:", result.fileName);
-        showToast(t("export.success", "SCORM package downloaded successfully!"), "success");
+        showToast(
+          t("export.success", "SCORM package downloaded successfully!"),
+          "success",
+        );
       } else {
         throw new Error(result.error || "Export failed");
       }
@@ -189,12 +208,14 @@ const Header: React.FC<HeaderProps> = ({
       showToast(
         t("export.error", "Failed to export course: {error}").replace(
           "{error}",
-          handled.message || error.message || "Unknown error"
+          handled.message || error.message || "Unknown error",
         ),
-        "error"
+        "error",
       );
       const errorDetails = Array.isArray(error?.errors)
-        ? error.errors.map((e: any) => e?.msg || e?.message || JSON.stringify(e)).join("; ")
+        ? error.errors
+            .map((e: any) => e?.msg || e?.message || JSON.stringify(e))
+            .join("; ")
         : undefined;
 
       logger.error({
@@ -214,28 +235,46 @@ const Header: React.FC<HeaderProps> = ({
 
   const handleValidate = async () => {
     if (!course) {
-      showToast(t("validate.no.course", "Please load a course before validating."), "warning");
+      showToast(
+        t("validate.no.course", "Please load a course before validating."),
+        "warning",
+      );
       return;
     }
 
     try {
       const result = await validate(course);
       if (result.valid) {
-        showToast(t("validate.success", "Validation passed — no issues found!"), "success");
-      } else {
-        const errorCount = result.errors.filter(e => e.level === "error").length;
-        const warnCount = result.errors.filter(e => e.level === "warning").length;
-        const parts: string[] = [];
-        if (errorCount > 0) parts.push(`${errorCount} error${errorCount > 1 ? "s" : ""}`);
-        if (warnCount > 0) parts.push(`${warnCount} warning${warnCount > 1 ? "s" : ""}`);
         showToast(
-          t("validate.issues", "Validation found {issues}").replace("{issues}", parts.join(", ")),
-          errorCount > 0 ? "error" : "warning"
+          t("validate.success", "Validation passed — no issues found!"),
+          "success",
+        );
+      } else {
+        const errorCount = result.errors.filter(
+          (e) => e.level === "error",
+        ).length;
+        const warnCount = result.errors.filter(
+          (e) => e.level === "warning",
+        ).length;
+        const parts: string[] = [];
+        if (errorCount > 0)
+          parts.push(`${errorCount} error${errorCount > 1 ? "s" : ""}`);
+        if (warnCount > 0)
+          parts.push(`${warnCount} warning${warnCount > 1 ? "s" : ""}`);
+        showToast(
+          t("validate.issues", "Validation found {issues}").replace(
+            "{issues}",
+            parts.join(", "),
+          ),
+          errorCount > 0 ? "error" : "warning",
         );
       }
     } catch (error) {
       console.error("Validation failed:", error);
-      showToast(t("validate.error", "Validation failed. Please try again."), "error");
+      showToast(
+        t("validate.error", "Validation failed. Please try again."),
+        "error",
+      );
     }
   };
 
@@ -244,8 +283,8 @@ const Header: React.FC<HeaderProps> = ({
       window.confirm(
         t(
           "confirm.reset.course",
-          "Are you sure you want to reset the course? All changes will be lost."
-        )
+          "Are you sure you want to reset the course? All changes will be lost.",
+        ),
       )
     ) {
       const existing = course;
@@ -284,7 +323,8 @@ const Header: React.FC<HeaderProps> = ({
               data: {
                 title: "Welcome to Your Course",
                 subtitle: "An interactive learning experience",
-                description: "Get started by exploring the pages and adding your own content.",
+                description:
+                  "Get started by exploring the pages and adding your own content.",
               },
             },
           ],
@@ -313,16 +353,19 @@ const Header: React.FC<HeaderProps> = ({
       dispatch(setCurrentCourse(exampleCourse as any));
       // Then save it to the backend
       await dispatch(saveCourse(exampleCourse as any)).unwrap();
-      showToast(t("load.example.success", "Example course loaded successfully!"), "success");
+      showToast(
+        t("load.example.success", "Example course loaded successfully!"),
+        "success",
+      );
       console.log("Example course loaded and saved successfully");
     } catch (error) {
       console.error("Failed to save example course:", error);
       showToast(
         t(
           "load.example.error",
-          "Failed to load example course. Please try again."
+          "Failed to load example course. Please try again.",
         ),
-        "error"
+        "error",
       );
     }
   };
@@ -385,98 +428,117 @@ const Header: React.FC<HeaderProps> = ({
             <Eye size={14} />
             Preview
           </button>
-          {onOpenTemplateEditor && featureFlags.isEnabled("custom-template") && (
-            <button
-              className="nav-button template-button"
-              onClick={onOpenTemplateEditor}
-              disabled={isLoading || !course}
-              title="Create a custom template from this course"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="lucide lucide-copy"
-                aria-hidden="true"
+          {onOpenTemplateEditor &&
+            featureFlags.isEnabled("custom-template") && (
+              <button
+                className="nav-button template-button"
+                onClick={onOpenTemplateEditor}
+                disabled={isLoading || !course}
+                title="Create a custom template from this course"
               >
-                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
-                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
-              </svg>
-              Create new template
-            </button>
-          )}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-copy"
+                  aria-hidden="true"
+                >
+                  <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+                </svg>
+                Create new template
+              </button>
+            )}
         </nav>
 
         <div className="header-right">
           <div className="action-buttons">
-          <button
-            className="action-button"
-            onClick={handleSave}
-            disabled={isLoading || !isDirty}
-            title="Save course (Ctrl+S)"
-          >
-            <Save size={14} /> Save
-          </button>
-          <button
-            className="action-button"
-            onClick={async () => {
-              await handleValidate();
-              setShowValidation(true);
-            }}
-            disabled={isLoading || isValidating}
-            title="Validate course"
-          >
-            {isValidating ? <Loader size={14} className="spin-icon" /> : <ShieldCheck size={14} />} Validate
-          </button>
-          <button
-            className="action-button primary"
-            onClick={handleExport}
-            disabled={isLoading || isExporting || !isBackendConnected || blockingErrors > 0}
-            title={
-              blockingErrors > 0
-                ? "Fix errors before exporting"
-                : isExporting
-                ? "Exporting..."
-                : "Export as SCORM"
-            }
-          >
-            {isExporting ? <Loader size={14} className="spin-icon" /> : <Download size={14} />}
-            {isExporting ? " Exporting..." : " Export"}
-          </button>
-          <button
-            className="action-button"
-            onClick={handleReset}
-            disabled={isLoading}
-            title="Reset course"
-          >
-            <RotateCcw size={14} /> Reset
-          </button>
-          {(hasErrors || hasWarnings) && (
             <button
-              className={`action-button validation-toggle-btn${hasErrors ? ' danger' : ' warning'}`}
-              onClick={() => setShowValidation((v) => !v)}
-              title={hasErrors ? `${errors.length} error${errors.length !== 1 ? 's' : ''}` : `${warnings.length} warning${warnings.length !== 1 ? 's' : ''}`}
+              className="action-button"
+              onClick={handleSave}
+              disabled={isLoading || !isDirty}
+              title="Save course (Ctrl+S)"
             >
-              <ShieldCheck size={14} />
+              <Save size={14} /> Save
             </button>
-          )}
-        </div>
+            <button
+              className="action-button"
+              onClick={async () => {
+                await handleValidate();
+                setShowValidation(true);
+              }}
+              disabled={isLoading || isValidating}
+              title="Validate course"
+            >
+              {isValidating ? (
+                <Loader size={14} className="spin-icon" />
+              ) : (
+                <ShieldCheck size={14} />
+              )}{" "}
+              Validate
+            </button>
+            <button
+              className="action-button primary"
+              onClick={handleExport}
+              disabled={
+                isLoading ||
+                isExporting ||
+                !isBackendConnected ||
+                blockingErrors > 0
+              }
+              title={
+                blockingErrors > 0
+                  ? "Fix errors before exporting"
+                  : isExporting
+                    ? "Exporting..."
+                    : "Export as SCORM"
+              }
+            >
+              {isExporting ? (
+                <Loader size={14} className="spin-icon" />
+              ) : (
+                <Download size={14} />
+              )}
+              {isExporting ? " Exporting..." : " Export"}
+            </button>
+            <button
+              className="action-button"
+              onClick={handleReset}
+              disabled={isLoading}
+              title="Reset course"
+            >
+              <RotateCcw size={14} /> Reset
+            </button>
+            {(hasErrors || hasWarnings) && (
+              <button
+                className={`action-button validation-toggle-btn${hasErrors ? " danger" : " warning"}`}
+                onClick={() => setShowValidation((v) => !v)}
+                title={
+                  hasErrors
+                    ? `${errors.length} error${errors.length !== 1 ? "s" : ""}`
+                    : `${warnings.length} warning${warnings.length !== 1 ? "s" : ""}`
+                }
+              >
+                <ShieldCheck size={14} />
+              </button>
+            )}
+          </div>
 
-        {/* Connection status */}
-        <div
-          className={`connection-indicator ${isBackendConnected ? "connected" : "disconnected"}`}
-        >
-          <span className="status-dot"></span>
-          <span className="status-text">
-            {isBackendConnected ? "API Connected" : "API Offline"}
-          </span>
-        </div>
+          {/* Connection status */}
+          <div
+            className={`connection-indicator ${isBackendConnected ? "connected" : "disconnected"}`}
+          >
+            <span className="status-dot"></span>
+            <span className="status-text">
+              {isBackendConnected ? "API Connected" : "API Offline"}
+            </span>
+          </div>
         </div>
       </div>
 

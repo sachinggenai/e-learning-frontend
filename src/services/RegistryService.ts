@@ -9,14 +9,14 @@
  *   GET /components/{typeId}                 — get type detail
  */
 
-import { httpClient } from './httpClient';
+import { httpClient } from "./httpClient";
 import {
   ComponentTypeSummary,
   ComponentTypeDetail,
   ComponentTypeListResponse,
   CategorySummary,
   CategoryListResponse,
-} from '../types/course';
+} from "../types/course";
 
 class RegistryService {
   async listTypes(params?: {
@@ -24,7 +24,7 @@ class RegistryService {
     page?: number;
     limit?: number;
   }): Promise<ComponentTypeListResponse> {
-    const { data } = await httpClient.get('/components', { params });
+    const { data } = await httpClient.get("/components", { params });
     return data;
   }
 
@@ -34,17 +34,21 @@ class RegistryService {
   }
 
   async listCategories(): Promise<CategoryListResponse> {
-    const { data } = await httpClient.get('/components/categories');
+    const { data } = await httpClient.get("/components/categories");
     return data;
   }
 
   async getCategory(categoryId: string): Promise<ComponentTypeSummary[]> {
-    const { data } = await httpClient.get(`/components/categories/${categoryId}`);
+    const { data } = await httpClient.get(
+      `/components/categories/${categoryId}`,
+    );
     return data.items || data;
   }
 
   async search(query: string): Promise<ComponentTypeListResponse> {
-    const { data } = await httpClient.get('/components/search', { params: { q: query } });
+    const { data } = await httpClient.get("/components/search", {
+      params: { q: query },
+    });
     return data;
   }
 }

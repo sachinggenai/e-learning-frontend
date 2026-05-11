@@ -14,14 +14,10 @@ export {
   getComponentTypeById,
   searchComponentTypes,
   componentTypeListResponse,
-} from './componentRegistryData';
+} from "./componentRegistryData";
 
 // Themes
-export {
-  THEME_PRESETS,
-  getThemeById,
-  resolveTheme,
-} from './themePresetsData';
+export { THEME_PRESETS, getThemeById, resolveTheme } from "./themePresetsData";
 
 // Sample Courses (with pages, components, scoring, navigation)
 export {
@@ -32,7 +28,7 @@ export {
   getCourseById,
   getCourseListItems,
   courseListResponse,
-} from './sampleCoursesData';
+} from "./sampleCoursesData";
 
 // Scoring, Completion, Interactions, Audio, Export, Validation, Media
 export {
@@ -50,4 +46,4 @@ export {
   VALIDATION_FAIL,
   MEDIA_UPLOAD_SAMPLE,
   MEDIA_UPLOADS,
-} from './scoringCompletionData';
+} from "./scoringCompletionData";

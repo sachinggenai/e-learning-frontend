@@ -10,7 +10,13 @@
  * - ARIA labels for accessibility
  */
 
-import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef,
+} from "react";
 import {
   Accessibility,
   Activity,
@@ -41,32 +47,32 @@ import {
   Zap,
   Eye,
   LucideIcon,
-} from 'lucide-react';
-import { registry } from './registry';
-import { ComponentDefinition, CategoryDefinition } from '../types/registry';
-import './ComponentPicker.css';
+} from "lucide-react";
+import { registry } from "./registry";
+import { ComponentDefinition, CategoryDefinition } from "../types/registry";
+import "./ComponentPicker.css";
 
 // Templates that are fully implemented and available for use
 const AVAILABLE_TYPES = new Set([
-  'content-text',
-  'tabs',
-  'accordion',
-  'click-reveal',
-  'text-with-media',
-  'image-hotspots',
-  'flip-cards',
-  'carousel',
-  'drag-drop-sort',
-  'mcq',
-  'multiple-select',
-  'true-false',
-  'fill-blanks',
-  'matching',
-  'knowledge-check',
-  'final-assessment',
-  'course-menu',
-  'summary-takeaways',
-  'completion-certificate',
+  "content-text",
+  "tabs",
+  "accordion",
+  "click-reveal",
+  "text-with-media",
+  "image-hotspots",
+  "flip-cards",
+  "carousel",
+  "drag-drop-sort",
+  "mcq",
+  "multiple-select",
+  "true-false",
+  "fill-blanks",
+  "matching",
+  "knowledge-check",
+  "final-assessment",
+  "course-menu",
+  "summary-takeaways",
+  "completion-certificate",
 ]);
 
 interface ComponentPickerProps {
@@ -80,7 +86,7 @@ const ComponentPicker: React.FC<ComponentPickerProps> = ({
   onClose,
   onSelect,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -114,7 +120,7 @@ const ComponentPicker: React.FC<ComponentPickerProps> = ({
     if (isOpen) {
       requestAnimationFrame(() => searchRef.current?.focus());
     } else {
-      setSearchQuery('');
+      setSearchQuery("");
       setSelectedCategory(null);
     }
   }, [isOpen]);
@@ -123,13 +129,13 @@ const ComponentPicker: React.FC<ComponentPickerProps> = ({
   useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         e.preventDefault();
         onClose();
       }
     };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
   // Focus trap
@@ -137,13 +143,13 @@ const ComponentPicker: React.FC<ComponentPickerProps> = ({
     if (!isOpen || !modalRef.current) return;
     const modal = modalRef.current;
     const focusable = modal.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
 
     const trap = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
+      if (e.key !== "Tab") return;
       if (e.shiftKey && document.activeElement === first) {
         e.preventDefault();
         last?.focus();
@@ -152,8 +158,8 @@ const ComponentPicker: React.FC<ComponentPickerProps> = ({
         first?.focus();
       }
     };
-    modal.addEventListener('keydown', trap);
-    return () => modal.removeEventListener('keydown', trap);
+    modal.addEventListener("keydown", trap);
+    return () => modal.removeEventListener("keydown", trap);
   }, [isOpen, filteredComponents]);
 
   const handleSelect = useCallback(
@@ -161,7 +167,7 @@ const ComponentPicker: React.FC<ComponentPickerProps> = ({
       onSelect(def);
       onClose();
     },
-    [onSelect, onClose]
+    [onSelect, onClose],
   );
 
   const handleCategoryClick = useCallback((categoryId: string) => {
@@ -171,7 +177,11 @@ const ComponentPicker: React.FC<ComponentPickerProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="component-picker__overlay" onClick={onClose} role="presentation">
+    <div
+      className="component-picker__overlay"
+      onClick={onClose}
+      role="presentation"
+    >
       <div
         ref={modalRef}
         className="component-picker"
@@ -194,7 +204,11 @@ const ComponentPicker: React.FC<ComponentPickerProps> = ({
 
         {/* Search */}
         <div className="component-picker__search">
-          <Search size={16} className="component-picker__search-icon" aria-hidden="true" />
+          <Search
+            size={16}
+            className="component-picker__search-icon"
+            aria-hidden="true"
+          />
           <input
             ref={searchRef}
             type="text"
@@ -207,7 +221,7 @@ const ComponentPicker: React.FC<ComponentPickerProps> = ({
           {searchQuery && (
             <button
               className="component-picker__search-clear"
-              onClick={() => setSearchQuery('')}
+              onClick={() => setSearchQuery("")}
               aria-label="Clear search"
             >
               <X size={14} />
@@ -217,9 +231,12 @@ const ComponentPicker: React.FC<ComponentPickerProps> = ({
 
         <div className="component-picker__body">
           {/* Category sidebar */}
-          <nav className="component-picker__categories" aria-label="Component categories">
+          <nav
+            className="component-picker__categories"
+            aria-label="Component categories"
+          >
             <button
-              className={`component-picker__category-btn ${!selectedCategory ? 'component-picker__category-btn--active' : ''}`}
+              className={`component-picker__category-btn ${!selectedCategory ? "component-picker__category-btn--active" : ""}`}
               onClick={() => setSelectedCategory(null)}
             >
               All ({registry.size})
@@ -230,12 +247,16 @@ const ComponentPicker: React.FC<ComponentPickerProps> = ({
               return (
                 <button
                   key={cat.categoryId}
-                  className={`component-picker__category-btn ${selectedCategory === cat.categoryId ? 'component-picker__category-btn--active' : ''}`}
+                  className={`component-picker__category-btn ${selectedCategory === cat.categoryId ? "component-picker__category-btn--active" : ""}`}
                   onClick={() => handleCategoryClick(cat.categoryId)}
                   aria-pressed={selectedCategory === cat.categoryId}
                 >
-                  <span className="component-picker__category-name">{cat.displayName}</span>
-                  <span className="component-picker__category-count">{count}</span>
+                  <span className="component-picker__category-name">
+                    {cat.displayName}
+                  </span>
+                  <span className="component-picker__category-count">
+                    {count}
+                  </span>
                 </button>
               );
             })}
@@ -245,30 +266,48 @@ const ComponentPicker: React.FC<ComponentPickerProps> = ({
           <div className="component-picker__grid" role="list">
             {filteredComponents.length === 0 ? (
               <div className="component-picker__empty">
-                <p>No components found{searchQuery ? ` for "${searchQuery}"` : ''}.</p>
+                <p>
+                  No components found
+                  {searchQuery ? ` for "${searchQuery}"` : ""}.
+                </p>
               </div>
             ) : selectedCategory ? (
               // Single category view
               filteredComponents.map((comp) => (
-                <ComponentCard key={comp.typeId} definition={comp} onSelect={handleSelect} isAvailable={AVAILABLE_TYPES.has(comp.typeId)} />
+                <ComponentCard
+                  key={comp.typeId}
+                  definition={comp}
+                  onSelect={handleSelect}
+                  isAvailable={AVAILABLE_TYPES.has(comp.typeId)}
+                />
               ))
             ) : (
               // All categories view (grouped)
-              Array.from(groupedComponents.entries()).map(([categoryId, components]) => {
-                const cat = registry.getCategory(categoryId);
-                return (
-                  <div key={categoryId} className="component-picker__category-group">
-                    <h3 className="component-picker__category-title">
-                      {cat?.displayName || categoryId}
-                    </h3>
-                    <div className="component-picker__category-grid">
-                      {components.map((comp) => (
-                        <ComponentCard key={comp.typeId} definition={comp} onSelect={handleSelect} isAvailable={AVAILABLE_TYPES.has(comp.typeId)} />
-                      ))}
+              Array.from(groupedComponents.entries()).map(
+                ([categoryId, components]) => {
+                  const cat = registry.getCategory(categoryId);
+                  return (
+                    <div
+                      key={categoryId}
+                      className="component-picker__category-group"
+                    >
+                      <h3 className="component-picker__category-title">
+                        {cat?.displayName || categoryId}
+                      </h3>
+                      <div className="component-picker__category-grid">
+                        {components.map((comp) => (
+                          <ComponentCard
+                            key={comp.typeId}
+                            definition={comp}
+                            onSelect={handleSelect}
+                            isAvailable={AVAILABLE_TYPES.has(comp.typeId)}
+                          />
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                );
-              })
+                  );
+                },
+              )
             )}
           </div>
         </div>
@@ -284,90 +323,98 @@ interface ComponentCardProps {
   isAvailable?: boolean;
 }
 
-const ComponentCard: React.FC<ComponentCardProps> = React.memo(({ definition, onSelect, isAvailable = true }) => {
-  const category = registry.getCategory(definition.category);
-  const iconKey = definition.icon || category?.icon;
-  const CategoryIcon = resolveCategoryIcon(iconKey, definition.category);
+const ComponentCard: React.FC<ComponentCardProps> = React.memo(
+  ({ definition, onSelect, isAvailable = true }) => {
+    const category = registry.getCategory(definition.category);
+    const iconKey = definition.icon || category?.icon;
+    const CategoryIcon = resolveCategoryIcon(iconKey, definition.category);
 
-  return (
-    <button
-      className={`component-card${isAvailable ? '' : ' component-card--unavailable'}`}
-      onClick={() => onSelect(definition)}
-      role="listitem"
-      aria-label={`Add ${definition.displayName}: ${definition.description}`}
-    >
-      <div className="component-card__header">
-        <span className="component-card__icon" aria-hidden="true">
-          <CategoryIcon size={18} />
-        </span>
-        <span className="component-card__name">{definition.displayName}</span>
-      </div>
-      <p className="component-card__description">{definition.description}</p>
-      <div className="component-card__badges">
-        {definition.scoringEnabled && (
-          <span className="component-card__badge component-card__badge--scoring">Scored</span>
-        )}
-        {definition.completionCapabilities.includes('audio') && (
-          <span className="component-card__badge component-card__badge--audio">Audio</span>
-        )}
-        {definition.completionCapabilities.includes('interact') && (
-          <span className="component-card__badge component-card__badge--interact">Interactive</span>
-        )}
-      </div>
-    </button>
-  );
-});
-ComponentCard.displayName = 'ComponentCard';
+    return (
+      <button
+        className={`component-card${isAvailable ? "" : " component-card--unavailable"}`}
+        onClick={() => onSelect(definition)}
+        role="listitem"
+        aria-label={`Add ${definition.displayName}: ${definition.description}`}
+      >
+        <div className="component-card__header">
+          <span className="component-card__icon" aria-hidden="true">
+            <CategoryIcon size={18} />
+          </span>
+          <span className="component-card__name">{definition.displayName}</span>
+        </div>
+        <p className="component-card__description">{definition.description}</p>
+        <div className="component-card__badges">
+          {definition.scoringEnabled && (
+            <span className="component-card__badge component-card__badge--scoring">
+              Scored
+            </span>
+          )}
+          {definition.completionCapabilities.includes("audio") && (
+            <span className="component-card__badge component-card__badge--audio">
+              Audio
+            </span>
+          )}
+          {definition.completionCapabilities.includes("interact") && (
+            <span className="component-card__badge component-card__badge--interact">
+              Interactive
+            </span>
+          )}
+        </div>
+      </button>
+    );
+  },
+);
+ComponentCard.displayName = "ComponentCard";
 
 const iconByName: Record<string, LucideIcon> = {
   // Backend category icon aliases
-  'layout': Layout,
-  'layout-grid': LayoutGrid,
-  'git-branch': GitBranch,
-  'mouse-pointer': MousePointer,
-  'mouse-pointer-click': MousePointerClick,
-  'map': MapIcon,
-  'route': Route,
-  'check-square': CheckSquare,
-  'columns': Columns,
-  'film': Film,
-  'play-circle': PlayCircle,
-  'navigation': Navigation,
-  'award': Award,
-  'shield': Shield,
-  'shield-check': ShieldCheck,
-  'activity': Activity,
-  'tool': Wrench,
-  'wrench': Wrench,
-  'message-circle': MessageCircle,
-  'users': Users,
-  'accessibility': Accessibility,
-  'eye': Eye,
-  'bar-chart': BarChart3,
-  'bar-chart-3': BarChart3,
-  'brain': Brain,
-  'trophy': Trophy,
-  'zap': Zap,
+  layout: Layout,
+  "layout-grid": LayoutGrid,
+  "git-branch": GitBranch,
+  "mouse-pointer": MousePointer,
+  "mouse-pointer-click": MousePointerClick,
+  map: MapIcon,
+  route: Route,
+  "check-square": CheckSquare,
+  columns: Columns,
+  film: Film,
+  "play-circle": PlayCircle,
+  navigation: Navigation,
+  award: Award,
+  shield: Shield,
+  "shield-check": ShieldCheck,
+  activity: Activity,
+  tool: Wrench,
+  wrench: Wrench,
+  "message-circle": MessageCircle,
+  users: Users,
+  accessibility: Accessibility,
+  eye: Eye,
+  "bar-chart": BarChart3,
+  "bar-chart-3": BarChart3,
+  brain: Brain,
+  trophy: Trophy,
+  zap: Zap,
 };
 
 const iconByCategory: Record<string, LucideIcon> = {
-  'content-presentation': LayoutGrid,
-  'process-flow': GitBranch,
-  'interaction': MousePointerClick,
-  'scenario': Route,
-  'assessment': CheckSquare,
-  'comparison': Columns,
-  'media-rich': Film,
-  'microlearning': Zap,
-  'navigation': MapIcon,
-  'gamification': Trophy,
-  'compliance': ShieldCheck,
-  'diagnostic': Brain,
-  'practice': Wrench,
-  'feedback': MessageCircle,
-  'social': Users,
-  'accessibility': Accessibility,
-  'analytics': BarChart3,
+  "content-presentation": LayoutGrid,
+  "process-flow": GitBranch,
+  interaction: MousePointerClick,
+  scenario: Route,
+  assessment: CheckSquare,
+  comparison: Columns,
+  "media-rich": Film,
+  microlearning: Zap,
+  navigation: MapIcon,
+  gamification: Trophy,
+  compliance: ShieldCheck,
+  diagnostic: Brain,
+  practice: Wrench,
+  feedback: MessageCircle,
+  social: Users,
+  accessibility: Accessibility,
+  analytics: BarChart3,
 };
 
 function resolveCategoryIcon(iconName: string | undefined, categoryId: string) {

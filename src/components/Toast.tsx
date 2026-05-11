@@ -55,7 +55,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   const removeToast = useCallback((id: string) => {
     // Start exit animation
     setToasts((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, exiting: true } : t))
+      prev.map((t) => (t.id === id ? { ...t, exiting: true } : t)),
     );
     // Remove after animation
     setTimeout(() => {
@@ -71,7 +71,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
       setToasts((prev) => [...prev.slice(-4), { id, message, level }]); // keep max 5
       setTimeout(() => removeToast(id), ms);
     },
-    [removeToast]
+    [removeToast],
   );
 
   return (

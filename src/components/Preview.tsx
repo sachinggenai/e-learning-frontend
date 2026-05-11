@@ -23,7 +23,9 @@ interface PreviewProps {
 }
 
 const Preview: React.FC<PreviewProps> = () => {
-  const course = useSelector((state: RootState) => (state as any).course?.currentCourse) ?? { templates: [] };
+  const course = useSelector(
+    (state: RootState) => (state as any).course?.currentCourse,
+  ) ?? { templates: [] };
   const { showToast } = useToast();
   const [playerState, setPlayerState] = useState<LegacyPlayerState>({
     currentSlide: 0,
@@ -278,7 +280,7 @@ const renderWelcomeTemplate = (template: Template) => {
 const renderContentTextTemplate = (template: Template) => {
   const data = template.data as any;
   // data.content is canonical; data.body is the legacy fallback
-  const htmlContent: string = data.content || data.body || '';
+  const htmlContent: string = data.content || data.body || "";
   return (
     <div className="template content-template">
       <h2 className="content-title">{data.title}</h2>

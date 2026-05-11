@@ -181,7 +181,9 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
           id="content-body"
           value={data.content || data.body || ""}
           onChange={(e) => handleChange("content", e.target.value)}
-          className={getFieldError("content") || getFieldError("body") ? "error" : ""}
+          className={
+            getFieldError("content") || getFieldError("body") ? "error" : ""
+          }
           placeholder={
             isVideo
               ? "Describe what learners will see in this video..."

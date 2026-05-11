@@ -1,14 +1,14 @@
-import type { AxiosError } from 'axios';
+import type { AxiosError } from "axios";
 
 export type ApiErrorType =
-  | 'validation'
-  | 'not-found'
-  | 'permission'
-  | 'state'
-  | 'rate-limit'
-  | 'unsupported-type'
-  | 'network'
-  | 'error';
+  | "validation"
+  | "not-found"
+  | "permission"
+  | "state"
+  | "rate-limit"
+  | "unsupported-type"
+  | "network"
+  | "error";
 
 export interface HandledApiError {
   type: ApiErrorType;
@@ -24,7 +24,7 @@ export interface HandledApiError {
   retryAfterMs?: number;
 }
 
-const DEFAULT_MESSAGE = 'Something went wrong. Please try again.';
+const DEFAULT_MESSAGE = "Something went wrong. Please try again.";
 
 export function handleApiError(error: unknown): HandledApiError {
   const normalized = error as {
@@ -33,6 +33,7 @@ export function handleApiError(error: unknown): HandledApiError {
     field?: string;
     message?: string;
     details?: Record<string, unknown>;
+    errors?: any[];
     raw?: {
       code?: string;
       field?: string;
@@ -45,33 +46,36 @@ export function handleApiError(error: unknown): HandledApiError {
   const code = normalized?.code || normalized?.raw?.code;
   const field = normalized?.field || normalized?.raw?.field;
   const details = normalized?.details || normalized?.raw?.details;
-  const message = normalized?.message || normalized?.raw?.message || DEFAULT_MESSAGE;
+
+  // Prefer detail.message (backend structured envelope) over generic message
+  const message =
+    normalized?.message || normalized?.raw?.message || DEFAULT_MESSAGE;
 
   if (!status) {
     return {
-      type: 'network',
+      type: "network",
       code,
       field,
-      message: message || 'Network error. Check your connection and retry.',
+      message: message || "Network error. Check your connection and retry.",
       details,
     };
   }
 
   switch (code) {
-    case 'VALIDATION_ERROR':
-    case 'INVALID_JSON':
-      return { type: 'validation', code, field, message, details };
-    case 'NOT_FOUND':
-      return { type: 'not-found', code, field, message, details };
-    case 'PERMISSION_ERROR':
-      return { type: 'permission', code, field, message, details };
-    case 'STATE_ERROR':
-      return { type: 'state', code, field, message, details };
-    case 'UNSUPPORTED_TYPE':
-      return { type: 'unsupported-type', code, field, message, details };
-    case 'RATE_LIMIT_EXCEEDED':
+    case "VALIDATION_ERROR":
+    case "INVALID_JSON":
+      return { type: "validation", code, field, message, details };
+    case "NOT_FOUND":
+      return { type: "not-found", code, field, message, details };
+    case "PERMISSION_ERROR":
+      return { type: "permission", code, field, message, details };
+    case "STATE_ERROR":
+      return { type: "state", code, field, message, details };
+    case "UNSUPPORTED_TYPE":
+      return { type: "unsupported-type", code, field, message, details };
+    case "RATE_LIMIT_EXCEEDED":
       return {
-        type: 'rate-limit',
+        type: "rate-limit",
         code,
         field,
         message,
@@ -82,12 +86,14 @@ export function handleApiError(error: unknown): HandledApiError {
       break;
   }
 
-  if (status === 404) return { type: 'not-found', code, field, message, details };
-  if (status === 403) return { type: 'permission', code, field, message, details };
-  if (status === 409) return { type: 'state', code, field, message, details };
+  if (status === 404)
+    return { type: "not-found", code, field, message, details };
+  if (status === 403)
+    return { type: "permission", code, field, message, details };
+  if (status === 409) return { type: "state", code, field, message, details };
   if (status === 429) {
     return {
-      type: 'rate-limit',
+      type: "rate-limit",
       code,
       field,
       message,
@@ -96,7 +102,7 @@ export function handleApiError(error: unknown): HandledApiError {
     };
   }
 
-  return { type: 'error', code, field, message, details };
+  return { type: "error", code, field, message, details };
 }
 
 export function toHandledApiError(error: AxiosError): HandledApiError {

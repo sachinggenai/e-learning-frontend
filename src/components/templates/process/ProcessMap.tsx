@@ -45,6 +45,11 @@ export const ProcessMapPreview: React.FC<ComponentPreviewProps> = ({
   const componentData = (data ?? {}) as ProcessMapData;
   const lanes = componentData.lanes ?? [];
 
+  // Keep hook order stable by computing derived values before any early return.
+  const maxSteps = useMemo(() => {
+    return Math.max(...lanes.map((l) => l.steps?.length ?? 0), 1);
+  }, [lanes]);
+
   React.useEffect(() => {
     const timer = setTimeout(() => onComplete?.(componentId), 1000);
     return () => clearTimeout(timer);
@@ -53,11 +58,6 @@ export const ProcessMapPreview: React.FC<ComponentPreviewProps> = ({
   if (!lanes || lanes.length === 0) {
     return <div className="tpl-process-map__empty">No process map configured.</div>;
   }
-
-  // Calculate maximum steps across all lanes
-  const maxSteps = useMemo(() => {
-    return Math.max(...lanes.map((l) => l.steps?.length ?? 0), 1);
-  }, [lanes]);
 
   const svgHeight = lanes.length * 100 + 60;
   const svgWidth = Math.max(500, maxSteps * 120 + 100);

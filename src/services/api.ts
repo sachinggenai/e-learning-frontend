@@ -46,7 +46,7 @@ class ApiService {
         // Enhanced logging to show full URL being called
         const fullUrl = `${this.client.defaults.baseURL}${config.url}`;
         console.log(
-          `API Request: ${config.method?.toUpperCase()} ${config.url}`
+          `API Request: ${config.method?.toUpperCase()} ${config.url}`,
         );
         console.log(`  Full URL: ${fullUrl}`);
         console.log(`  Base URL: ${this.client.defaults.baseURL}`);
@@ -55,7 +55,7 @@ class ApiService {
       (error) => {
         console.error("API Request Error:", error);
         return Promise.reject(error);
-      }
+      },
     );
 
     // Response interceptor for error handling
@@ -67,10 +67,10 @@ class ApiService {
       (error) => {
         console.error(
           "API Response Error:",
-          error.response?.data || error.message
+          error.response?.data || error.message,
         );
         return Promise.reject(error);
-      }
+      },
     );
   }
 
@@ -108,7 +108,7 @@ class ApiService {
    * Validate course data against schema
    */
   async validateCourse(
-    courseData: Course | string
+    courseData: Course | string,
   ): Promise<CourseValidationResponse> {
     try {
       // Handle both raw course data and pre-transformed string
@@ -129,11 +129,11 @@ class ApiService {
         console.log("🔍 API Validation - Course data structure check:");
         console.log(
           "   ✅ Navigation linearProgression:",
-          !!parsedData.navigation?.linearProgression
+          !!parsedData.navigation?.linearProgression,
         );
         console.log(
           "   ✅ Template content field:",
-          !!parsedData.templates?.[0]?.data?.content
+          !!parsedData.templates?.[0]?.data?.content,
         );
         console.log("   ✅ Settings object:", !!parsedData.settings);
       }
@@ -144,7 +144,7 @@ class ApiService {
 
       const response: AxiosResponse<any> = await this.client.post(
         "/courses/validate",
-        backendRequest
+        backendRequest,
       );
 
       // Transform backend response to match frontend interface
@@ -201,7 +201,7 @@ class ApiService {
     try {
       // Transform course data for backend
       console.log(
-        "API Service - saveCourse: Transforming course data for backend"
+        "API Service - saveCourse: Transforming course data for backend",
       );
       const transformed = transformCourseForBackend(course);
       console.log("API Service - saveCourse: Data transformation complete", {
@@ -278,7 +278,7 @@ class ApiService {
               fallbackMethod: "POST",
               fallbackUrl: "/courses",
               errorDetail: error.response?.data,
-            }
+            },
           );
 
           try {
@@ -299,7 +299,7 @@ class ApiService {
                 status: fallbackError.response?.status,
                 errorData: fallbackError.response?.data,
                 errorMessage: fallbackError.message,
-              }
+              },
             );
             throw fallbackError;
           }
@@ -327,7 +327,7 @@ class ApiService {
           success: result.success,
           isNew: result.isNew,
           finalCourseId: result.course.courseId || result.course.id,
-        }
+        },
       );
 
       return result;
@@ -367,7 +367,7 @@ class ApiService {
 
       console.log(
         "API Service - saveCourse: Returning error result",
-        errorResult
+        errorResult,
       );
 
       return errorResult;
@@ -404,7 +404,7 @@ class ApiService {
         backendRequest,
         {
           responseType: "blob", // For file download
-        }
+        },
       );
 
       // Check if the response is actually an error (backend may return JSON for validation errors)
@@ -414,7 +414,7 @@ class ApiService {
           const text = await response.data.text();
           const errorData = JSON.parse(text);
           throw new Error(
-            errorData.detail || `Export failed with status ${response.status}`
+            errorData.detail || `Export failed with status ${response.status}`,
           );
         } catch (parseError) {
           throw new Error(`Export failed with status ${response.status}`);
@@ -525,7 +525,7 @@ class ApiService {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
 
       // Backend returns nested shape: { success, media: { id, url, ... } }
@@ -564,7 +564,7 @@ class ApiService {
     try {
       const response: AxiosResponse = await this.client.post(
         "/templates/enhanced/custom",
-        template
+        template,
       );
       return response.data;
     } catch (error) {
@@ -579,7 +579,7 @@ class ApiService {
   async getEnhancedTemplates(): Promise<any[]> {
     try {
       const response: AxiosResponse = await this.client.get(
-        "/templates/enhanced/custom"
+        "/templates/enhanced/custom",
       );
       return response.data;
     } catch (error) {
@@ -594,7 +594,7 @@ class ApiService {
   async getEnhancedTemplate(templateId: string): Promise<any> {
     try {
       const response: AxiosResponse = await this.client.get(
-        `/templates/enhanced/custom/${templateId}`
+        `/templates/enhanced/custom/${templateId}`,
       );
       return response.data;
     } catch (error) {
@@ -608,12 +608,12 @@ class ApiService {
    */
   async updateEnhancedTemplate(
     templateId: string,
-    updates: Partial<any>
+    updates: Partial<any>,
   ): Promise<any> {
     try {
       const response: AxiosResponse = await this.client.put(
         `/templates/enhanced/custom/${templateId}`,
-        updates
+        updates,
       );
       return response.data;
     } catch (error) {

@@ -41,7 +41,9 @@
   padding: 0 4px;
   transition: color 0.15s;
 }
-.cs-close:hover { color: var(--sidebar-text-bright); }
+.cs-close:hover {
+  color: var(--sidebar-text-bright);
+}
 
 /* ─── Tabs ────────────────────────────────────────────────── */
 .cs-tabs {
@@ -58,9 +60,13 @@
   font-weight: 500;
   cursor: pointer;
   color: var(--sidebar-text-muted);
-  transition: color 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
 }
-.cs-tab:hover { color: var(--sidebar-text-bright); }
+.cs-tab:hover {
+  color: var(--sidebar-text-bright);
+}
 .cs-tab--active {
   color: var(--sidebar-accent);
   border-bottom-color: var(--sidebar-accent);
@@ -103,7 +109,9 @@
   font-size: 13px;
   background: var(--sidebar-section-bg);
   color: var(--sidebar-text-bright);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 .cs-field input[type="text"]:focus,
 .cs-field input[type="number"]:focus,
@@ -180,7 +188,9 @@
   padding: 0 4px;
   transition: color 0.15s;
 }
-.cs-remove:hover { color: #f87171; }
+.cs-remove:hover {
+  color: #f87171;
+}
 
 /* ─── Footer ──────────────────────────────────────────────── */
 .cs-footer {
@@ -199,19 +209,25 @@
   font-weight: 500;
   cursor: pointer;
   border: none;
-  transition: background 0.2s, filter 0.2s;
+  transition:
+    background 0.2s,
+    filter 0.2s;
 }
 .cs-btn-primary {
   background: var(--sidebar-accent);
   color: #fff;
 }
-.cs-btn-primary:hover { filter: brightness(0.9); }
+.cs-btn-primary:hover {
+  filter: brightness(0.9);
+}
 .cs-btn-secondary {
   background: var(--sidebar-section-bg);
   color: var(--sidebar-text);
   border: 1px solid var(--sidebar-border);
 }
-.cs-btn-secondary:hover { background: var(--sidebar-bg-hover); }
+.cs-btn-secondary:hover {
+  background: var(--sidebar-bg-hover);
+}
 
 /* ─── Responsive ──────────────────────────────────────────── */
 @media (max-width: 768px) {

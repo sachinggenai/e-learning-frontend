@@ -16,10 +16,10 @@ export type {
   QuestionResult,
   ComponentResult,
   ScoreCalculateResponse,
-} from './course';
+} from "./course";
 
 // ─── Feedback Modes ──────────────────────────────────────────────
-export type FeedbackMode = 'immediate' | 'on-submit' | 'end';
+export type FeedbackMode = "immediate" | "on-submit" | "end";
 
 // ─── Scoring Context State ───────────────────────────────────────
 export interface ComponentScoreState {
@@ -46,9 +46,14 @@ export interface ScoringContextValue {
   /** Whether overall score meets passing threshold */
   passed: boolean;
   /** Submit answers for a component */
-  submitAnswers: (componentId: string, answers: import('./course').ComponentAnswer) => Promise<import('./course').ComponentResult>;
+  submitAnswers: (
+    componentId: string,
+    answers: import("./course").ComponentAnswer,
+  ) => Promise<import("./course").ComponentResult>;
   /** Calculate full course score */
-  calculateCourseScore: () => Promise<import('./course').ScoreCalculateResponse>;
+  calculateCourseScore: () => Promise<
+    import("./course").ScoreCalculateResponse
+  >;
   /** Current feedback mode */
   feedbackMode: FeedbackMode;
 }

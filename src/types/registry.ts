@@ -8,15 +8,11 @@
  * Open/Closed: New component types register without modifying this file.
  */
 
-import React from 'react';
-import {
-  AudioConfig,
-  CompletionCriteria,
-  ComponentStyling,
-} from './course';
+import React from "react";
+import { AudioConfig, CompletionCriteria, ComponentStyling } from "./course";
 
 // ─── Completion & Scoring Capabilities ───────────────────────────
-export type CompletionCapability = 'view' | 'interact' | 'audio' | 'score';
+export type CompletionCapability = "view" | "interact" | "audio" | "score";
 
 export type AudioSupportMode =
   | { perComponent: true; perInteraction: false }
@@ -56,9 +52,13 @@ export interface ComponentDefinition {
   /** Estimated duration in minutes */
   estimatedDuration?: number;
   /** Lazy-loaded editor component */
-  editorComponent: React.LazyExoticComponent<React.ComponentType<ComponentEditorProps>>;
+  editorComponent: React.LazyExoticComponent<
+    React.ComponentType<ComponentEditorProps>
+  >;
   /** Lazy-loaded preview/player component */
-  previewComponent: React.LazyExoticComponent<React.ComponentType<ComponentPreviewProps>>;
+  previewComponent: React.LazyExoticComponent<
+    React.ComponentType<ComponentPreviewProps>
+  >;
 }
 
 // ─── Category Definition ─────────────────────────────────────────

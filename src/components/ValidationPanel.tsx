@@ -121,7 +121,6 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({
           </div>
         )}
       </div>
-
     </div>
   );
 };

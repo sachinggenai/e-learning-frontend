@@ -35,7 +35,7 @@ const CustomTemplateEditor: React.FC<CustomTemplateEditorProps> = ({
       category: "custom",
       name: "",
       fields: [],
-      layout: { preset: 'single-column', spacing: 'normal' },
+      layout: { preset: "single-column", spacing: "normal" },
       metadata: {
         description: "",
         tags: [],
@@ -158,7 +158,7 @@ const CustomTemplateEditor: React.FC<CustomTemplateEditorProps> = ({
           payload,
         );
       } else {
-        await httpClient.post('/templates/enhanced/custom', payload);
+        await httpClient.post("/templates/enhanced/custom", payload);
       }
 
       // Success - close the editor

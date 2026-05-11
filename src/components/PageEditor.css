@@ -14,7 +14,7 @@
   padding: var(--space-3) var(--space-5);
   border-bottom: 1px solid var(--surface-border);
   background: var(--canvas-card);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   flex-shrink: 0;
 }
 
@@ -106,7 +106,11 @@
   padding: var(--space-6);
   overflow-y: auto;
   background-color: var(--canvas-bg);
-  background-image: radial-gradient(circle, var(--canvas-dot) 1px, transparent 1px);
+  background-image: radial-gradient(
+    circle,
+    var(--canvas-dot) 1px,
+    transparent 1px
+  );
   background-size: 24px 24px;
 }
 
@@ -148,7 +152,9 @@
   font-family: var(--font-sans);
   color: var(--text-primary);
   background: var(--surface-card);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .form-group input:focus,

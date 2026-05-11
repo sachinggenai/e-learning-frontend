@@ -29,7 +29,7 @@ export function transformCourseForBackend(course: Course): any {
 
   // Normalize and sort templates by order then reassign sequential indices
   const sortedTemplates: Template[] = [...sourceTemplates].sort(
-    (a, b) => (a.order ?? 0) - (b.order ?? 0)
+    (a, b) => (a.order ?? 0) - (b.order ?? 0),
   );
 
   const transformedTemplates = sortedTemplates.map((t: any, idx) => {
@@ -171,7 +171,7 @@ export function transformCourseForExport(course: Course): any {
 
   // Map frontend type identifiers to canonical backend type names
   const EXPORT_TYPE_MAP: Record<string, string> = {
-    'text-with-media': 'content-media',
+    "text-with-media": "content-media",
   };
 
   // Transform each template with proper structure
@@ -193,7 +193,9 @@ export function transformCourseForExport(course: Course): any {
       // If no questions but has legacy format, convert
       let mcqQuestions = questions;
       if (!mcqQuestions.length && content.question && content.options) {
-        const optionsList = Array.isArray(content.options) ? content.options : [];
+        const optionsList = Array.isArray(content.options)
+          ? content.options
+          : [];
         const correctAnswerRaw = (content.correctAnswer || "").trim();
 
         // 1. Try text-match
@@ -253,7 +255,8 @@ export function transformCourseForExport(course: Course): any {
 
         // 2. If no text match, interpret as a letter (A→0, B→1, C→2 …)
         if (correctAnswerIndex === -1 && /^[A-Za-z]$/.test(correctAnswerRaw)) {
-          correctAnswerIndex = correctAnswerRaw.toUpperCase().charCodeAt(0) - 65;
+          correctAnswerIndex =
+            correctAnswerRaw.toUpperCase().charCodeAt(0) - 65;
           // Clamp to valid option range
           const firstQ = mcqQuestions[0];
           const optCount = firstQ?.options?.length ?? 0;
@@ -297,9 +300,11 @@ export function transformCourseForExport(course: Course): any {
       const content = page.data || page.content || {};
       base.data = {
         // Use body as the canonical text field; fall back to content/template_name for legacy data
-        body: content.body || content.content || content.template_name || "Content",
+        body:
+          content.body || content.content || content.template_name || "Content",
         // Keep content for backward-compat fallback on backend
-        content: content.content || content.template_name || content.body || "Content",
+        content:
+          content.content || content.template_name || content.body || "Content",
         subtitle: content.subtitle || null,
         videoUrl: content.videoUrl || null,
         questions: null,

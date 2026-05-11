@@ -9,20 +9,28 @@
  * Liskov Substitution: Any ThemeContextValue consumer works regardless of source.
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from "react";
 import {
   ThemeColors,
   ThemeTypography,
   ThemeComponentStyles,
   ThemeOverrides,
-} from '../types/course';
+} from "../types/course";
 import {
   ThemeContextValue,
   DEFAULT_COLORS,
   DEFAULT_TYPOGRAPHY,
   COLOR_TOKEN_CSS_MAP,
   TYPOGRAPHY_CSS_MAP,
-} from '../types/theme';
+} from "../types/theme";
 
 // ─── Context ─────────────────────────────────────────────────────
 const ThemeContext = createContext<ThemeContextValue | null>(null);
@@ -30,7 +38,7 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 export function useTheme(): ThemeContextValue {
   const ctx = useContext(ThemeContext);
   if (!ctx) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error("useTheme must be used within a ThemeProvider");
   }
   return ctx;
 }
@@ -41,12 +49,18 @@ export function useThemeOptional(): ThemeContextValue | null {
 }
 
 // ─── Theme Resolver ──────────────────────────────────────────────
-function mergeColors(base: ThemeColors, overrides?: Record<string, string>): ThemeColors {
+function mergeColors(
+  base: ThemeColors,
+  overrides?: Record<string, string>,
+): ThemeColors {
   if (!overrides) return base;
   return { ...base, ...overrides } as ThemeColors;
 }
 
-function mergeTypography(base: ThemeTypography, overrides?: Record<string, any>): ThemeTypography {
+function mergeTypography(
+  base: ThemeTypography,
+  overrides?: Record<string, any>,
+): ThemeTypography {
   if (!overrides) return base;
   return {
     ...base,
@@ -58,7 +72,7 @@ function mergeTypography(base: ThemeTypography, overrides?: Record<string, any>)
 
 function mergeComponentStyles(
   base?: ThemeComponentStyles,
-  overrides?: Record<string, any>
+  overrides?: Record<string, any>,
 ): ThemeComponentStyles | undefined {
   if (!overrides) return base;
   if (!base) return overrides as ThemeComponentStyles;
@@ -78,7 +92,7 @@ function mergeComponentStyles(
 function injectCSSVariables(
   container: HTMLElement,
   colors: ThemeColors,
-  typography: ThemeTypography
+  typography: ThemeTypography,
 ): void {
   // Color tokens
   Object.entries(COLOR_TOKEN_CSS_MAP).forEach(([key, cssVar]) => {
@@ -87,23 +101,56 @@ function injectCSSVariables(
   });
 
   // Typography tokens
-  container.style.setProperty(TYPOGRAPHY_CSS_MAP.fontFamily, typography.fontFamily);
+  container.style.setProperty(
+    TYPOGRAPHY_CSS_MAP.fontFamily,
+    typography.fontFamily,
+  );
   if (typography.headingFont) {
-    container.style.setProperty(TYPOGRAPHY_CSS_MAP.headingFont, typography.headingFont);
+    container.style.setProperty(
+      TYPOGRAPHY_CSS_MAP.headingFont,
+      typography.headingFont,
+    );
   }
-  container.style.setProperty(TYPOGRAPHY_CSS_MAP.baseFontSize, `${typography.baseFontSize}px`);
-  container.style.setProperty(TYPOGRAPHY_CSS_MAP.lineHeight, String(typography.lineHeight));
+  container.style.setProperty(
+    TYPOGRAPHY_CSS_MAP.baseFontSize,
+    `${typography.baseFontSize}px`,
+  );
+  container.style.setProperty(
+    TYPOGRAPHY_CSS_MAP.lineHeight,
+    String(typography.lineHeight),
+  );
 
   // Heading sizes
-  container.style.setProperty('--theme-h1-size', `${typography.headingSizes.h1}px`);
-  container.style.setProperty('--theme-h2-size', `${typography.headingSizes.h2}px`);
-  container.style.setProperty('--theme-h3-size', `${typography.headingSizes.h3}px`);
-  container.style.setProperty('--theme-h4-size', `${typography.headingSizes.h4}px`);
+  container.style.setProperty(
+    "--theme-h1-size",
+    `${typography.headingSizes.h1}px`,
+  );
+  container.style.setProperty(
+    "--theme-h2-size",
+    `${typography.headingSizes.h2}px`,
+  );
+  container.style.setProperty(
+    "--theme-h3-size",
+    `${typography.headingSizes.h3}px`,
+  );
+  container.style.setProperty(
+    "--theme-h4-size",
+    `${typography.headingSizes.h4}px`,
+  );
 
   // Font weights
-  container.style.setProperty('--theme-font-weight-normal', String(typography.fontWeight.normal));
-  container.style.setProperty('--theme-font-weight-medium', String(typography.fontWeight.medium));
-  container.style.setProperty('--theme-font-weight-bold', String(typography.fontWeight.bold));
+  container.style.setProperty(
+    "--theme-font-weight-normal",
+    String(typography.fontWeight.normal),
+  );
+  container.style.setProperty(
+    "--theme-font-weight-medium",
+    String(typography.fontWeight.medium),
+  );
+  container.style.setProperty(
+    "--theme-font-weight-bold",
+    String(typography.fontWeight.bold),
+  );
 }
 
 // ─── Provider Props ──────────────────────────────────────────────
@@ -125,8 +172,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   pageOverrides: initialPageOverrides,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [courseOverrides, setCourseOverrides] = useState<ThemeOverrides | undefined>(initialCourseOverrides);
-  const [pageOverrides, setPageOverrides] = useState<ThemeOverrides | undefined>(initialPageOverrides);
+  const [courseOverrides, setCourseOverrides] = useState<
+    ThemeOverrides | undefined
+  >(initialCourseOverrides);
+  const [pageOverrides, setPageOverrides] = useState<
+    ThemeOverrides | undefined
+  >(initialPageOverrides);
   const [isLoading] = useState(false);
 
   // Resolve theme: preset → course → page
@@ -135,22 +186,28 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     let colors = DEFAULT_COLORS;
     let typography = DEFAULT_TYPOGRAPHY;
     let componentStyles: ThemeComponentStyles | undefined;
-    let inheritedFrom: 'preset' | 'course' | 'page' = 'preset';
+    let inheritedFrom: "preset" | "course" | "page" = "preset";
 
     // Step 2: Apply course overrides
     if (courseOverrides) {
       colors = mergeColors(colors, courseOverrides.colors);
       typography = mergeTypography(typography, courseOverrides.typography);
-      componentStyles = mergeComponentStyles(componentStyles, courseOverrides.componentStyles);
-      inheritedFrom = 'course';
+      componentStyles = mergeComponentStyles(
+        componentStyles,
+        courseOverrides.componentStyles,
+      );
+      inheritedFrom = "course";
     }
 
     // Step 3: Apply page overrides
     if (pageOverrides) {
       colors = mergeColors(colors, pageOverrides.colors);
       typography = mergeTypography(typography, pageOverrides.typography);
-      componentStyles = mergeComponentStyles(componentStyles, pageOverrides.componentStyles);
-      inheritedFrom = 'page';
+      componentStyles = mergeComponentStyles(
+        componentStyles,
+        pageOverrides.componentStyles,
+      );
+      inheritedFrom = "page";
     }
 
     return { colors, typography, componentStyles, inheritedFrom };
@@ -170,20 +227,26 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     // TODO: API call - await themeService.updateCourseTheme(courseId, overrides);
   }, []);
 
-  const updatePageTheme = useCallback(async (_pageId: string, overrides: ThemeOverrides) => {
-    setPageOverrides(overrides);
-    // TODO: API call - await themeService.updatePageTheme(courseId, pageId, overrides);
-  }, []);
+  const updatePageTheme = useCallback(
+    async (_pageId: string, overrides: ThemeOverrides) => {
+      setPageOverrides(overrides);
+      // TODO: API call - await themeService.updatePageTheme(courseId, pageId, overrides);
+    },
+    [],
+  );
 
-  const contextValue = useMemo<ThemeContextValue>(() => ({
-    colors: resolved.colors,
-    typography: resolved.typography,
-    componentStyles: resolved.componentStyles,
-    inheritedFrom: resolved.inheritedFrom,
-    isLoading,
-    updateCourseTheme,
-    updatePageTheme,
-  }), [resolved, isLoading, updateCourseTheme, updatePageTheme]);
+  const contextValue = useMemo<ThemeContextValue>(
+    () => ({
+      colors: resolved.colors,
+      typography: resolved.typography,
+      componentStyles: resolved.componentStyles,
+      inheritedFrom: resolved.inheritedFrom,
+      isLoading,
+      updateCourseTheme,
+      updatePageTheme,
+    }),
+    [resolved, isLoading, updateCourseTheme, updatePageTheme],
+  );
 
   return (
     <ThemeContext.Provider value={contextValue}>

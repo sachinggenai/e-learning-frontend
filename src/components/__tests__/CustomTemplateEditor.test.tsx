@@ -6,16 +6,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 
-// Mock API service BEFORE importing components that use it
-const mockCreateEnhancedTemplate = jest.fn();
-const mockUpdateEnhancedTemplate = jest.fn();
+// Mock http client BEFORE importing component
+const mockHttpPost = jest.fn();
+const mockHttpPut = jest.fn();
 
-jest.mock("../../services/api", () => ({
-  apiService: {
-    createEnhancedTemplate: (...args: any[]) =>
-      mockCreateEnhancedTemplate(...args),
-    updateEnhancedTemplate: (...args: any[]) =>
-      mockUpdateEnhancedTemplate(...args),
+jest.mock("../../services/httpClient", () => ({
+  httpClient: {
+    post: (...args: any[]) => mockHttpPost(...args),
+    put: (...args: any[]) => mockHttpPut(...args),
   },
 }));
 
@@ -126,7 +124,7 @@ describe("CustomTemplateEditor", () => {
   });
 
   it("should call API and close on successful submit", async () => {
-    mockCreateEnhancedTemplate.mockResolvedValue({ id: "custom_123" });
+    mockHttpPost.mockResolvedValue({ data: { id: "custom_123" } });
 
     render(
       <Provider store={mockStore}>
@@ -156,13 +154,13 @@ describe("CustomTemplateEditor", () => {
     fireEvent.click(saveButton);
 
     await waitFor(() => {
-      expect(mockCreateEnhancedTemplate).toHaveBeenCalled();
+      expect(mockHttpPost).toHaveBeenCalled();
       expect(mockOnClose).toHaveBeenCalled();
     });
   });
 
   it("should display error message when API call fails", async () => {
-    mockCreateEnhancedTemplate.mockRejectedValue(new Error("API Error"));
+    mockHttpPost.mockRejectedValue(new Error("API Error"));
 
     render(
       <Provider store={mockStore}>

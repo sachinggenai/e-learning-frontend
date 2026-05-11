@@ -106,8 +106,10 @@ export const fetchCourses = createAsyncThunk(
   "course/fetchCourses",
   async () => {
     const result = await courseService.listCourses();
-    // result is CourseListResponse { courses, total, page, limit }
-    return (result as any).courses ?? result;
+
+    // Accept all backend shapes: array, { items }, or legacy { courses }.
+    if (Array.isArray(result)) return result;
+    return (result as any).items ?? (result as any).courses ?? [];
   }
 );
 

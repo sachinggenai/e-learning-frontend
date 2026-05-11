@@ -1,0 +1,23 @@
+{
+  "extends": ["react-app", "react-app/jest"],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "import/no-anonymous-default-export": "off",
+    "import/first": "off",
+    "no-restricted-globals": "off",
+    "no-useless-escape": "off"
+  },
+  "overrides": [
+    {
+      "files": ["src/**/*.test.{ts,tsx}", "src/**/__tests__/**/*.{ts,tsx}", "src/**/*.spec.{ts,tsx}"],
+      "rules": {
+        "testing-library/no-container": "off",
+        "testing-library/no-node-access": "off",
+        "testing-library/no-wait-for-multiple-assertions": "off",
+        "testing-library/no-unnecessary-act": "off",
+        "jest/no-conditional-expect": "off"
+      }
+    }
+  ]
+}

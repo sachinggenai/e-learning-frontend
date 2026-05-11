@@ -6,11 +6,7 @@
  * Re-exports core audio types from course.ts and adds UI-specific ones.
  */
 
-export type {
-  AudioItem,
-  AudioConfig,
-  AudioAssetResponse,
-} from './course';
+export type { AudioItem, AudioConfig, AudioAssetResponse } from "./course";
 
 // ─── Audio Player State ──────────────────────────────────────────
 export interface AudioPlayerState {
@@ -34,16 +30,16 @@ export const AUDIO_COMPLETION_THRESHOLD = 0.9; // 90%
 export interface AudioInteractionPoint {
   interactionId: string;
   label: string;
-  audioItems: import('./course').AudioItem[];
+  audioItems: import("./course").AudioItem[];
 }
 
 // ─── Supported Audio Formats ─────────────────────────────────────
 export const SUPPORTED_AUDIO_FORMATS = [
-  'audio/mpeg',     // mp3
-  'audio/wav',      // wav
-  'audio/ogg',      // ogg
-  'audio/mp4',      // m4a
-  'audio/x-m4a',    // m4a alt
+  "audio/mpeg", // mp3
+  "audio/wav", // wav
+  "audio/ogg", // ogg
+  "audio/mp4", // m4a
+  "audio/x-m4a", // m4a alt
 ] as const;
 
 export const MAX_AUDIO_FILE_SIZE = 50 * 1024 * 1024; // 50MB

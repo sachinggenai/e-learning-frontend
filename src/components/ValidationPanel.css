@@ -10,7 +10,7 @@
   color: var(--text-primary, #1e293b);
   max-height: 260px;
   overflow-y: auto;
-  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.06));
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.06));
 }
 
 /* ── Header ──────────────────────────────────────────────── */
@@ -77,8 +77,12 @@
   letter-spacing: 0.04em;
 }
 
-.validation-panel__section-title--error { color: #dc2626; }
-.validation-panel__section-title--warning { color: #d97706; }
+.validation-panel__section-title--error {
+  color: #dc2626;
+}
+.validation-panel__section-title--warning {
+  color: #d97706;
+}
 
 /* ── List ────────────────────────────────────────────────── */
 .validation-panel__list {
@@ -132,7 +136,7 @@
 .validation-panel__field {
   font-size: 11px;
   color: var(--text-secondary, #64748b);
-  font-family: var(--font-mono, 'SF Mono', monospace);
+  font-family: var(--font-mono, "SF Mono", monospace);
 }
 
 .validation-panel__message {

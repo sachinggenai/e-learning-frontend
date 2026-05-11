@@ -10,10 +10,10 @@
  * updateComponent thunk from componentsSlice on change.
  */
 
-import React, { useCallback, useState, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../store';
-import { updateComponent } from '../store/slices/componentsSlice';
+import React, { useCallback, useState, useMemo } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store";
+import { updateComponent } from "../store/slices/componentsSlice";
 import {
   Component,
   CompletionCriteria,
@@ -21,9 +21,9 @@ import {
   AudioConfig,
   AudioItem,
   ComponentStyling,
-} from '../types/course';
-import { registry } from './registry';
-import './ComponentSettings.css';
+} from "../types/course";
+import { registry } from "./registry";
+import "./ComponentSettings.css";
 
 interface ComponentSettingsProps {
   component: Component;
@@ -32,12 +32,20 @@ interface ComponentSettingsProps {
   onClose: () => void;
 }
 
-const COMPLETION_TYPES: { value: CompletionType; label: string; description: string }[] = [
-  { value: 'view', label: 'View', description: 'Complete when viewed' },
-  { value: 'interact', label: 'Interact', description: 'Require user interaction' },
-  { value: 'audio', label: 'Audio', description: 'Must listen to audio' },
-  { value: 'score', label: 'Score', description: 'Must achieve minimum score' },
-  { value: 'custom', label: 'Custom', description: 'Custom completion logic' },
+const COMPLETION_TYPES: {
+  value: CompletionType;
+  label: string;
+  description: string;
+}[] = [
+  { value: "view", label: "View", description: "Complete when viewed" },
+  {
+    value: "interact",
+    label: "Interact",
+    description: "Require user interaction",
+  },
+  { value: "audio", label: "Audio", description: "Must listen to audio" },
+  { value: "score", label: "Score", description: "Must achieve minimum score" },
+  { value: "custom", label: "Custom", description: "Custom completion logic" },
 ];
 
 export const ComponentSettings: React.FC<ComponentSettingsProps> = ({
@@ -51,18 +59,20 @@ export const ComponentSettings: React.FC<ComponentSettingsProps> = ({
 
   // Local state for edits
   const [completion, setCompletion] = useState<CompletionCriteria>(
-    component.completionCriteria ?? { type: 'view' }
+    component.completionCriteria ?? { type: "view" },
   );
   const [audio, setAudio] = useState<AudioConfig>(
-    component.audioConfig ?? { enabled: false, audioItems: [] }
+    component.audioConfig ?? { enabled: false, audioItems: [] },
   );
   const [styling, setStyling] = useState<ComponentStyling>(
-    component.styling ?? {}
+    component.styling ?? {},
   );
-  const [activeTab, setActiveTab] = useState<'completion' | 'audio' | 'styling'>('completion');
+  const [activeTab, setActiveTab] = useState<
+    "completion" | "audio" | "styling"
+  >("completion");
 
   const supportedCompletionTypes = useMemo(() => {
-    const caps: string[] = definition?.completionCapabilities ?? ['view'];
+    const caps: string[] = definition?.completionCapabilities ?? ["view"];
     return COMPLETION_TYPES.filter((t) => caps.includes(t.value));
   }, [definition]);
 
@@ -80,10 +90,20 @@ export const ComponentSettings: React.FC<ComponentSettingsProps> = ({
           audioConfig: audio,
           styling,
         },
-      })
+      }),
     );
     onClose();
-  }, [dispatch, courseId, pageId, component.componentId, component.data, completion, audio, styling, onClose]);
+  }, [
+    dispatch,
+    courseId,
+    pageId,
+    component.componentId,
+    component.data,
+    completion,
+    audio,
+    styling,
+    onClose,
+  ]);
 
   // ─── Completion Tab ──────────────────────────────────────────────
   const renderCompletionTab = () => (
@@ -94,7 +114,10 @@ export const ComponentSettings: React.FC<ComponentSettingsProps> = ({
         <select
           value={completion.type}
           onChange={(e) =>
-            setCompletion({ ...completion, type: e.target.value as CompletionType })
+            setCompletion({
+              ...completion,
+              type: e.target.value as CompletionType,
+            })
           }
         >
           {supportedCompletionTypes.map((t) => (
@@ -104,11 +127,14 @@ export const ComponentSettings: React.FC<ComponentSettingsProps> = ({
           ))}
         </select>
         <small>
-          {supportedCompletionTypes.find((t) => t.value === completion.type)?.description}
+          {
+            supportedCompletionTypes.find((t) => t.value === completion.type)
+              ?.description
+          }
         </small>
       </div>
 
-      {(completion.type === 'audio' || completion.type === 'score') && (
+      {(completion.type === "audio" || completion.type === "score") && (
         <div className="cs-field">
           <label>Threshold (%)</label>
           <input
@@ -117,24 +143,27 @@ export const ComponentSettings: React.FC<ComponentSettingsProps> = ({
             max={100}
             value={completion.threshold ?? 90}
             onChange={(e) =>
-              setCompletion({ ...completion, threshold: Number(e.target.value) })
+              setCompletion({
+                ...completion,
+                threshold: Number(e.target.value),
+              })
             }
           />
         </div>
       )}
 
-      {completion.type === 'interact' && (
+      {completion.type === "interact" && (
         <div className="cs-field">
           <label>Required Interaction IDs</label>
           <input
             type="text"
             placeholder="Comma-separated IDs"
-            value={(completion.requiredInteractions ?? []).join(', ')}
+            value={(completion.requiredInteractions ?? []).join(", ")}
             onChange={(e) =>
               setCompletion({
                 ...completion,
                 requiredInteractions: e.target.value
-                  .split(',')
+                  .split(",")
                   .map((s) => s.trim())
                   .filter(Boolean),
               })
@@ -150,7 +179,9 @@ export const ComponentSettings: React.FC<ComponentSettingsProps> = ({
     <div className="cs-section">
       <h4>Audio Configuration</h4>
       {!audioSupport?.perComponent && !audioSupport?.perInteraction ? (
-        <p className="cs-info">Audio is not supported for this component type.</p>
+        <p className="cs-info">
+          Audio is not supported for this component type.
+        </p>
       ) : (
         <>
           <div className="cs-field cs-toggle">
@@ -158,7 +189,9 @@ export const ComponentSettings: React.FC<ComponentSettingsProps> = ({
               <input
                 type="checkbox"
                 checked={audio.enabled}
-                onChange={(e) => setAudio({ ...audio, enabled: e.target.checked })}
+                onChange={(e) =>
+                  setAudio({ ...audio, enabled: e.target.checked })
+                }
               />
               Enable Audio
             </label>
@@ -191,8 +224,8 @@ export const ComponentSettings: React.FC<ComponentSettingsProps> = ({
                     audioItems: [
                       ...audio.audioItems,
                       {
-                        audioUrl: '',
-                        triggerOn: 'load',
+                        audioUrl: "",
+                        triggerOn: "load",
                         autoplay: false,
                         requiredForCompletion: false,
                       },
@@ -218,7 +251,7 @@ export const ComponentSettings: React.FC<ComponentSettingsProps> = ({
         <input
           type="text"
           placeholder="e.g., slot-1, auto"
-          value={styling.layoutPosition ?? ''}
+          value={styling.layoutPosition ?? ""}
           onChange={(e) =>
             setStyling({ ...styling, layoutPosition: e.target.value || null })
           }
@@ -228,7 +261,7 @@ export const ComponentSettings: React.FC<ComponentSettingsProps> = ({
         <label>Background Color</label>
         <input
           type="color"
-          value={styling.themeOverrides?.colors?.background ?? '#ffffff'}
+          value={styling.themeOverrides?.colors?.background ?? "#ffffff"}
           onChange={(e) =>
             setStyling({
               ...styling,
@@ -247,7 +280,7 @@ export const ComponentSettings: React.FC<ComponentSettingsProps> = ({
         <label>Text Color</label>
         <input
           type="color"
-          value={styling.themeOverrides?.colors?.text ?? '#333333'}
+          value={styling.themeOverrides?.colors?.text ?? "#333333"}
           onChange={(e) =>
             setStyling({
               ...styling,
@@ -266,22 +299,30 @@ export const ComponentSettings: React.FC<ComponentSettingsProps> = ({
   );
 
   return (
-    <aside className="component-settings" role="complementary" aria-label="Component Settings">
+    <aside
+      className="component-settings"
+      role="complementary"
+      aria-label="Component Settings"
+    >
       <div className="cs-header">
         <h3>{definition?.displayName ?? component.componentType} Settings</h3>
-        <button className="cs-close" onClick={onClose} aria-label="Close settings">
+        <button
+          className="cs-close"
+          onClick={onClose}
+          aria-label="Close settings"
+        >
           ×
         </button>
       </div>
 
       {/* Tabs */}
       <nav className="cs-tabs" role="tablist">
-        {(['completion', 'audio', 'styling'] as const).map((tab) => (
+        {(["completion", "audio", "styling"] as const).map((tab) => (
           <button
             key={tab}
             role="tab"
             aria-selected={activeTab === tab}
-            className={`cs-tab ${activeTab === tab ? 'cs-tab--active' : ''}`}
+            className={`cs-tab ${activeTab === tab ? "cs-tab--active" : ""}`}
             onClick={() => setActiveTab(tab)}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -291,9 +332,9 @@ export const ComponentSettings: React.FC<ComponentSettingsProps> = ({
 
       {/* Tab Content */}
       <div className="cs-body">
-        {activeTab === 'completion' && renderCompletionTab()}
-        {activeTab === 'audio' && renderAudioTab()}
-        {activeTab === 'styling' && renderStylingTab()}
+        {activeTab === "completion" && renderCompletionTab()}
+        {activeTab === "audio" && renderAudioTab()}
+        {activeTab === "styling" && renderStylingTab()}
       </div>
 
       {/* Actions */}
@@ -317,11 +358,20 @@ interface AudioItemEditorProps {
   onRemove: () => void;
 }
 
-const AudioItemEditor: React.FC<AudioItemEditorProps> = ({ item, index, onChange, onRemove }) => (
+const AudioItemEditor: React.FC<AudioItemEditorProps> = ({
+  item,
+  index,
+  onChange,
+  onRemove,
+}) => (
   <div className="cs-audio-item">
     <div className="cs-audio-item-header">
       <span>Audio {index + 1}</span>
-      <button className="cs-remove" onClick={onRemove} aria-label="Remove audio item">
+      <button
+        className="cs-remove"
+        onClick={onRemove}
+        aria-label="Remove audio item"
+      >
         ×
       </button>
     </div>
@@ -338,7 +388,12 @@ const AudioItemEditor: React.FC<AudioItemEditorProps> = ({ item, index, onChange
       <label>Trigger</label>
       <select
         value={item.triggerOn}
-        onChange={(e) => onChange({ ...item, triggerOn: e.target.value as AudioItem['triggerOn'] })}
+        onChange={(e) =>
+          onChange({
+            ...item,
+            triggerOn: e.target.value as AudioItem["triggerOn"],
+          })
+        }
       >
         <option value="load">On Load</option>
         <option value="click">On Click</option>
@@ -360,7 +415,9 @@ const AudioItemEditor: React.FC<AudioItemEditorProps> = ({ item, index, onChange
         <input
           type="checkbox"
           checked={item.requiredForCompletion}
-          onChange={(e) => onChange({ ...item, requiredForCompletion: e.target.checked })}
+          onChange={(e) =>
+            onChange({ ...item, requiredForCompletion: e.target.checked })
+          }
         />
         Required for Completion
       </label>

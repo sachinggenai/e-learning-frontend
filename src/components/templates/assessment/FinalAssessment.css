@@ -105,6 +105,14 @@
   accent-color: var(--theme-primary, #2563eb);
 }
 
+.fa-option input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: var(--theme-primary, #2563eb);
+}
+
 .fa-option--selected {
   border-color: var(--theme-primary, #2563eb);
   background: rgba(37, 99, 235, 0.06);
@@ -305,4 +313,165 @@
   .final-assessment__results p {
     font-size: 14px;
   }
+}
+
+/* ── New fields added for API alignment ────────────────────────── */
+.final-assessment__intro {
+  font-style: italic;
+  color: var(--color-text-secondary, #6b7280);
+  margin-bottom: 8px;
+}
+
+.final-assessment__attempts-info {
+  font-size: 13px;
+  color: var(--color-text-secondary, #6b7280);
+  margin-bottom: 12px;
+}
+
+.fa-question__fill-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fa-question__fill {
+  padding: 8px 12px;
+  border: 1.5px solid var(--color-border, #e5e7eb);
+  border-radius: 6px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.fa-fill--correct {
+  border-color: var(--color-success, #16a34a);
+  background: #f0fdf4;
+}
+
+.fa-fill--incorrect {
+  border-color: var(--color-error, #dc2626);
+  background: #fef2f2;
+}
+
+.fa-fill__correct-answer {
+  font-size: 12px;
+  color: var(--color-success, #16a34a);
+}
+
+/* Editor additions */
+.editor-field--row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.fa-editor__checkbox-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--theme-text, #1e293b);
+}
+
+.fa-editor__q-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.fa-editor__q-body {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--theme-border, #e2e8f0);
+}
+
+.fa-editor__options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.fa-editor__option-row,
+.fa-editor__answer-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fa-editor__option-row input[type="text"],
+.fa-editor__answer-row input[type="text"] {
+  flex: 1;
+}
+
+.fa-editor__inline-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+  flex-wrap: wrap;
+}
+
+.fa-editor__error-list {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: var(--theme-error, #dc2626);
+  font-size: 13px;
+}
+
+.editor-field__error {
+  display: block;
+  color: var(--color-error, #dc2626);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.fa-editor__validation-summary {
+  background: #fef2f2;
+  border: 1px solid var(--color-error, #dc2626);
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-top: 16px;
+  font-size: 13px;
+}
+
+.fa-editor__validation-summary ul {
+  margin: 6px 0 0 16px;
+  padding: 0;
+}
+
+.fa-editor__q-type {
+  font-size: 11px;
+  color: var(--color-text-secondary, #6b7280);
+  background: #f3f4f6;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.fa-editor__mcq-options {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fa-editor__option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fa-editor__tf {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.fa-editor__fill {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }

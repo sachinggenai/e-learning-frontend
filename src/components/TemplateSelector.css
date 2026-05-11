@@ -17,20 +17,30 @@
 }
 
 @keyframes overlayFadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes modalSlideUp {
-  from { opacity: 0; transform: translateY(8px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* ── Modal ───────────────────────────────────────────────── */
 .template-selector-modal {
   background: var(--sidebar-bg);
   border-radius: var(--radius-xl);
-  box-shadow: 0 24px 64px rgba(0,0,0,0.45);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
   border: 1px solid var(--sidebar-border);
   width: 100%;
   max-width: 960px;
@@ -103,7 +113,9 @@
   font-family: var(--font-sans);
   background: var(--sidebar-bg-hover);
   color: var(--sidebar-text-bright);
-  transition: border-color var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
+  transition:
+    border-color var(--transition-fast) ease,
+    box-shadow var(--transition-fast) ease;
 }
 
 .template-search::placeholder {
@@ -133,9 +145,16 @@
 }
 
 /* Light scrollbar */
-.template-list::-webkit-scrollbar { width: 5px; }
-.template-list::-webkit-scrollbar-track { background: transparent; }
-.template-list::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.08); border-radius: 3px; }
+.template-list::-webkit-scrollbar {
+  width: 5px;
+}
+.template-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.template-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 3px;
+}
 
 .template-list h3 {
   margin: 0 0 var(--space-3) 0;
@@ -329,7 +348,9 @@
   font-family: var(--font-sans);
   background: var(--sidebar-bg-hover);
   color: var(--sidebar-text-bright);
-  transition: border-color var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
+  transition:
+    border-color var(--transition-fast) ease,
+    box-shadow var(--transition-fast) ease;
 }
 
 .page-title-input:focus {

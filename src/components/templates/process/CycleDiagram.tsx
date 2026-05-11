@@ -31,16 +31,7 @@ export const CycleDiagramPreview: React.FC<ComponentPreviewProps> = ({
   const componentData = (data ?? {}) as CycleDiagramData;
   const stages = componentData.stages ?? [];
 
-  React.useEffect(() => {
-    const timer = setTimeout(() => onComplete?.(componentId), 1000);
-    return () => clearTimeout(timer);
-  }, [componentId, onComplete]);
-
-  if (!stages || stages.length === 0) {
-    return <div className="tpl-cycle-diagram__empty">No stages configured.</div>;
-  }
-
-  // Calculate positions for circular layout
+  // Hooks must stay above early returns so render order remains stable.
   const positions = useMemo(() => {
     const radius = 120;
     const centerX = 150;
@@ -52,7 +43,16 @@ export const CycleDiagramPreview: React.FC<ComponentPreviewProps> = ({
         y: centerY + radius * Math.sin(angle),
       };
     });
-  }, [stages.length]);
+  }, [stages]);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => onComplete?.(componentId), 1000);
+    return () => clearTimeout(timer);
+  }, [componentId, onComplete]);
+
+  if (!stages || stages.length === 0) {
+    return <div className="tpl-cycle-diagram__empty">No stages configured.</div>;
+  }
 
   // SVG dimensions and setup
   const svgWidth = 300;

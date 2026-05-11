@@ -236,7 +236,9 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
         {/* Header */}
         <div className="vem-header">
           <div className="vem-header__left">
-            <span className="vem-header__icon"><AlertTriangle /></span>
+            <span className="vem-header__icon">
+              <AlertTriangle />
+            </span>
             <div>
               <h2 className="vem-header__title">
                 {t("validation.report.title", "Validation Report")}
@@ -269,7 +271,10 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
               <Download />
             </button>
 
-            <button onClick={onClose} className="vem-btn--icon vem-btn--icon-lg">
+            <button
+              onClick={onClose}
+              className="vem-btn--icon vem-btn--icon-lg"
+            >
               <X />
             </button>
           </div>
@@ -278,10 +283,26 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
         {/* Tabs */}
         <nav className="vem-tabs" aria-label="Tabs">
           {[
-            { key: "all", label: t("validation.tab.all", "All Issues"), count: stats.total },
-            { key: "errors", label: t("validation.tab.errors", "Errors"), count: stats.errors },
-            { key: "warnings", label: t("validation.tab.warnings", "Warnings"), count: stats.warnings },
-            { key: "info", label: t("validation.tab.info", "Info"), count: stats.info },
+            {
+              key: "all",
+              label: t("validation.tab.all", "All Issues"),
+              count: stats.total,
+            },
+            {
+              key: "errors",
+              label: t("validation.tab.errors", "Errors"),
+              count: stats.errors,
+            },
+            {
+              key: "warnings",
+              label: t("validation.tab.warnings", "Warnings"),
+              count: stats.warnings,
+            },
+            {
+              key: "info",
+              label: t("validation.tab.info", "Info"),
+              count: stats.info,
+            },
           ].map((tab) => (
             <button
               key={tab.key}
@@ -300,14 +321,22 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
         <div className="vem-content">
           {filteredErrors.length === 0 ? (
             <div className="vem-empty">
-              <span className="vem-empty__icon"><CheckCircle /></span>
+              <span className="vem-empty__icon">
+                <CheckCircle />
+              </span>
               <h3 className="vem-empty__title">
                 {t("validation.none.title", "No Issues Found")}
               </h3>
               <p className="vem-empty__text">
                 {activeTab === "all"
-                  ? t("validation.none.allPass", "Your course passes all validation checks!")
-                  : t("validation.none.tabEmpty", `No ${activeTab} found in your course.`)}
+                  ? t(
+                      "validation.none.allPass",
+                      "Your course passes all validation checks!",
+                    )
+                  : t(
+                      "validation.none.tabEmpty",
+                      `No ${activeTab} found in your course.`,
+                    )}
               </p>
             </div>
           ) : (
@@ -315,20 +344,29 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
               {/* Action Bar */}
               <div className="vem-action-bar">
                 <span>
-                  {filteredErrors.length} {t("validation.issues.in", "issues in")}{" "}
-                  {categorizedErrors.length} {t("validation.categories", "categories")}
+                  {filteredErrors.length}{" "}
+                  {t("validation.issues.in", "issues in")}{" "}
+                  {categorizedErrors.length}{" "}
+                  {t("validation.categories", "categories")}
                 </span>
                 <div className="vem-action-bar__actions">
                   {stats.warnings > 0 && activeTab !== "errors" && (
-                    <button onClick={handleIgnoreAllWarnings} className="vem-btn--sm vem-btn--warning">
+                    <button
+                      onClick={handleIgnoreAllWarnings}
+                      className="vem-btn--sm vem-btn--warning"
+                    >
                       {t("validation.ignoreAllWarnings", "Ignore All Warnings")}
                     </button>
                   )}
                   <button
                     onClick={() => {
-                      const allCategories = new Set(categorizedErrors.map((c) => c.name));
+                      const allCategories = new Set(
+                        categorizedErrors.map((c) => c.name),
+                      );
                       setExpandedCategories(
-                        expandedCategories.size === categorizedErrors.length ? new Set() : allCategories,
+                        expandedCategories.size === categorizedErrors.length
+                          ? new Set()
+                          : allCategories,
                       );
                     }}
                     className="vem-btn--sm vem-btn--neutral"
@@ -346,21 +384,35 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
                   {categorizedErrors.map((category) => {
                     const isExpanded = expandedCategories.has(category.name);
                     return (
-                      <div key={category.name} className="vem-category" role="group" aria-label={category.name}>
-                        <button onClick={() => toggleCategory(category.name)} className="vem-category__header">
+                      <div
+                        key={category.name}
+                        className="vem-category"
+                        role="group"
+                        aria-label={category.name}
+                      >
+                        <button
+                          onClick={() => toggleCategory(category.name)}
+                          className="vem-category__header"
+                        >
                           <div className="vem-category__header-left">
                             <span className="vem-category__chevron">
                               {isExpanded ? <ChevronDown /> : <ChevronRight />}
                             </span>
-                            <span className="vem-category__name">{category.name}</span>
-                            <span className="vem-category__count">{category.count}</span>
+                            <span className="vem-category__name">
+                              {category.name}
+                            </span>
+                            <span className="vem-category__count">
+                              {category.count}
+                            </span>
                           </div>
                         </button>
 
                         {isExpanded && (
                           <div className="vem-errors">
                             {category.errors.map((error) => {
-                              const isErrorExpanded = expandedErrors.has(error.id);
+                              const isErrorExpanded = expandedErrors.has(
+                                error.id,
+                              );
                               return (
                                 <div
                                   key={error.id}
@@ -369,42 +421,87 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
                                   data-severity={error.level}
                                 >
                                   <div className="vem-error__row">
-                                    <span className={`vem-error__icon vem-error__icon--${error.level}`}>
+                                    <span
+                                      className={`vem-error__icon vem-error__icon--${error.level}`}
+                                    >
                                       {getErrorIcon(error.level)}
                                     </span>
                                     <div className="vem-error__body">
                                       <div className="vem-error__top">
-                                        <p className="vem-error__message">{error.message}</p>
+                                        <p className="vem-error__message">
+                                          {error.message}
+                                        </p>
                                         <div className="vem-error__actions">
                                           {error.autoFixable && (
-                                            <button onClick={() => onAutoFix?.(error.id)} className="vem-btn--pill vem-btn--green">
-                                              {t("validation.autofix", "Auto-fix")}
+                                            <button
+                                              onClick={() =>
+                                                onAutoFix?.(error.id)
+                                              }
+                                              className="vem-btn--pill vem-btn--green"
+                                            >
+                                              {t(
+                                                "validation.autofix",
+                                                "Auto-fix",
+                                              )}
                                             </button>
                                           )}
                                           {error.level === "warning" && (
-                                            <button onClick={() => onIgnoreWarning?.(error.id)} className="vem-btn--pill vem-btn--gray">
+                                            <button
+                                              onClick={() =>
+                                                onIgnoreWarning?.(error.id)
+                                              }
+                                              className="vem-btn--pill vem-btn--gray"
+                                            >
                                               {t("actions.ignore", "Ignore")}
                                             </button>
                                           )}
-                                          {(error.elementId || error.pageId) && (
+                                          {(error.elementId ||
+                                            error.pageId) && (
                                             <button
                                               data-nav="navigate"
-                                              onClick={() => onNavigateToElement?.(error.elementId!, error.pageId)}
+                                              onClick={() =>
+                                                onNavigateToElement?.(
+                                                  error.elementId!,
+                                                  error.pageId,
+                                                )
+                                              }
                                               className="vem-btn--pill vem-btn--blue"
                                             >
-                                              {t("actions.navigate", "Navigate")}
+                                              {t(
+                                                "actions.navigate",
+                                                "Navigate",
+                                              )}
                                             </button>
                                           )}
-                                          <button onClick={() => toggleErrorDetails(error.id)} className="vem-btn--icon">
-                                            {isErrorExpanded ? <ChevronDown /> : <ChevronRight />}
+                                          <button
+                                            onClick={() =>
+                                              toggleErrorDetails(error.id)
+                                            }
+                                            className="vem-btn--icon"
+                                          >
+                                            {isErrorExpanded ? (
+                                              <ChevronDown />
+                                            ) : (
+                                              <ChevronRight />
+                                            )}
                                           </button>
                                         </div>
                                       </div>
                                       <div className="vem-error__meta">
-                                        {error.elementType && <span>Element: {error.elementType}</span>}
-                                        {error.elementId && <span>ID: {error.elementId}</span>}
-                                        {error.pageId && <span>Page: {error.pageId}</span>}
-                                        {error.line && <span>Line: {error.line}</span>}
+                                        {error.elementType && (
+                                          <span>
+                                            Element: {error.elementType}
+                                          </span>
+                                        )}
+                                        {error.elementId && (
+                                          <span>ID: {error.elementId}</span>
+                                        )}
+                                        {error.pageId && (
+                                          <span>Page: {error.pageId}</span>
+                                        )}
+                                        {error.line && (
+                                          <span>Line: {error.line}</span>
+                                        )}
                                       </div>
                                     </div>
                                   </div>
@@ -413,14 +510,25 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
                                     <div className="vem-error__details">
                                       {error.context && (
                                         <div>
-                                          <h4 className="vem-detail__label">{t("validation.context", "Context")}</h4>
-                                          <pre className="vem-detail__pre">{error.context}</pre>
+                                          <h4 className="vem-detail__label">
+                                            {t("validation.context", "Context")}
+                                          </h4>
+                                          <pre className="vem-detail__pre">
+                                            {error.context}
+                                          </pre>
                                         </div>
                                       )}
                                       {error.suggestion && (
                                         <div>
-                                          <h4 className="vem-detail__label">{t("validation.suggestion", "Suggestion")}</h4>
-                                          <p className="vem-detail__suggestion">{error.suggestion}</p>
+                                          <h4 className="vem-detail__label">
+                                            {t(
+                                              "validation.suggestion",
+                                              "Suggestion",
+                                            )}
+                                          </h4>
+                                          <p className="vem-detail__suggestion">
+                                            {error.suggestion}
+                                          </p>
                                         </div>
                                       )}
                                     </div>
@@ -444,13 +552,18 @@ const ValidationErrorModal: React.FC<ValidationErrorModalProps> = ({
           <div className="vem-footer__status">
             {stats.errors > 0 && (
               <span className="vem-footer__status--error">
-                {stats.errors} {t("validation.errors", "error")}{stats.errors !== 1 ? "s" : ""}{" "}
-                {t("validation.mustFixBefore", "must be fixed before publishing")}
+                {stats.errors} {t("validation.errors", "error")}
+                {stats.errors !== 1 ? "s" : ""}{" "}
+                {t(
+                  "validation.mustFixBefore",
+                  "must be fixed before publishing",
+                )}
               </span>
             )}
             {stats.errors === 0 && stats.warnings > 0 && (
               <span className="vem-footer__status--warning">
-                {stats.warnings} {t("validation.warnings", "warning")}{stats.warnings !== 1 ? "s" : ""}{" "}
+                {stats.warnings} {t("validation.warnings", "warning")}
+                {stats.warnings !== 1 ? "s" : ""}{" "}
                 {t("validation.shouldReview", "should be reviewed")}
               </span>
             )}

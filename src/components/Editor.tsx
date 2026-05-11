@@ -17,7 +17,6 @@ const Editor: React.FC<EditorProps> = ({
   showCustomTemplateEditor = false,
   onCloseTemplateEditor = () => {},
 }) => {
-
   // Safe Redux selector with null checking
   const courseState = useAppSelector((state) => (state as any).course);
 
@@ -42,7 +41,7 @@ const Editor: React.FC<EditorProps> = ({
         "   New content:",
         currentPage
           ? JSON.stringify(currentPage.content).substring(0, 100)
-          : "null"
+          : "null",
       );
       console.log("   This will trigger PageEditor re-render with new prop\n");
       lastCurrentPageIdRef.current = currentPage?.id || null;

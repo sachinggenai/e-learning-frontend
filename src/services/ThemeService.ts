@@ -14,22 +14,18 @@
  *   PATCH  /courses/{courseId}/pages/{pageId}/theme    — update page theme
  */
 
-import { httpClient } from './httpClient';
-import {
-  Theme,
-  ThemeOverrides,
-  ResolvedThemeResponse,
-} from '../types/course';
+import { httpClient } from "./httpClient";
+import { Theme, ThemeOverrides, ResolvedThemeResponse } from "../types/course";
 
 class ThemeService {
   // ─── Global Themes ───────────────────────────────────────────
   async listThemes(): Promise<Theme[]> {
-    const { data } = await httpClient.get('/themes');
+    const { data } = await httpClient.get("/themes");
     return data;
   }
 
   async getPresets(): Promise<Theme[]> {
-    const { data } = await httpClient.get('/themes/presets');
+    const { data } = await httpClient.get("/themes/presets");
     return data;
   }
 
@@ -39,7 +35,7 @@ class ThemeService {
   }
 
   async createTheme(theme: Partial<Theme>): Promise<Theme> {
-    const { data } = await httpClient.post('/themes', theme);
+    const { data } = await httpClient.post("/themes", theme);
     return data;
   }
 
@@ -58,19 +54,37 @@ class ThemeService {
     return data;
   }
 
-  async updateCourseTheme(courseId: string, overrides: ThemeOverrides): Promise<ResolvedThemeResponse> {
-    const { data } = await httpClient.patch(`/courses/${courseId}/theme`, overrides);
+  async updateCourseTheme(
+    courseId: string,
+    overrides: ThemeOverrides,
+  ): Promise<ResolvedThemeResponse> {
+    const { data } = await httpClient.patch(
+      `/courses/${courseId}/theme`,
+      overrides,
+    );
     return data;
   }
 
   // ─── Page Theme ──────────────────────────────────────────────
-  async getPageTheme(courseId: string, pageId: string): Promise<ResolvedThemeResponse> {
-    const { data } = await httpClient.get(`/courses/${courseId}/pages/${pageId}/theme`);
+  async getPageTheme(
+    courseId: string,
+    pageId: string,
+  ): Promise<ResolvedThemeResponse> {
+    const { data } = await httpClient.get(
+      `/courses/${courseId}/pages/${pageId}/theme`,
+    );
     return data;
   }
 
-  async updatePageTheme(courseId: string, pageId: string, overrides: ThemeOverrides): Promise<ResolvedThemeResponse> {
-    const { data } = await httpClient.patch(`/courses/${courseId}/pages/${pageId}/theme`, overrides);
+  async updatePageTheme(
+    courseId: string,
+    pageId: string,
+    overrides: ThemeOverrides,
+  ): Promise<ResolvedThemeResponse> {
+    const { data } = await httpClient.patch(
+      `/courses/${courseId}/pages/${pageId}/theme`,
+      overrides,
+    );
     return data;
   }
 }

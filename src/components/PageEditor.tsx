@@ -35,7 +35,7 @@ const PageEditor: React.FC<PageEditorProps> = ({ page }) => {
       // Warn if there are unsaved changes
       if (localPage !== committedPage) {
         const shouldDiscard = window.confirm(
-          t("You have unsaved changes. Discard them and switch pages?")
+          t("You have unsaved changes. Discard them and switch pages?"),
         );
         if (!shouldDiscard) {
           logger.info({
@@ -130,7 +130,7 @@ const PageEditor: React.FC<PageEditorProps> = ({ page }) => {
             cleanedPage.content.correctAnswer = trimmedCorrectAnswer;
           } else {
             const matchingOption = cleanedOptions.find(
-              (opt: string) => opt === localPage.content.correctAnswer
+              (opt: string) => opt === localPage.content.correctAnswer,
             );
             if (matchingOption) {
               cleanedPage.content.correctAnswer = matchingOption;
@@ -267,7 +267,7 @@ const PageEditor: React.FC<PageEditorProps> = ({ page }) => {
                   handleContentChange("description", e.target.value)
                 }
                 placeholder={t(
-                  "Describe what learners will see in this video..."
+                  "Describe what learners will see in this video...",
                 )}
                 rows={4}
               />
@@ -384,7 +384,7 @@ const PageEditor: React.FC<PageEditorProps> = ({ page }) => {
                   }))
                   .filter(
                     (opt: { value: string }) =>
-                      opt.value && opt.value.trim() !== ""
+                      opt.value && opt.value.trim() !== "",
                   ) // Only show options that have text
                   .map((opt: { label: string; value: string }) => (
                     <option key={opt.value} value={opt.value}>

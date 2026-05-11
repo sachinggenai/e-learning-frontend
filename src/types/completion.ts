@@ -14,7 +14,7 @@ export type {
   PageCompletionResponse,
   CourseCompletionStatus,
   CourseCompletionResponse,
-} from './course';
+} from "./course";
 
 // ─── Completion Context State ────────────────────────────────────
 export interface ComponentCompletionState {
@@ -22,7 +22,7 @@ export interface ComponentCompletionState {
   viewed: boolean;
   interacted: boolean;
   interactionsCompleted: string[]; // IDs of completed interactions
-  audiosCompleted: string[];       // audioIds that reached 90% threshold
+  audiosCompleted: string[]; // audioIds that reached 90% threshold
   scoreMet: boolean;
   overallCompleted: boolean;
 }
@@ -45,7 +45,10 @@ export interface CompletionContextValue {
   /** Mark a component as interacted */
   markInteracted: (componentId: string) => void;
   /** Record a specific interaction completion */
-  markInteractionCompleted: (componentId: string, interactionId: string) => void;
+  markInteractionCompleted: (
+    componentId: string,
+    interactionId: string,
+  ) => void;
   /** Record audio listen completion */
   markAudioCompleted: (componentId: string, audioId: string) => void;
   /** Record score threshold met */

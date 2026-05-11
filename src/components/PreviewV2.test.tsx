@@ -1,17 +1,17 @@
-import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import React from "react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 const mockDispatch = jest.fn();
 
 const mockState = {
   course: {
     currentCourse: {
-      courseId: 'course-1',
-      title: 'Course Preview',
+      courseId: "course-1",
+      title: "Course Preview",
       pages: [
         {
-          pageId: 'page-1',
-          title: 'Page 1',
+          pageId: "page-1",
+          title: "Page 1",
           order: 0,
           components: [],
         },
@@ -25,30 +25,30 @@ const mockState = {
   },
   components: {
     byPage: {
-      'page-1': [
+      "page-1": [
         {
-          componentId: 'cmp-1',
-          componentType: 'mcq',
+          componentId: "cmp-1",
+          componentType: "mcq",
           data: {},
         },
         {
-          componentId: 'cmp-2',
-          componentType: 'multiple-select',
+          componentId: "cmp-2",
+          componentType: "multiple-select",
           data: {},
         },
         {
-          componentId: 'cmp-3',
-          componentType: 'true-false',
+          componentId: "cmp-3",
+          componentType: "true-false",
           data: {},
         },
         {
-          componentId: 'cmp-4',
-          componentType: 'fill-blanks',
+          componentId: "cmp-4",
+          componentType: "fill-blanks",
           data: {},
         },
         {
-          componentId: 'cmp-5',
-          componentType: 'knowledge-check',
+          componentId: "cmp-5",
+          componentType: "knowledge-check",
           data: {},
         },
       ],
@@ -56,39 +56,51 @@ const mockState = {
   },
 };
 
-jest.mock('../store', () => ({
+jest.mock("../store", () => ({
   useAppDispatch: () => mockDispatch,
   useAppSelector: (selector: any) => selector(mockState),
 }));
 
-const mockFetchComponents = jest.fn((payload) => ({ type: 'components/fetch', payload }));
-const mockRecordInteraction = jest.fn((payload) => ({ type: 'completion/recordInteraction', payload }));
-const mockSubmitPageComplete = jest.fn((payload) => ({ type: 'completion/submitPageComplete', payload }));
-const mockCalculateScore = jest.fn((payload) => ({ type: 'scoring/calculate', payload }));
+const mockFetchComponents = jest.fn((payload) => ({
+  type: "components/fetch",
+  payload,
+}));
+const mockRecordInteraction = jest.fn((payload) => ({
+  type: "completion/recordInteraction",
+  payload,
+}));
+const mockSubmitPageComplete = jest.fn((payload) => ({
+  type: "completion/submitPageComplete",
+  payload,
+}));
+const mockCalculateScore = jest.fn((payload) => ({
+  type: "scoring/calculate",
+  payload,
+}));
 
-jest.mock('../store/slices/componentsSlice', () => ({
+jest.mock("../store/slices/componentsSlice", () => ({
   fetchComponents: (payload: any) => mockFetchComponents(payload),
 }));
 
-jest.mock('../store/slices/completionSlice', () => ({
+jest.mock("../store/slices/completionSlice", () => ({
   recordInteraction: (payload: any) => mockRecordInteraction(payload),
   submitPageComplete: (payload: any) => mockSubmitPageComplete(payload),
 }));
 
-jest.mock('../store/slices/scoringSlice', () => ({
+jest.mock("../store/slices/scoringSlice", () => ({
   calculateScore: (payload: any) => mockCalculateScore(payload),
 }));
 
-jest.mock('../components/PageWrapper', () => ({
+jest.mock("../components/PageWrapper", () => ({
   PageWrapper: ({ onInteraction, onPageComplete }: any) => (
     <div>
       <button
         onClick={() =>
           onInteraction({
-            componentId: 'cmp-1',
-            interactionType: 'submit',
-            interactionId: 'q-1',
-            value: 'opt-1',
+            componentId: "cmp-1",
+            interactionType: "submit",
+            interactionId: "q-1",
+            value: "opt-1",
             score: 1,
             maxScore: 1,
             isCorrect: true,
@@ -101,10 +113,10 @@ jest.mock('../components/PageWrapper', () => ({
       <button
         onClick={() =>
           onInteraction({
-            componentId: 'cmp-2',
-            interactionType: 'submit',
-            interactionId: 'multiple-select',
-            value: ['opt-a', 'opt-b'],
+            componentId: "cmp-2",
+            interactionType: "submit",
+            interactionId: "multiple-select",
+            value: ["opt-a", "opt-b"],
             score: 2,
             maxScore: 2,
             isCorrect: true,
@@ -117,8 +129,8 @@ jest.mock('../components/PageWrapper', () => ({
       <button
         onClick={() =>
           onInteraction({
-            componentId: 'cmp-3',
-            interactionType: 'submit',
+            componentId: "cmp-3",
+            interactionType: "submit",
             value: true,
             score: 1,
             maxScore: 1,
@@ -132,9 +144,9 @@ jest.mock('../components/PageWrapper', () => ({
       <button
         onClick={() =>
           onInteraction({
-            componentId: 'cmp-4',
-            interactionType: 'submit',
-            value: { blankA: 'alpha', blankB: 'beta' },
+            componentId: "cmp-4",
+            interactionType: "submit",
+            value: { blankA: "alpha", blankB: "beta" },
             score: 2,
             maxScore: 2,
             isCorrect: true,
@@ -147,10 +159,10 @@ jest.mock('../components/PageWrapper', () => ({
       <button
         onClick={() =>
           onInteraction({
-            componentId: 'cmp-5',
-            interactionType: 'submit',
-            interactionId: 'knowledge-check',
-            value: { q1: 'opt-1', q2: 'opt-2' },
+            componentId: "cmp-5",
+            interactionType: "submit",
+            interactionId: "knowledge-check",
+            value: { q1: "opt-1", q2: "opt-2" },
             score: 2,
             maxScore: 2,
             isCorrect: true,
@@ -160,18 +172,20 @@ jest.mock('../components/PageWrapper', () => ({
       >
         Trigger Knowledge Check
       </button>
-      <button onClick={() => onPageComplete('page-1')}>Trigger Page Complete</button>
+      <button onClick={() => onPageComplete("page-1")}>
+        Trigger Page Complete
+      </button>
     </div>
   ),
 }));
 
-jest.mock('../components/ScoringUI', () => ({
+jest.mock("../components/ScoringUI", () => ({
   ScoreSummary: () => <div data-testid="score-summary">Score Summary</div>,
 }));
 
-import PreviewV2 from './PreviewV2';
+import PreviewV2 from "./PreviewV2";
 
-describe('PreviewV2 integration dispatches', () => {
+describe("PreviewV2 integration dispatches", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockDispatch.mockImplementation(() => ({
@@ -179,22 +193,22 @@ describe('PreviewV2 integration dispatches', () => {
     }));
   });
 
-  it('dispatches canonical interaction, scoring, and completion actions from preview events', async () => {
+  it("dispatches canonical interaction, scoring, and completion actions from preview events", async () => {
     render(<PreviewV2 />);
 
-    fireEvent.click(screen.getByText('Trigger Interaction'));
+    fireEvent.click(screen.getByText("Trigger Interaction"));
 
     await waitFor(() => {
       expect(mockRecordInteraction).toHaveBeenCalledWith({
-        courseId: 'course-1',
+        courseId: "course-1",
         event: {
-          pageId: 'page-1',
-          componentId: 'cmp-1',
-          interactionType: 'submit',
+          pageId: "page-1",
+          componentId: "cmp-1",
+          interactionType: "submit",
           learnerId: null,
           data: {
-            interactionId: 'q-1',
-            value: 'opt-1',
+            interactionId: "q-1",
+            value: "opt-1",
             score: 1,
             maxScore: 1,
             isCorrect: true,
@@ -204,16 +218,15 @@ describe('PreviewV2 integration dispatches', () => {
       });
 
       expect(mockCalculateScore).toHaveBeenCalledWith({
-        courseId: 'course-1',
+        courseId: "course-1",
         answers: [
           {
-            componentId: 'cmp-1',
-            componentType: 'mcq',
+            componentId: "cmp-1",
+            componentType: "mcq",
             responses: [
               {
-                questionId: 'q-1',
-                selectedOptionIds: ['opt-1'],
-                textAnswer: null,
+                questionId: "q-1",
+                selectedOptionIds: ["opt-1"],
               },
             ],
           },
@@ -221,13 +234,13 @@ describe('PreviewV2 integration dispatches', () => {
       });
 
       expect(mockSubmitPageComplete).toHaveBeenCalledWith({
-        courseId: 'course-1',
-        pageId: 'page-1',
+        courseId: "course-1",
+        pageId: "page-1",
         componentStates: [
           {
-            componentId: 'cmp-1',
+            componentId: "cmp-1",
             completed: true,
-            interactionsCompleted: ['q-1'],
+            interactionsCompleted: ["q-1"],
             audiosCompleted: [],
             score: 1,
           },
@@ -236,46 +249,46 @@ describe('PreviewV2 integration dispatches', () => {
     });
   });
 
-  it('dispatches page completion with all page components when page completes', async () => {
+  it("dispatches page completion with all page components when page completes", async () => {
     render(<PreviewV2 />);
 
-    fireEvent.click(screen.getByText('Trigger Page Complete'));
+    fireEvent.click(screen.getByText("Trigger Page Complete"));
 
     await waitFor(() => {
       expect(mockSubmitPageComplete).toHaveBeenCalledWith({
-        courseId: 'course-1',
-        pageId: 'page-1',
+        courseId: "course-1",
+        pageId: "page-1",
         componentStates: [
           {
-            componentId: 'cmp-1',
+            componentId: "cmp-1",
             completed: true,
             interactionsCompleted: [],
             audiosCompleted: [],
             score: null,
           },
           {
-            componentId: 'cmp-2',
+            componentId: "cmp-2",
             completed: true,
             interactionsCompleted: [],
             audiosCompleted: [],
             score: null,
           },
           {
-            componentId: 'cmp-3',
+            componentId: "cmp-3",
             completed: true,
             interactionsCompleted: [],
             audiosCompleted: [],
             score: null,
           },
           {
-            componentId: 'cmp-4',
+            componentId: "cmp-4",
             completed: true,
             interactionsCompleted: [],
             audiosCompleted: [],
             score: null,
           },
           {
-            componentId: 'cmp-5',
+            componentId: "cmp-5",
             completed: true,
             interactionsCompleted: [],
             audiosCompleted: [],
@@ -286,23 +299,22 @@ describe('PreviewV2 integration dispatches', () => {
     });
   });
 
-  it('normalizes multiple-select answers as selected option arrays', async () => {
+  it("normalizes multiple-select answers as selected option arrays", async () => {
     render(<PreviewV2 />);
 
-    fireEvent.click(screen.getByText('Trigger Multi Select'));
+    fireEvent.click(screen.getByText("Trigger Multi Select"));
 
     await waitFor(() => {
       expect(mockCalculateScore).toHaveBeenCalledWith({
-        courseId: 'course-1',
+        courseId: "course-1",
         answers: [
           {
-            componentId: 'cmp-2',
-            componentType: 'multiple-select',
+            componentId: "cmp-2",
+            componentType: "multiple-select",
             responses: [
               {
-                questionId: 'multiple-select',
-                selectedOptionIds: ['opt-a', 'opt-b'],
-                textAnswer: null,
+                questionId: "multiple-select",
+                selectedOptionIds: ["opt-a", "opt-b"],
               },
             ],
           },
@@ -311,23 +323,22 @@ describe('PreviewV2 integration dispatches', () => {
     });
   });
 
-  it('normalizes true-false answers as a boolean-backed selected option', async () => {
+  it("normalizes true-false answers as a boolean-backed selected option", async () => {
     render(<PreviewV2 />);
 
-    fireEvent.click(screen.getByText('Trigger True False'));
+    fireEvent.click(screen.getByText("Trigger True False"));
 
     await waitFor(() => {
       expect(mockCalculateScore).toHaveBeenCalledWith({
-        courseId: 'course-1',
+        courseId: "course-1",
         answers: [
           {
-            componentId: 'cmp-3',
-            componentType: 'true-false',
+            componentId: "cmp-3",
+            componentType: "true-false",
             responses: [
               {
-                questionId: 'cmp-3-question',
-                selectedOptionIds: ['true'],
-                textAnswer: null,
+                questionId: "cmp-3-question",
+                selectedOptionIds: ["true"],
               },
             ],
           },
@@ -336,28 +347,26 @@ describe('PreviewV2 integration dispatches', () => {
     });
   });
 
-  it('normalizes fill-blanks answers as text responses', async () => {
+  it("normalizes fill-blanks answers as selected option arrays", async () => {
     render(<PreviewV2 />);
 
-    fireEvent.click(screen.getByText('Trigger Fill Blanks'));
+    fireEvent.click(screen.getByText("Trigger Fill Blanks"));
 
     await waitFor(() => {
       expect(mockCalculateScore).toHaveBeenCalledWith({
-        courseId: 'course-1',
+        courseId: "course-1",
         answers: [
           {
-            componentId: 'cmp-4',
-            componentType: 'fill-blanks',
+            componentId: "cmp-4",
+            componentType: "fill-blanks",
             responses: [
               {
-                questionId: 'blankA',
-                selectedOptionIds: [],
-                textAnswer: 'alpha',
+                questionId: "blankA",
+                selectedOptionIds: ["alpha"],
               },
               {
-                questionId: 'blankB',
-                selectedOptionIds: [],
-                textAnswer: 'beta',
+                questionId: "blankB",
+                selectedOptionIds: ["beta"],
               },
             ],
           },
@@ -366,28 +375,26 @@ describe('PreviewV2 integration dispatches', () => {
     });
   });
 
-  it('normalizes knowledge-check answers into per-question selected options', async () => {
+  it("normalizes knowledge-check answers into per-question selected options", async () => {
     render(<PreviewV2 />);
 
-    fireEvent.click(screen.getByText('Trigger Knowledge Check'));
+    fireEvent.click(screen.getByText("Trigger Knowledge Check"));
 
     await waitFor(() => {
       expect(mockCalculateScore).toHaveBeenCalledWith({
-        courseId: 'course-1',
+        courseId: "course-1",
         answers: [
           {
-            componentId: 'cmp-5',
-            componentType: 'knowledge-check',
+            componentId: "cmp-5",
+            componentType: "knowledge-check",
             responses: [
               {
-                questionId: 'q1',
-                selectedOptionIds: ['opt-1'],
-                textAnswer: null,
+                questionId: "q1",
+                selectedOptionIds: ["opt-1"],
               },
               {
-                questionId: 'q2',
-                selectedOptionIds: ['opt-2'],
-                textAnswer: null,
+                questionId: "q2",
+                selectedOptionIds: ["opt-2"],
               },
             ],
           },

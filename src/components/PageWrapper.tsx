@@ -10,16 +10,19 @@
  *  - ComponentList in preview mode
  */
 
-import React, { useCallback, useMemo } from 'react';
-import type { Page, Component } from '../types/course';
-import type { ThemeOverrides } from '../types/course';
-import type { ComponentInteractionEvent } from '../types/registry';
-import { ThemeProvider } from '../context/ThemeContext';
-import { CompletionProvider, useCompletion } from '../context/CompletionContext';
-import { AudioPlayer } from './AudioPlayer';
-import { CompletionBanner } from './common/CompletionBanner';
-import { ComponentList } from './ComponentList';
-import './PageWrapper.css';
+import React, { useCallback, useMemo } from "react";
+import type { Page, Component } from "../types/course";
+import type { ThemeOverrides } from "../types/course";
+import type { ComponentInteractionEvent } from "../types/registry";
+import { ThemeProvider } from "../context/ThemeContext";
+import {
+  CompletionProvider,
+  useCompletion,
+} from "../context/CompletionContext";
+import { AudioPlayer } from "./AudioPlayer";
+import { CompletionBanner } from "./common/CompletionBanner";
+import { ComponentList } from "./ComponentList";
+import "./PageWrapper.css";
 
 /* ─── Props ────────────────────────────────────────────────────── */
 
@@ -42,12 +45,19 @@ interface PageContentProps {
   onInteraction?: (event: ComponentInteractionEvent) => void;
 }
 
-const PageContent: React.FC<PageContentProps> = ({ page, courseId, onInteraction }) => {
+const PageContent: React.FC<PageContentProps> = ({
+  page,
+  courseId,
+  onInteraction,
+}) => {
   const { pageCompletion, markComponentCompleted } = useCompletion();
 
-  const handleComponentComplete = useCallback((componentId: string) => {
-    markComponentCompleted(componentId);
-  }, [markComponentCompleted]);
+  const handleComponentComplete = useCallback(
+    (componentId: string) => {
+      markComponentCompleted(componentId);
+    },
+    [markComponentCompleted],
+  );
 
   return (
     <div className="page-wrapper__content">
@@ -60,14 +70,16 @@ const PageContent: React.FC<PageContentProps> = ({ page, courseId, onInteraction
       {page.audioConfig?.enabled && page.audioConfig.audioItems?.length > 0 && (
         <div className="page-wrapper__audio">
           <AudioPlayer
-            src={page.audioConfig.audioItems[0].audioUrl ?? ''}
+            src={page.audioConfig.audioItems[0].audioUrl ?? ""}
             title="Page narration"
           />
         </div>
       )}
 
       {/* Progress bar */}
-      <div className="page-wrapper__progress" role="progressbar"
+      <div
+        className="page-wrapper__progress"
+        role="progressbar"
         aria-valuenow={pageCompletion.percentComplete}
         aria-valuemin={0}
         aria-valuemax={100}
@@ -103,60 +115,58 @@ const PageContent: React.FC<PageContentProps> = ({ page, courseId, onInteraction
 
 /* ─── Main Wrapper ─────────────────────────────────────────────── */
 
-export const PageWrapper: React.FC<PageWrapperProps> = React.memo(({
-  page,
-  courseId,
-  courseTheme,
-  onPageComplete,
-  onInteraction,
-}) => {
-  // Derive completion strategy from page's pageCompletion config
-  const strategy = useMemo(() => {
-    const config = page.pageCompletion;
-    if (!config?.enabled) return 'all' as const;
+export const PageWrapper: React.FC<PageWrapperProps> = React.memo(
+  ({ page, courseId, courseTheme, onPageComplete, onInteraction }) => {
+    // Derive completion strategy from page's pageCompletion config
+    const strategy = useMemo(() => {
+      const config = page.pageCompletion;
+      if (!config?.enabled) return "all" as const;
 
-    switch (config.strategy) {
-      case 'all': return 'all' as const;
-      case 'any': return 'any' as const;
-      case 'percentage': return 'score' as const;
-      case 'custom': return 'none' as const;
-      default: return 'all' as const;
-    }
-  }, [page.pageCompletion]);
+      switch (config.strategy) {
+        case "all":
+          return "all" as const;
+        case "any":
+          return "any" as const;
+        case "percentage":
+          return "score" as const;
+        case "custom":
+          return "none" as const;
+        default:
+          return "all" as const;
+      }
+    }, [page.pageCompletion]);
 
-  const scoreThreshold = page.pageCompletion?.completionThreshold ?? 80;
+    const scoreThreshold = page.pageCompletion?.completionThreshold ?? 80;
 
-  // Page-level theme overrides
-  const pageTheme: ThemeOverrides | undefined = page.theme?.overrides;
+    // Page-level theme overrides
+    const pageTheme: ThemeOverrides | undefined = page.theme?.overrides;
 
-  const handlePageComplete = useCallback(() => {
-    onPageComplete?.(page.pageId);
-  }, [onPageComplete, page.pageId]);
+    const handlePageComplete = useCallback(() => {
+      onPageComplete?.(page.pageId);
+    }, [onPageComplete, page.pageId]);
 
-  return (
-    <ThemeProvider
-      courseOverrides={courseTheme}
-      pageOverrides={pageTheme}
-    >
-      <CompletionProvider
-        strategy={strategy}
-        scoreThreshold={scoreThreshold}
-        onPageComplete={handlePageComplete}
-      >
-        <article
-          className="page-wrapper"
-          aria-label={`Page: ${page.title}`}
-          data-page-id={page.pageId}
+    return (
+      <ThemeProvider courseOverrides={courseTheme} pageOverrides={pageTheme}>
+        <CompletionProvider
+          strategy={strategy}
+          scoreThreshold={scoreThreshold}
+          onPageComplete={handlePageComplete}
         >
-          <PageContent
-            page={page}
-            courseId={courseId}
-            onInteraction={onInteraction}
-          />
-        </article>
-      </CompletionProvider>
-    </ThemeProvider>
-  );
-});
+          <article
+            className="page-wrapper"
+            aria-label={`Page: ${page.title}`}
+            data-page-id={page.pageId}
+          >
+            <PageContent
+              page={page}
+              courseId={courseId}
+              onInteraction={onInteraction}
+            />
+          </article>
+        </CompletionProvider>
+      </ThemeProvider>
+    );
+  },
+);
 
-PageWrapper.displayName = 'PageWrapper';
+PageWrapper.displayName = "PageWrapper";

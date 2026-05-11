@@ -10,13 +10,13 @@
  *   POST   /courses/{courseId}/pages/{pageId}/components/reorder
  */
 
-import { httpClient } from './httpClient';
+import { httpClient } from "./httpClient";
 import {
   Component,
   ComponentCreateRequest,
   ComponentUpdateRequest,
   ReorderRequest,
-} from '../types/course';
+} from "../types/course";
 
 class ComponentService {
   private basePath(courseId: string, pageId: string) {
@@ -25,30 +25,67 @@ class ComponentService {
 
   async listComponents(courseId: string, pageId: string): Promise<Component[]> {
     const { data } = await httpClient.get(this.basePath(courseId, pageId));
-    return data;
+
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data?.items)) return data.items;
+    if (Array.isArray(data?.components)) return data.components;
+    return [];
   }
 
-  async getComponent(courseId: string, pageId: string, componentId: string): Promise<Component> {
-    const { data } = await httpClient.get(`${this.basePath(courseId, pageId)}/${componentId}`);
-    return data;
+  async getComponent(
+    courseId: string,
+    pageId: string,
+    componentId: string,
+  ): Promise<Component> {
+    const { data } = await httpClient.get(
+      `${this.basePath(courseId, pageId)}/${componentId}`,
+    );
+    return (data?.component ?? data) as Component;
   }
 
-  async addComponent(courseId: string, pageId: string, request: ComponentCreateRequest): Promise<Component> {
-    const { data } = await httpClient.post(this.basePath(courseId, pageId), request);
-    return data;
+  async addComponent(
+    courseId: string,
+    pageId: string,
+    request: ComponentCreateRequest,
+  ): Promise<Component> {
+    const { data } = await httpClient.post(
+      this.basePath(courseId, pageId),
+      request,
+    );
+    return (data?.component ?? data) as Component;
   }
 
-  async updateComponent(courseId: string, pageId: string, componentId: string, request: ComponentUpdateRequest): Promise<Component> {
-    const { data } = await httpClient.patch(`${this.basePath(courseId, pageId)}/${componentId}`, request);
-    return data;
+  async updateComponent(
+    courseId: string,
+    pageId: string,
+    componentId: string,
+    request: ComponentUpdateRequest,
+  ): Promise<Component> {
+    const { data } = await httpClient.patch(
+      `${this.basePath(courseId, pageId)}/${componentId}`,
+      request,
+    );
+    return (data?.component ?? data) as Component;
   }
 
-  async deleteComponent(courseId: string, pageId: string, componentId: string): Promise<void> {
-    await httpClient.delete(`${this.basePath(courseId, pageId)}/${componentId}`);
+  async deleteComponent(
+    courseId: string,
+    pageId: string,
+    componentId: string,
+  ): Promise<void> {
+    await httpClient.delete(
+      `${this.basePath(courseId, pageId)}/${componentId}`,
+    );
   }
 
-  async reorderComponents(courseId: string, pageId: string, orderedIds: string[]): Promise<void> {
-    await httpClient.post(`${this.basePath(courseId, pageId)}/reorder`, { orderedIds } as ReorderRequest);
+  async reorderComponents(
+    courseId: string,
+    pageId: string,
+    orderedIds: string[],
+  ): Promise<void> {
+    await httpClient.post(`${this.basePath(courseId, pageId)}/reorder`, {
+      orderedIds,
+    } as ReorderRequest);
   }
 }
 

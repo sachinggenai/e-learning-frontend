@@ -6,13 +6,13 @@
 
 // ─── Legacy Template Types (backward compatibility) ───────────────
 export type LegacyTemplateType =
-  | 'welcome'
-  | 'content-video'
-  | 'mcq'
-  | 'content-text'
-  | 'summary'
-  | 'content-image'
-  | 'interactive';
+  | "welcome"
+  | "content-video"
+  | "mcq"
+  | "content-text"
+  | "summary"
+  | "content-image"
+  | "interactive";
 
 /** @deprecated Use LegacyTemplateType */
 export type TemplateType = LegacyTemplateType;
@@ -35,7 +35,7 @@ export interface Asset {
   id: string;
   name: string;
   url: string;
-  type: 'image' | 'video' | 'audio' | 'document';
+  type: "image" | "video" | "audio" | "document";
   size: number;
 }
 
@@ -43,7 +43,7 @@ export interface Asset {
 export interface AudioItem {
   audioId?: string;
   audioUrl: string;
-  triggerOn: 'load' | 'click' | 'interaction';
+  triggerOn: "load" | "click" | "interaction";
   targetInteractionId?: string | null;
   autoplay: boolean;
   requiredForCompletion: boolean;
@@ -70,7 +70,7 @@ export interface AudioAssetResponse {
 }
 
 // ─── Completion ───────────────────────────────────────────────────
-export type CompletionType = 'view' | 'interact' | 'audio' | 'score' | 'custom';
+export type CompletionType = "view" | "interact" | "audio" | "score" | "custom";
 
 export interface CompletionCriteria {
   type: CompletionType;
@@ -79,7 +79,7 @@ export interface CompletionCriteria {
   requiredAudioIds?: string[] | null;
 }
 
-export type PageCompletionStrategy = 'all' | 'any' | 'percentage' | 'custom';
+export type PageCompletionStrategy = "all" | "any" | "percentage" | "custom";
 
 export interface PageCompletionConfig {
   enabled: boolean;
@@ -107,7 +107,12 @@ export interface PageCompletionResponse {
   components: ComponentCompletionStatus[];
 }
 
-export type CourseCompletionStatus = 'not-started' | 'in-progress' | 'completed' | 'passed' | 'failed';
+export type CourseCompletionStatus =
+  | "not-started"
+  | "in-progress"
+  | "completed"
+  | "passed"
+  | "failed";
 
 export interface CourseCompletionResponse {
   courseId: string;
@@ -158,14 +163,14 @@ export interface ComponentUpdateRequest {
 
 // ─── Page Layout ─────────────────────────────────────────────────
 export type LayoutPreset =
-  | 'single-column'
-  | 'two-column'
-  | 'three-column'
-  | 'sidebar-left'
-  | 'sidebar-right'
-  | 'grid-2x2'
-  | 'hero-content'
-  | 'full-width';
+  | "single-column"
+  | "two-column"
+  | "three-column"
+  | "sidebar-left"
+  | "sidebar-right"
+  | "grid-2x2"
+  | "hero-content"
+  | "full-width";
 
 export interface ComponentPlacement {
   componentId: string;
@@ -180,7 +185,7 @@ export interface CustomGrid {
   gap: string;
 }
 
-export type LayoutSpacing = 'compact' | 'normal' | 'spacious';
+export type LayoutSpacing = "compact" | "normal" | "spacious";
 
 export interface PageLayout {
   preset?: LayoutPreset | null;
@@ -269,7 +274,7 @@ export interface ButtonStyle {
   borderRadius: number;
   padding: string;
   fontWeight: number;
-  textTransform: 'none' | 'uppercase' | 'capitalize';
+  textTransform: "none" | "uppercase" | "capitalize";
 }
 
 export interface CardStyle {
@@ -280,14 +285,14 @@ export interface CardStyle {
 }
 
 export interface TabsStyle {
-  style: 'underline' | 'pill' | 'boxed';
+  style: "underline" | "pill" | "boxed";
   activeColor?: string | null;
   borderRadius?: number | null;
 }
 
 export interface AccordionStyle {
-  style: 'bordered' | 'minimal' | 'card';
-  iconPosition: 'left' | 'right';
+  style: "bordered" | "minimal" | "card";
+  iconPosition: "left" | "right";
   spacing: number;
 }
 
@@ -329,7 +334,7 @@ export interface ResolvedThemeResponse {
     typography: ThemeTypography;
     componentStyles?: ThemeComponentStyles;
   };
-  inheritedFrom: 'preset' | 'course' | 'page';
+  inheritedFrom: "preset" | "course" | "page";
   overrides?: ThemeOverrides;
   courseThemeId?: string | null;
   courseThemeName?: string | null;
@@ -368,7 +373,7 @@ export interface ScormObjective {
 
 export interface ScormReportingConfig {
   enabled: boolean;
-  version: '1.2' | '2004';
+  version: "1.2" | "2004";
   reportScore: boolean;
   reportCompletion: boolean;
   reportInteractions: boolean;
@@ -379,7 +384,7 @@ export interface ScoringConfig {
   config?: {
     passingScore: number;
     maxAttempts?: number | null;
-    attemptScoring: 'best' | 'last' | 'average';
+    attemptScoring: "best" | "last" | "average";
     showCorrectAnswers: boolean;
     showScoreAfterQuestion: boolean;
     showScoreAfterPage: boolean;
@@ -391,7 +396,7 @@ export interface ScoringConfig {
 }
 
 // ─── Course ──────────────────────────────────────────────────────
-export type CourseStatus = 'draft' | 'published' | 'archived';
+export type CourseStatus = "draft" | "published" | "archived";
 
 export interface Course {
   courseId: string;
@@ -510,15 +515,15 @@ export interface CategoryListResponse {
 
 // ─── Interaction Events ──────────────────────────────────────────
 export type KnownInteractionType =
-  | 'view'
-  | 'click'
-  | 'submit'
-  | 'audio-play'
-  | 'audio-complete'
-  | 'drag-drop'
-  | 'select'
-  | 'input'
-  | 'navigation';
+  | "view"
+  | "click"
+  | "submit"
+  | "audio-play"
+  | "audio-complete"
+  | "drag-drop"
+  | "select"
+  | "input"
+  | "navigation";
 
 // Open string contract: FE can send new types without backend enum updates.
 export type InteractionType = KnownInteractionType | (string & {});
@@ -557,7 +562,6 @@ export interface PageCompletionEventRequest {
 export interface QuestionResponse {
   questionId: string;
   selectedOptionIds: string[];
-  textAnswer?: string | null;
 }
 
 export interface ComponentAnswer {
@@ -614,7 +618,7 @@ export interface CourseValidationResponse {
 // ─── Export ──────────────────────────────────────────────────────
 export interface ExportRequest {
   courseData: Course | string;
-  format?: 'scorm_1_2' | 'scorm_2004';
+  format?: "scorm_1_2" | "scorm_2004";
   includeAssets?: boolean;
   /** Only used for the actual backend API call (internal) */
   course?: string;
@@ -628,13 +632,13 @@ export interface ExportResponse {
 }
 
 export interface ScormExportOptions {
-  format: 'scorm_1_2' | 'scorm_2004';
+  format: "scorm_1_2" | "scorm_2004";
   includeMedia: boolean;
 }
 
 export interface ExportStatusResponse {
   exportId: string;
-  status: 'pending' | 'processing' | 'completed' | 'failed';
+  status: "pending" | "processing" | "completed" | "failed";
   progress: number;
   downloadUrl?: string | null;
   error?: string | null;
@@ -648,7 +652,7 @@ export interface MediaUploadResponse {
   fileName: string;
   mimeType: string;
   fileSize: number;
-  category: 'image' | 'video' | 'audio' | 'document';
+  category: "image" | "video" | "audio" | "document";
 }
 
 // ─── Reorder ─────────────────────────────────────────────────────
@@ -691,17 +695,17 @@ export interface SummaryData {
 
 // ─── Enhanced Template Types (custom templates) ──────────────────
 export type FieldType =
-  | 'text'
-  | 'textarea'
-  | 'rich-text'
-  | 'select'
-  | 'multiselect'
-  | 'media'
-  | 'number'
-  | 'boolean'
-  | 'date'
-  | 'email'
-  | 'url';
+  | "text"
+  | "textarea"
+  | "rich-text"
+  | "select"
+  | "multiselect"
+  | "media"
+  | "number"
+  | "boolean"
+  | "date"
+  | "email"
+  | "url";
 
 export interface FieldDefinition {
   id: string;

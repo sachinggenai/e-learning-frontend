@@ -14,18 +14,21 @@
  *  - Theme application
  */
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../store';
-import { fetchComponents } from '../store/slices/componentsSlice';
-import { recordInteraction, submitPageComplete } from '../store/slices/completionSlice';
-import { calculateScore } from '../store/slices/scoringSlice';
-import { handleApiError } from '../services/errorHandler';
-import type { Page } from '../types/course';
-import type { ComponentInteractionEvent } from '../types/registry';
-import { PageWrapper } from './PageWrapper';
-import { ScoreSummary } from './ScoringUI';
-import './Preview.css';
-import './PreviewV2.css';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../store";
+import { fetchComponents } from "../store/slices/componentsSlice";
+import {
+  recordInteraction,
+  submitPageComplete,
+} from "../store/slices/completionSlice";
+import { calculateScore } from "../store/slices/scoringSlice";
+import { handleApiError } from "../services/errorHandler";
+import type { Page } from "../types/course";
+import type { ComponentInteractionEvent } from "../types/registry";
+import { PageWrapper } from "./PageWrapper";
+import { ScoreSummary } from "./ScoringUI";
+import "./Preview.css";
+import "./PreviewV2.css";
 
 interface PreviewV2Props {}
 
@@ -35,8 +38,8 @@ interface PreviewV2Props {}
  */
 function normalizePageForPreview(raw: any): Page {
   return {
-    pageId: raw.pageId ?? raw.id ?? '',
-    title: raw.title ?? 'Untitled Page',
+    pageId: raw.pageId ?? raw.id ?? "",
+    title: raw.title ?? "Untitled Page",
     order: raw.order ?? 0,
     components: raw.components ?? [],
     audioConfig: raw.audioConfig,
@@ -51,63 +54,95 @@ function normalizePageForPreview(raw: any): Page {
 function buildScoreResponsesFromEvent(
   sourceComponent: any,
   event: ComponentInteractionEvent,
-): Array<{ questionId: string; selectedOptionIds: string[]; textAnswer?: string | null }> {
-  const componentType = sourceComponent?.componentType || sourceComponent?.typeId || 'unknown';
+): Array<{
+  questionId: string;
+  selectedOptionIds: string[];
+}> {
+  const componentType =
+    sourceComponent?.componentType || sourceComponent?.typeId || "unknown";
   const value = event.value;
 
-  if (componentType === 'fill-blanks' && value && typeof value === 'object' && !Array.isArray(value)) {
-    return Object.entries(value as Record<string, unknown>).map(([questionId, answerValue]) => ({
+  if (
+    (componentType === "fill-blanks" || componentType === "fill-in-blank") &&
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value)
+  ) {
+    // value may be a flat answers map or a buildScoringPayload result
+    const v = value as Record<string, unknown>;
+    if ("responses" in v && Array.isArray(v.responses)) {
+      // Already a ComponentAnswer from buildScoringPayload
+      return v.responses as any;
+    }
+    return Object.entries(v).map(([questionId, answerValue]) => ({
       questionId,
-      selectedOptionIds: [],
-      textAnswer: answerValue == null ? null : String(answerValue),
+      selectedOptionIds: answerValue == null ? [] : [String(answerValue)],
     }));
   }
 
-  if (componentType === 'knowledge-check' && value && typeof value === 'object' && !Array.isArray(value)) {
-    return Object.entries(value as Record<string, unknown>).map(([questionId, answerValue]) => ({
-      questionId,
-      selectedOptionIds: answerValue == null ? [] : [String(answerValue)],
-      textAnswer: null,
-    }));
+  if (
+    componentType === "knowledge-check" &&
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value)
+  ) {
+    return Object.entries(value as Record<string, unknown>).map(
+      ([questionId, answerValue]) => ({
+        questionId,
+        selectedOptionIds: answerValue == null ? [] : [String(answerValue)],
+      }),
+    );
   }
 
   if (Array.isArray(value)) {
     return [
       {
-        questionId: event.interactionId || `${sourceComponent?.componentId || sourceComponent?.id || 'component'}-question`,
+        questionId:
+          event.interactionId ||
+          `${sourceComponent?.componentId || sourceComponent?.id || "component"}-question`,
         selectedOptionIds: value.map((entry) => String(entry)),
-        textAnswer: null,
       },
     ];
   }
 
-  if (typeof value === 'boolean') {
+  if (typeof value === "boolean") {
     return [
       {
-        questionId: event.interactionId || `${sourceComponent?.componentId || sourceComponent?.id || 'component'}-question`,
+        questionId:
+          event.interactionId ||
+          `${sourceComponent?.componentId || sourceComponent?.id || "component"}-question`,
         selectedOptionIds: [String(value)],
-        textAnswer: null,
       },
     ];
   }
 
-  if (value && typeof value === 'object') {
-    return Object.entries(value as Record<string, unknown>).map(([questionId, answerValue]) => ({
-      questionId,
-      selectedOptionIds: Array.isArray(answerValue)
-        ? answerValue.map((entry) => String(entry))
-        : answerValue == null
-        ? []
-        : [String(answerValue)],
-      textAnswer: null,
-    }));
+  // Handle final-assessment buildScoringPayload result (ComponentAnswer shape)
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    const v = value as Record<string, unknown>;
+    if ("responses" in v && Array.isArray(v.responses)) {
+      return v.responses as any;
+    }
+  }
+
+  if (value && typeof value === "object") {
+    return Object.entries(value as Record<string, unknown>).map(
+      ([questionId, answerValue]) => ({
+        questionId,
+        selectedOptionIds: Array.isArray(answerValue)
+          ? answerValue.map((entry) => String(entry))
+          : answerValue == null
+            ? []
+            : [String(answerValue)],
+      }),
+    );
   }
 
   return [
     {
-      questionId: event.interactionId || `${sourceComponent?.componentId || sourceComponent?.id || 'component'}-question`,
+      questionId:
+        event.interactionId ||
+        `${sourceComponent?.componentId || sourceComponent?.id || "component"}-question`,
       selectedOptionIds: value == null ? [] : [String(value)],
-      textAnswer: null,
     },
   ];
 }
@@ -117,7 +152,9 @@ const PreviewV2: React.FC<PreviewV2Props> = () => {
   const courseState = useAppSelector((state) => (state as any).course);
   const currentCourse = courseState?.currentCourse ?? null;
   const themeState = useAppSelector((state) => state.theme);
-  const componentsByPage = useAppSelector((state) => (state as any).components?.byPage ?? {});
+  const componentsByPage = useAppSelector(
+    (state) => (state as any).components?.byPage ?? {},
+  );
 
   // Normalize pages so both id & pageId shapes work
   const pages: Page[] = useMemo(
@@ -128,7 +165,7 @@ const PreviewV2: React.FC<PreviewV2Props> = () => {
   // Fetch components for ALL pages when entering preview
   useEffect(() => {
     if (!currentCourse) return;
-    const courseId = currentCourse.courseId || String(currentCourse.id ?? '');
+    const courseId = currentCourse.courseId || String(currentCourse.id ?? "");
     if (!courseId) return;
 
     pages.forEach((page) => {
@@ -142,180 +179,239 @@ const PreviewV2: React.FC<PreviewV2Props> = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [completedPages, setCompletedPages] = useState<Set<string>>(new Set());
-  const [interactions, setInteractions] = useState<ComponentInteractionEvent[]>([]);
+  const [interactions, setInteractions] = useState<ComponentInteractionEvent[]>(
+    [],
+  );
   const [showResults, setShowResults] = useState(false);
+  // Finish gate: track final-assessment pass/fail state
+  const [finalAssessmentResult, setFinalAssessmentResult] = useState<{
+    passed: boolean;
+  } | null>(null);
+  const [finishGateMessage, setFinishGateMessage] = useState<string | null>(
+    null,
+  );
 
   const currentPage = pages[currentIndex] ?? null;
-  const courseIdForApi = currentCourse?.courseId || String(currentCourse?.id ?? '');
+  const courseIdForApi =
+    currentCourse?.courseId || String(currentCourse?.id ?? "");
   const isFirstPage = currentIndex === 0;
   const isLastPage = currentIndex >= pages.length - 1;
-  const progressPercent = pages.length > 0 ? ((currentIndex + 1) / pages.length) * 100 : 0;
+  const progressPercent =
+    pages.length > 0 ? ((currentIndex + 1) / pages.length) * 100 : 0;
 
   /* ── Navigation ──────────────────────────────────────────── */
   const goNext = useCallback(() => {
     if (!isLastPage) {
-      setCurrentIndex(prev => prev + 1);
-    } else {
-      setShowResults(true);
+      setFinishGateMessage(null);
+      setCurrentIndex((prev) => prev + 1);
+      return;
     }
-  }, [isLastPage]);
+    // Finish gate: block when final-assessment is present but failed or not attempted
+    if (finalAssessmentResult !== null && !finalAssessmentResult.passed) {
+      setFinishGateMessage(
+        "You must pass the final assessment to finish the course. Please retry the assessment.",
+      );
+      return;
+    }
+    setFinishGateMessage(null);
+    setShowResults(true);
+  }, [isLastPage, finalAssessmentResult]);
 
   const goPrev = useCallback(() => {
     if (!isFirstPage) {
-      setCurrentIndex(prev => prev - 1);
+      setCurrentIndex((prev) => prev - 1);
       setShowResults(false);
     }
   }, [isFirstPage]);
 
-  const goToPage = useCallback((idx: number) => {
-    if (idx >= 0 && idx < pages.length) {
-      setCurrentIndex(idx);
-      setShowResults(false);
-    }
-  }, [pages.length]);
+  const goToPage = useCallback(
+    (idx: number) => {
+      if (idx >= 0 && idx < pages.length) {
+        setCurrentIndex(idx);
+        setShowResults(false);
+      }
+    },
+    [pages.length],
+  );
 
   /* ── Keyboard ────────────────────────────────────────────── */
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       // Don't capture arrow keys when user is in a form element
       const tag = (e.target as HTMLElement)?.tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (e.target as HTMLElement)?.isContentEditable) {
+      if (
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        tag === "SELECT" ||
+        (e.target as HTMLElement)?.isContentEditable
+      ) {
         return;
       }
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
         e.preventDefault();
         goNext();
-      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
         e.preventDefault();
         goPrev();
       }
     };
-    document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
   }, [goNext, goPrev]);
 
   /* ── Callbacks ───────────────────────────────────────────── */
-  const handlePageComplete = useCallback((pageId: string) => {
-    setCompletedPages(prev => new Set(prev).add(pageId));
+  const handlePageComplete = useCallback(
+    (pageId: string) => {
+      setCompletedPages((prev) => new Set(prev).add(pageId));
 
-    const pageComponents = componentsByPage[pageId] || [];
-    if (!courseIdForApi || pageComponents.length === 0) return;
+      const pageComponents = componentsByPage[pageId] || [];
+      if (!courseIdForApi || pageComponents.length === 0) return;
 
-    const componentStates = pageComponents
-      .map((component: any) => ({
-        componentId: component?.componentId || component?.id,
-        completed: true,
-        interactionsCompleted: [],
-        audiosCompleted: [],
-        score: null,
-      }))
-      .filter((state: any) => Boolean(state.componentId));
+      const componentStates = pageComponents
+        .map((component: any) => ({
+          componentId: component?.componentId || component?.id,
+          completed: true,
+          interactionsCompleted: [],
+          audiosCompleted: [],
+          score: null,
+        }))
+        .filter((state: any) => Boolean(state.componentId));
 
-    if (componentStates.length === 0) return;
-
-    dispatch(
-      submitPageComplete({
-        courseId: courseIdForApi,
-        pageId,
-        componentStates,
-      })
-    )
-      .unwrap()
-      .catch((error: unknown) => {
-        const handled = handleApiError(error);
-        console.warn('[PreviewV2] submitPageComplete failed:', handled.message);
-      });
-  }, [componentsByPage, courseIdForApi, dispatch]);
-
-  const handleInteraction = useCallback((event: ComponentInteractionEvent) => {
-    setInteractions(prev => [...prev, event]);
-    console.log('[PreviewV2] Interaction:', event);
-
-    if (!courseIdForApi || !currentPage?.pageId) return;
-
-    const componentId = event.componentId || 'unknown-component';
-
-    dispatch(
-      recordInteraction({
-        courseId: courseIdForApi,
-        event: {
-          pageId: currentPage.pageId,
-          componentId,
-          interactionType: event.interactionType,
-          learnerId: null,
-          data: {
-            interactionId: event.interactionId || null,
-            value: event.value,
-            score: event.score ?? null,
-            maxScore: event.maxScore ?? null,
-            isCorrect: event.isCorrect ?? null,
-          },
-          completed: event.completed ?? false,
-        },
-      })
-    )
-      .unwrap()
-      .catch((error: unknown) => {
-        const handled = handleApiError(error);
-        console.warn('[PreviewV2] recordInteraction failed:', handled.message);
-      });
-
-    if (!event.completed) return;
-
-    if (event.interactionType === 'submit' && componentId !== 'unknown-component') {
-      const pageComponents = componentsByPage[currentPage.pageId] || [];
-      const sourceComponent = pageComponents.find(
-        (component: any) => (component?.componentId || component?.id) === componentId
-      );
-      const componentType = sourceComponent?.componentType || sourceComponent?.typeId || 'unknown';
-      const responses = buildScoreResponsesFromEvent(sourceComponent, event);
+      if (componentStates.length === 0) return;
 
       dispatch(
-        calculateScore({
+        submitPageComplete({
           courseId: courseIdForApi,
-          answers: [
-            {
-              componentId,
-              componentType,
-              responses,
-            },
-          ],
-        })
+          pageId,
+          componentStates,
+        }),
       )
         .unwrap()
         .catch((error: unknown) => {
           const handled = handleApiError(error);
-          console.warn('[PreviewV2] calculateScore failed:', handled.message);
+          console.warn(
+            "[PreviewV2] submitPageComplete failed:",
+            handled.message,
+          );
         });
-    }
+    },
+    [componentsByPage, courseIdForApi, dispatch],
+  );
 
-    dispatch(
-      submitPageComplete({
-        courseId: courseIdForApi,
-        pageId: currentPage.pageId,
-        componentStates: [
-          {
+  const handleInteraction = useCallback(
+    (event: ComponentInteractionEvent) => {
+      setInteractions((prev) => [...prev, event]);
+      console.log("[PreviewV2] Interaction:", event);
+
+      if (!courseIdForApi || !currentPage?.pageId) return;
+
+      const componentId = event.componentId || "unknown-component";
+
+      dispatch(
+        recordInteraction({
+          courseId: courseIdForApi,
+          event: {
+            pageId: currentPage.pageId,
             componentId,
-            completed: true,
-            interactionsCompleted: event.interactionId ? [event.interactionId] : [],
-            audiosCompleted: [],
-            score: event.score ?? null,
+            interactionType: event.interactionType,
+            learnerId: null,
+            data: {
+              interactionId: event.interactionId || null,
+              value: event.value,
+              score: event.score ?? null,
+              maxScore: event.maxScore ?? null,
+              isCorrect: event.isCorrect ?? null,
+            },
+            completed: event.completed ?? false,
           },
-        ],
-      })
-    )
-      .unwrap()
-      .catch((error: unknown) => {
-        const handled = handleApiError(error);
-        console.warn('[PreviewV2] submitPageComplete(component) failed:', handled.message);
-      });
-  }, [componentsByPage, courseIdForApi, currentPage?.pageId, dispatch]);
+        }),
+      )
+        .unwrap()
+        .catch((error: unknown) => {
+          const handled = handleApiError(error);
+          console.warn(
+            "[PreviewV2] recordInteraction failed:",
+            handled.message,
+          );
+        });
+
+      if (!event.completed) return;
+
+      // Track final-assessment pass/fail for finish gate
+      if (event.interactionId === "final-assessment") {
+        setFinalAssessmentResult({ passed: event.isCorrect ?? false });
+      }
+
+      if (
+        event.interactionType === "submit" &&
+        componentId !== "unknown-component"
+      ) {
+        const pageComponents = componentsByPage[currentPage.pageId] || [];
+        const sourceComponent = pageComponents.find(
+          (component: any) =>
+            (component?.componentId || component?.id) === componentId,
+        );
+        const componentType =
+          sourceComponent?.componentType ||
+          sourceComponent?.typeId ||
+          "unknown";
+        const responses = buildScoreResponsesFromEvent(sourceComponent, event);
+
+        dispatch(
+          calculateScore({
+            courseId: courseIdForApi,
+            answers: [
+              {
+                componentId,
+                componentType,
+                responses,
+              },
+            ],
+          }),
+        )
+          .unwrap()
+          .catch((error: unknown) => {
+            const handled = handleApiError(error);
+            console.warn("[PreviewV2] calculateScore failed:", handled.message);
+          });
+      }
+
+      dispatch(
+        submitPageComplete({
+          courseId: courseIdForApi,
+          pageId: currentPage.pageId,
+          componentStates: [
+            {
+              componentId,
+              completed: true,
+              interactionsCompleted: event.interactionId
+                ? [event.interactionId]
+                : [],
+              audiosCompleted: [],
+              score: event.score ?? null,
+            },
+          ],
+        }),
+      )
+        .unwrap()
+        .catch((error: unknown) => {
+          const handled = handleApiError(error);
+          console.warn(
+            "[PreviewV2] submitPageComplete(component) failed:",
+            handled.message,
+          );
+        });
+    },
+    [componentsByPage, courseIdForApi, currentPage?.pageId, dispatch],
+  );
 
   /* ── Score aggregation ───────────────────────────────────── */
   const scoreData = useMemo(() => {
     // Simple aggregation from scored interactions
-    const scoredEvents = interactions.filter(e => e.interactionType === 'quiz_answer');
-    const earned = scoredEvents.filter(e => (e as any).isCorrect).length;
+    const scoredEvents = interactions.filter(
+      (e) => e.interactionType === "quiz_answer",
+    );
+    const earned = scoredEvents.filter((e) => (e as any).isCorrect).length;
     const total = scoredEvents.length;
     return { earned, total };
   }, [interactions]);
@@ -340,7 +436,9 @@ const PreviewV2: React.FC<PreviewV2Props> = () => {
       <div className="preview-container">
         <div className="preview-error">
           <h2>No Pages</h2>
-          <p>This course has no pages yet. Add pages in the editor to preview.</p>
+          <p>
+            This course has no pages yet. Add pages in the editor to preview.
+          </p>
         </div>
       </div>
     );
@@ -370,18 +468,25 @@ const PreviewV2: React.FC<PreviewV2Props> = () => {
               <span className="preview-v2__stat-label">Pages</span>
             </div>
             <div className="preview-v2__stat">
-              <span className="preview-v2__stat-value">{completedPages.size}</span>
+              <span className="preview-v2__stat-value">
+                {completedPages.size}
+              </span>
               <span className="preview-v2__stat-label">Completed</span>
             </div>
             <div className="preview-v2__stat">
-              <span className="preview-v2__stat-value">{interactions.length}</span>
+              <span className="preview-v2__stat-value">
+                {interactions.length}
+              </span>
               <span className="preview-v2__stat-label">Interactions</span>
             </div>
           </div>
 
           <button
             className="preview-v2__restart-btn"
-            onClick={() => { setCurrentIndex(0); setShowResults(false); }}
+            onClick={() => {
+              setCurrentIndex(0);
+              setShowResults(false);
+            }}
           >
             ↻ Restart Course
           </button>
@@ -394,9 +499,7 @@ const PreviewV2: React.FC<PreviewV2Props> = () => {
     <div className="preview-container">
       {/* ── Top bar ────────────────────────────────────────── */}
       <div className="preview-v2__topbar">
-        <div className="preview-v2__course-title">
-          {currentCourse.title}
-        </div>
+        <div className="preview-v2__course-title">{currentCourse.title}</div>
         <div className="preview-v2__page-indicator">
           Page {currentIndex + 1} of {pages.length}
         </div>
@@ -417,15 +520,21 @@ const PreviewV2: React.FC<PreviewV2Props> = () => {
       </div>
 
       {/* ── Page thumbnail nav ─────────────────────────────── */}
-      <div className="preview-v2__page-nav" role="tablist" aria-label="Page navigation">
+      <div
+        className="preview-v2__page-nav"
+        role="tablist"
+        aria-label="Page navigation"
+      >
         {pages.map((p, i) => (
           <button
             key={p.pageId}
             className={[
-              'preview-v2__page-dot',
-              i === currentIndex && 'preview-v2__page-dot--active',
-              completedPages.has(p.pageId) && 'preview-v2__page-dot--completed',
-            ].filter(Boolean).join(' ')}
+              "preview-v2__page-dot",
+              i === currentIndex && "preview-v2__page-dot--active",
+              completedPages.has(p.pageId) && "preview-v2__page-dot--completed",
+            ]
+              .filter(Boolean)
+              .join(" ")}
             onClick={() => goToPage(i)}
             role="tab"
             aria-selected={i === currentIndex}
@@ -477,6 +586,13 @@ const PreviewV2: React.FC<PreviewV2Props> = () => {
           </button>
         )}
       </div>
+
+      {/* ── Finish gate message ────────────────────────────── */}
+      {finishGateMessage && (
+        <div className="preview-v2__gate-message" role="alert">
+          {finishGateMessage}
+        </div>
+      )}
     </div>
   );
 };
