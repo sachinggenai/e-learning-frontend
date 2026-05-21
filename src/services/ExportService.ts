@@ -30,6 +30,40 @@ export interface ExportFormatsResponse {
 }
 
 class ExportService {
+  private normalizeErrorMessage(raw: any, fallback: string): string {
+    if (!raw) return fallback;
+
+    if (typeof raw === "string") return raw;
+
+    if (Array.isArray(raw)) {
+      const parts = raw
+        .map((item) => this.normalizeErrorMessage(item, ""))
+        .filter(Boolean);
+      return parts.length > 0 ? parts.join("; ") : fallback;
+    }
+
+    if (typeof raw === "object") {
+      const detail = (raw as any).detail;
+      const message = (raw as any).message;
+      const error = (raw as any).error;
+
+      const nested =
+        this.normalizeErrorMessage(detail, "") ||
+        this.normalizeErrorMessage(message, "") ||
+        this.normalizeErrorMessage(error, "");
+
+      if (nested) return nested;
+
+      try {
+        return JSON.stringify(raw);
+      } catch {
+        return fallback;
+      }
+    }
+
+    return String(raw);
+  }
+
   private getFileNameFromDisposition(
     contentDisposition?: string,
     fallback = "course_scorm.zip",
@@ -56,14 +90,15 @@ class ExportService {
       if (typeof Blob !== "undefined" && raw instanceof Blob) {
         const text = await raw.text();
         if (!text) return fallback;
-        const parsed = JSON.parse(text);
-        if (Array.isArray(parsed?.detail)) {
-          return parsed.detail
-            .map((d: any) => d?.msg || d?.message || JSON.stringify(d))
-            .join("; ");
+        try {
+          const parsed = JSON.parse(text);
+          return this.normalizeErrorMessage(parsed, fallback);
+        } catch {
+          return text;
         }
-        return parsed?.detail || parsed?.message || fallback;
       }
+
+      return this.normalizeErrorMessage(raw as any, fallback);
     } catch {
       // Keep fallback message when blob/json parsing fails.
     }
@@ -146,7 +181,7 @@ class ExportService {
         if (parsed.success === false) {
           return {
             success: false,
-            error: parsed.error || parsed.message || "SCORM export failed",
+            error: this.normalizeErrorMessage(parsed, "SCORM export failed"),
           };
         }
 
@@ -160,8 +195,10 @@ class ExportService {
 
         return {
           success: false,
-          error:
-            parsed.message || "SCORM export did not return a downloadable file",
+          error: this.normalizeErrorMessage(
+            parsed,
+            "SCORM export did not return a downloadable file",
+          ),
         };
       }
 
@@ -189,7 +226,7 @@ class ExportService {
       const fallback =
         error?.message || `SCORM export failed${status ? ` (${status})` : ""}`;
       const detailedMessage = await this.extractBlobErrorMessage(
-        error?.raw,
+        error?.raw ?? error?.response?.data ?? error,
         fallback,
       );
       return {

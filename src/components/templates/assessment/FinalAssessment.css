@@ -3,9 +3,9 @@
  * BEM Convention: .tpl-final-assessment / .tpl-final-assessment-editor
  */
 
-/* ═══════════════════════════════════════════════════════════════
+/* ===============================================================
  * Preview Mode
- * ═══════════════════════════════════════════════════════════════ */
+ * =============================================================== */
 
 .final-assessment {
   width: 100%;
@@ -229,9 +229,9 @@
   color: #991b1b;
 }
 
-/* ═══════════════════════════════════════════════════════════════
+/* ===============================================================
  * Editor Mode
- * ═══════════════════════════════════════════════════════════════ */
+ * =============================================================== */
 
 .final-assessment-editor {
   width: 100%;
@@ -265,9 +265,9 @@
   min-width: 120px;
 }
 
-/* ═══════════════════════════════════════════════════════════════
+/* ===============================================================
  * Responsive Design
- * ═══════════════════════════════════════════════════════════════ */
+ * =============================================================== */
 
 @media (max-width: 768px) {
   .final-assessment__title {
@@ -315,7 +315,7 @@
   }
 }
 
-/* ── New fields added for API alignment ────────────────────────── */
+/* New fields added for API alignment */
 .final-assessment__intro {
   font-style: italic;
   color: var(--color-text-secondary, #6b7280);
@@ -474,4 +474,173 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+/* Visual-only polish for professional editor theme */
+.final-assessment-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--theme-border, #d9e2ec);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, var(--theme-surface, #f8fafc) 100%);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+}
+
+.final-assessment-editor .editor-field {
+  margin: 0;
+}
+
+.final-assessment-editor .editor-field > label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--theme-text, #1e293b);
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+}
+
+.final-assessment-editor input[type="text"],
+.final-assessment-editor input[type="number"],
+.final-assessment-editor select,
+.final-assessment-editor textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 2px solid var(--theme-border, #94a3b8);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--theme-text, #1e293b);
+  font-size: 14px;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.05);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.final-assessment-editor textarea {
+  resize: vertical;
+}
+
+.final-assessment-editor input[type="text"]:hover,
+.final-assessment-editor input[type="number"]:hover,
+.final-assessment-editor select:hover,
+.final-assessment-editor textarea:hover {
+  border-color: var(--theme-primary, #2563eb);
+  background: #fdfefe;
+}
+
+.final-assessment-editor input:focus,
+.final-assessment-editor select:focus,
+.final-assessment-editor textarea:focus {
+  outline: none;
+  border-color: var(--theme-primary, #2563eb);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+.final-assessment-editor button {
+  border: 1px solid var(--theme-border, #cbd5e1);
+  background: #ffffff;
+  color: var(--theme-text, #1e293b);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.final-assessment-editor button:hover:not(:disabled) {
+  border-color: var(--theme-primary, #2563eb);
+  background: rgba(37, 99, 235, 0.06);
+  transform: translateY(-1px);
+}
+
+.final-assessment-editor button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.fa-editor__question {
+  background: #ffffff;
+  border-color: var(--theme-border, #dbe4ef);
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.fa-editor__q-header {
+  gap: 12px;
+}
+
+.fa-editor__q-header > span {
+  line-height: 1.45;
+}
+
+.editor-field--row > div {
+  min-width: 180px;
+  flex: 1;
+}
+
+.fa-editor__checkbox-row {
+  padding: 8px 10px;
+  border: 1px solid var(--theme-border, #dbe4ef);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.fa-editor__option-row input[type="radio"],
+.fa-editor__option-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--theme-primary, #2563eb);
+}
+
+.fa-editor__error-list {
+  background: #fff1f2;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-radius: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.fa-editor__q-actions button:last-child {
+  color: var(--theme-error, #dc2626);
+  border-color: rgba(220, 38, 38, 0.4);
+}
+
+.fa-editor__q-actions button:last-child:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.08);
+  border-color: var(--theme-error, #dc2626);
+}
+
+.fa-editor__add-buttons button {
+  border-color: var(--theme-primary, #2563eb);
+  background: var(--theme-primary, #2563eb);
+  color: #ffffff;
+}
+
+.fa-editor__add-buttons button:hover:not(:disabled) {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+@media (max-width: 768px) {
+  .final-assessment-editor {
+    padding: 14px;
+    border-radius: 10px;
+  }
+
+  .fa-editor__q-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .fa-editor__q-actions {
+    width: 100%;
+  }
+
+  .fa-editor__q-actions button {
+    flex: 1;
+    min-width: 96px;
+  }
 }

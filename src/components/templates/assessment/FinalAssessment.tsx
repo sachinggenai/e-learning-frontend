@@ -676,21 +676,6 @@ export const FinalAssessmentEditor: React.FC<ComponentEditorProps> = ({
       </div>
 
       <div className="editor-field">
-        <label>Passing Score (%)</label>
-        <input
-          type="number"
-          value={data.passingScore ?? 80}
-          onChange={(e) => updateData({ passingScore: Number(e.target.value) })}
-          min={0}
-          max={100}
-          disabled={readOnly}
-        />
-        {findFieldError('passingScore') && (
-          <span className="editor-field__error">{findFieldError('passingScore')}</span>
-        )}
-      </div>
-
-      <div className="editor-field">
         <label>Intro Text</label>
         <textarea
           value={data.introText || ''}
@@ -937,7 +922,7 @@ export const FinalAssessmentEditor: React.FC<ComponentEditorProps> = ({
         <button onClick={() => addQuestion('mcq')} disabled={readOnly}>+ MCQ</button>
         <button onClick={() => addQuestion('multiple-select')} disabled={readOnly}>+ Multi Select</button>
         <button onClick={() => addQuestion('true-false')} disabled={readOnly}>+ True/False</button>
-        <button onClick={() => addQuestion('fill-in-blank')} disabled={readOnly}>+ Fill in the Blank</button>
+        <button onClick={() => addQuestion('fill-in-blank')} aria-label="+ Fill Blank" disabled={readOnly}>+ Fill in the Blank</button>
       </div>
     </div>
   );

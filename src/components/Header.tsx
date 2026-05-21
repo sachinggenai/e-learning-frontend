@@ -41,6 +41,17 @@ const Header: React.FC<HeaderProps> = ({
   isBackendConnected,
   onOpenTemplateEditor,
 }) => {
+  const toErrorMessage = (value: unknown): string => {
+    if (!value) return "Export failed";
+    if (typeof value === "string") return value;
+    if (value instanceof Error) return value.message;
+    try {
+      return JSON.stringify(value);
+    } catch {
+      return String(value);
+    }
+  };
+
   const dispatch = useAppDispatch();
   const { validate, errors, warnings, hasErrors, hasWarnings, isValidating } =
     useValidation();
@@ -200,7 +211,7 @@ const Header: React.FC<HeaderProps> = ({
           "success",
         );
       } else {
-        throw new Error(result.error || "Export failed");
+        throw new Error(toErrorMessage(result.error));
       }
     } catch (error: any) {
       const handled = handleApiError(error);
